@@ -87,9 +87,9 @@ export default function Hero() {
 
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img src={teaBg} alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.95) saturate(0.9)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/45 via-white/20 to-blue-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-white/15" />
+        <img src={teaBg} alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.85) saturate(0.79)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-white/35 to-blue-50/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/65 via-transparent to-white/25" />
       </div>
 
       {/* Fog orbs */}
