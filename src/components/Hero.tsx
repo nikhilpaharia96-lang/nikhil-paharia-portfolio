@@ -87,9 +87,9 @@ export default function Hero() {
 
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img src={teaBg} alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.85) saturate(0.79)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-white/35 to-blue-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/65 via-transparent to-white/25" />
+        <img src={teaBg} alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.95) saturate(0.9)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/45 via-white/20 to-blue-50/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-white/15" />
       </div>
 
       {/* Fog orbs */}
@@ -198,6 +198,42 @@ export default function Hero() {
         }
         .rim-blue { animation: rimGlowIn 1.8s ease-out forwards; }
         .rim-orange { animation: rimGlowIn 1.8s ease-out 0.1s forwards; }
+
+        /* ── CTA button idle effects ── */
+        @keyframes ctaPulse {
+          0%,100% { box-shadow: 0 4px 14px rgba(29,111,235,0.35); }
+          50%      { box-shadow: 0 4px 28px rgba(29,111,235,0.65), 0 0 0 6px rgba(29,111,235,0.08); }
+        }
+        .cta-pulse { animation: ctaPulse 2.6s ease-in-out infinite; }
+
+        @keyframes ctaShimmerSweep {
+          0%   { transform: translateX(-120%); }
+          55%  { transform: translateX(120%); }
+          100% { transform: translateX(120%); }
+        }
+        .cta-shimmer {
+          background: linear-gradient(100deg, transparent 30%, rgba(29,111,235,0.18) 50%, transparent 70%);
+          transform: translateX(-120%);
+          animation: ctaShimmerSweep 3.2s ease-in-out infinite;
+        }
+
+        @keyframes arrowNudge {
+          0%,100% { transform: translateX(0); }
+          50%      { transform: translateX(4px); }
+        }
+        .arrow-nudge { display:inline-block; animation: arrowNudge 1.6s ease-in-out infinite; }
+
+        @keyframes planeWiggle {
+          0%,100% { transform: rotate(0deg); }
+          50%      { transform: rotate(-14deg); }
+        }
+        .plane-wiggle { display:inline-block; animation: planeWiggle 2.2s ease-in-out infinite; }
+
+        @keyframes folderBounce {
+          0%,100% { transform: translateY(0) rotate(0deg); }
+          50%      { transform: translateY(-2px) rotate(-6deg); }
+        }
+        .folder-bounce { display:inline-block; animation: folderBounce 2s ease-in-out infinite; }
       `}</style>
 
       {/* ── MAIN CONTENT ── */}
@@ -436,7 +472,7 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* CTA Buttons — static split, LHS/RHS */}
+            {/* CTA Buttons — static split, LHS/RHS, now with idle pulse/shimmer effects */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -445,19 +481,21 @@ export default function Hero() {
             >
               <motion.a
                 whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
-                href="#contact"
-                className="inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)] transition-shadow duration-300"
+                href="#projects"
+                className="relative overflow-hidden inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50 transition-colors duration-300 -ml-3 sm:-ml-4"
                 style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', height: '56px' }}
               >
-                <RiSendPlaneLine className="flex-shrink-0" /> Hire Me <RiArrowRightLine className="flex-shrink-0" />
+                <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" />
+                <RiFolderOpenLine className="flex-shrink-0 folder-bounce" /> View Projects
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
-                href="#projects"
-                className="inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50 transition-colors duration-300"
+                href="#contact"
+                className="relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)] transition-shadow duration-300"
                 style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', height: '56px' }}
               >
-                <RiFolderOpenLine className="flex-shrink-0" /> View Projects
+                <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
+                <RiSendPlaneLine className="flex-shrink-0 plane-wiggle" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
               </motion.a>
             </motion.div>
 
