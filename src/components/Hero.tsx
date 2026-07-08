@@ -445,19 +445,19 @@ export default function Hero() {
             >
               <motion.a
                 whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
+                href="#projects"
+                className="inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50 transition-colors duration-300 -ml-3 sm:-ml-4"
+                style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', height: '56px' }}
+              >
+                <RiFolderOpenLine className="flex-shrink-0" /> View Projects
+              </motion.a>
+              <motion.a
+                whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
                 href="#contact"
                 className="inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)] transition-shadow duration-300"
                 style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', height: '56px' }}
               >
                 <RiSendPlaneLine className="flex-shrink-0" /> Hire Me <RiArrowRightLine className="flex-shrink-0" />
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
-                href="#projects"
-                className="inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50 transition-colors duration-300"
-                style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', height: '56px' }}
-              >
-                <RiFolderOpenLine className="flex-shrink-0" /> View Projects
               </motion.a>
             </motion.div>
 
