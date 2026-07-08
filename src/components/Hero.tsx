@@ -436,16 +436,14 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* CTA Buttons — split to LHS/RHS by default; converge to center on scroll-up, reverse on scroll-down */}
+            {/* CTA Buttons — static split, LHS/RHS */}
             <motion.div
-              layout
-              transition={{ layout: { type: "spring", stiffness: 140, damping: 22 } }}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex items-center mb-7 w-full ${isScrollingUp ? "justify-center gap-4" : "justify-between"}`}
+              transition={{ delay: 0.48, duration: 0.5 }}
+              className="flex items-center justify-between mb-7 w-full"
             >
               <motion.a
-                layout
                 whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
                 href="#contact"
                 className="inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)] transition-shadow duration-300"
@@ -454,7 +452,6 @@ export default function Hero() {
                 <RiSendPlaneLine className="flex-shrink-0" /> Hire Me <RiArrowRightLine className="flex-shrink-0" />
               </motion.a>
               <motion.a
-                layout
                 whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.97 }}
                 href="#projects"
                 className="inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50 transition-colors duration-300"
