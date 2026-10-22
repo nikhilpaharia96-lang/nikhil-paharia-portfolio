@@ -1,82 +1,147 @@
+import { motion } from "@/lib/static-motion";
 import { RiArrowUpLine, RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill } from "react-icons/ri";
-import teaBg from "../assets/images/tea-garden-bg.png";
+import teaBg from "../assets/images/tea-sunset-person-wide.webp";
+import Magnetic from "@/components/ui/Magnetic";
+import SplitText from "@/components/ui/SplitText";
+import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+const socials = [
+  { Icon: RiGithubFill,    href: "#", label: "GitHub",    hoverBg: "hover:bg-slate-900"   },
+  { Icon: RiLinkedinFill,  href: "#", label: "LinkedIn",  hoverBg: "hover:bg-[#0A66C2]"   },
+  { Icon: RiInstagramLine, href: "#", label: "Instagram", hoverBg: "hover:bg-[#E1306C]"   },
+  { Icon: RiYoutubeFill,   href: "#", label: "YouTube",   hoverBg: "hover:bg-[#FF0000]"   },
+];
+
+const navLinks = [
+  { label: "Home",     href: "#home"     },
+  { label: "About",    href: "#about"    },
+  { label: "Projects", href: "#projects" },
+  { label: "Videos",   href: "#videos"   },
+];
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "auto" });
 
   return (
     <footer className="relative bg-gradient-to-b from-blue-50/30 to-white pt-32 pb-12 border-t border-blue-100 overflow-hidden">
-      {/* Subtle tea garden watermark */}
       <div className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none">
         <img src={teaBg} className="w-full h-full object-cover object-center grayscale" alt="" />
       </div>
-      
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-      
+
       <div className="container-tight relative z-10">
-        
-        {/* Top Decorative Section */}
-        <div className="text-center mb-24 max-w-2xl mx-auto">
+
+        {/* Hero text */}
+        <motion.div
+
+          whileInView={{ opacity: 1, y: 0 }}
+
+
+          className="text-center mb-24 max-w-2xl mx-auto"
+        >
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6">
-            Let's build the <span className="text-gradient">future</span>.
+            <SplitText type="words">Let's build the future.</SplitText>
           </h2>
           <p className="text-lg text-slate-500 font-light">
             Available for freelance opportunities globally. Bring your boldest ideas.
           </p>
-        </div>
+        </motion.div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-          <div className="text-center md:text-left">
-            <a href="#home" className="font-mono text-3xl font-bold text-primary tracking-wider block mb-3 flex items-center justify-center md:justify-start gap-2">
-              <span className="text-accent">//</span> DEVFOLIO
-            </a>
-            <p className="text-slate-500 text-base">Crafting cinematic digital experiences.</p>
-          </div>
-          
-          <div className="flex flex-col items-center gap-6">
-            <div className="flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-600">
-              <a href="#home" className="hover:text-primary transition-colors interactive">Home</a>
-              <a href="#about" className="hover:text-primary transition-colors interactive">About</a>
-              <a href="#projects" className="hover:text-primary transition-colors interactive">Projects</a>
-              <a href="#videos" className="hover:text-primary transition-colors interactive">Videos</a>
-            </div>
-            
-            <div className="flex gap-4">
-              <a href="#" className="interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all duration-300">
-                <RiGithubFill className="text-lg" />
-              </a>
-              <a href="#" className="interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-[#0A66C2] hover:text-white transition-all duration-300">
-                <RiLinkedinFill className="text-lg" />
-              </a>
-              <a href="#" className="interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-all duration-300">
-                <RiInstagramLine className="text-lg" />
-              </a>
-              <a href="#" className="interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all duration-300">
-                <RiYoutubeFill className="text-lg" />
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-blue-100">
-          <p className="text-slate-500 text-sm font-medium">
-            © {new Date().getFullYear()} DevFolio. <span className="hidden sm:inline">All rights reserved.</span>
-          </p>
-          
-          <p className="text-slate-400 text-xs tracking-widest uppercase font-mono italic">
-            Crafted in Assam, for the world
-          </p>
-          
-          <button 
-            onClick={scrollToTop}
-            className="interactive w-12 h-12 rounded-full bg-white border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:shadow-[0_0_20px_rgba(29,111,235,0.4)] hover:-translate-y-1 text-slate-600"
-            aria-label="Scroll to top"
+
+          {/* Brand — from LEFT */}
+          <motion.div
+
+            whileInView={{ opacity: 1, x: 0 }}
+
+
+            className="text-center md:text-left"
           >
-            <RiArrowUpLine className="text-2xl" />
-          </button>
+            <Magnetic range={50} strength={0.2}>
+              <a href="#home" className="font-mono text-3xl font-bold tracking-wider block mb-3 flex items-center justify-center md:justify-start gap-2 text-foreground hover:opacity-80 ">
+                Nikhil <span className="text-primary">Paharia</span>
+              </a>
+            </Magnetic>
+            <p className="text-slate-500 text-base">Crafting cinematic digital experiences.</p>
+          </motion.div>
+
+          {/* Nav + Socials — from RIGHT */}
+          <motion.div
+            variants={staggerContainer}
+
+            whileInView="show"
+
+
+            className="flex flex-col items-center gap-6"
+          >
+            {/* Nav links */}
+            <div className="flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-600">
+              {navLinks.map((link) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+
+                  variants={cinChildSmall}
+                  className="hover:text-primary  interactive"
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </div>
+
+            {/* Social icons wrapped in Magnetic */}
+            <div className="flex gap-4">
+              {socials.map(({ Icon, href, label, hoverBg }) => (
+                <Magnetic key={label} range={45} strength={0.4} scaleHover={1.15}>
+                  <motion.a
+                    href={href}
+                    aria-label={label}
+
+                    variants={cinChildSmall}
+                    className={`interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center ${hoverBg} hover:text-white  `}
+                  >
+                    <Icon className="text-lg" />
+                  </motion.a>
+                </Magnetic>
+              ))}
+            </div>
+          </motion.div>
         </div>
+
+        {/* Bottom bar */}
+        <motion.div
+
+          whileInView={{ opacity: 1, y: 0 }}
+
+
+          className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-blue-100"
+        >
+          <p className="text-slate-500 text-sm font-medium">
+            © {new Date().getFullYear()} Nikhil Paharia. <span className="hidden sm:inline">All rights reserved.</span>
+          </p>
+          <p className="text-slate-500 text-sm italic">Crafted in Assam, for the world.</p>
+
+          {/* Back-to-top — elastic morph button with Magnetic */}
+          <Magnetic range={60} strength={0.45} scaleHover={1.1}>
+            <motion.button
+              onClick={scrollToTop}
+
+
+
+              className="interactive w-12 h-12 rounded-full bg-white border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary   text-slate-600"
+              aria-label="Scroll to top"
+            >
+              <motion.div
+
+
+              >
+                <RiArrowUpLine className="text-2xl" />
+              </motion.div>
+            </motion.button>
+          </Magnetic>
+        </motion.div>
       </div>
     </footer>
   );
