@@ -24,8 +24,8 @@ export default function BackgroundGlow() {
 
         />
         <div className="absolute inset-0 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/93 via-white/80 to-white/93" />
-        <div className="absolute inset-0 bg-gradient-to-l from-white/85 via-transparent to-blue-50/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/35 to-white/75" />
+        <div className="absolute inset-0 bg-gradient-to-l from-white/60 via-transparent to-blue-50/30" />
         <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_100%,transparent_20%,rgba(8,20,45,0.06)_100%)]" />
       </div>
 
