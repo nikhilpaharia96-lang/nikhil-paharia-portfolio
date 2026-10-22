@@ -1,153 +1,636 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "@/lib/static-motion";
 import { toast } from "sonner";
-import { RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill, RiSendPlaneFill } from "react-icons/ri";
+import {
+  Send, Mail, Phone, MapPin, Check,
+  AlertCircle, ChevronDown, Clock, ShieldCheck, User, PenLine, ArrowRight,
+  Lock, Sparkles, Wallet, ListChecks,
+} from "lucide-react";
+import {
+  RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill, RiWhatsappFill,
+} from "react-icons/ri";
+import Magnetic from "@/components/ui/Magnetic";
+import SplitText from "@/components/ui/SplitText";
+import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+/* ── Floating label input wrapper ─────────────────────── */
+interface FloatInputProps {
+  id: string;
+  name: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  multiline?: boolean;
+  rows?: number;
+  error?: string;
+  value?: string;
+  onValueChange?: (v: string) => void;
+  icon?: React.ComponentType<{ className?: string }>;
+  autoComplete?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+}
+
+function FloatField({ id, name, label, type = "text", required, multiline, rows = 5, error, value, onValueChange, icon: Icon, autoComplete, inputMode }: FloatInputProps) {
+  const [focused, setFocused] = useState(false);
+  const hasValue = !!value && value.length > 0;
+  const lifted = focused || hasValue;
+  const hasIcon = !!Icon;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    onValueChange?.(e.target.value);
+  };
+
+  const sharedClass = `
+    w-full bg-white/70 border rounded-xl pt-6 pb-3 ${hasIcon ? "pl-11 pr-4" : "px-4"} text-foreground resize-none
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25   peer
+    ${error
+      ? "border-red-400 shadow-[0_0_0_3px_rgba(239,68,68,0.12)]"
+      : focused
+      ? "border-primary shadow-[0_0_0_3px_rgba(29,111,235,0.13)]"
+      : "border-slate-200 hover:border-slate-300"
+    }
+  `;
+
+  return (
+    <div className="relative">
+      {/* Leading icon */}
+      {Icon && (
+        <div className={`absolute left-4 ${multiline ? "top-4" : "top-1/2 -translate-y-1/2"} pointer-events-none z-10`}>
+          <Icon className={`w-[18px] h-[18px]   ${error ? "text-red-400" : focused ? "text-primary" : "text-slate-400"}`} />
+        </div>
+      )}
+
+      {/* Floating label */}
+      <motion.label
+        htmlFor={id}
+        animate={{
+          y: lifted ? -10 : 0,
+          scale: lifted ? 0.78 : 1,
+          x: hasIcon && !lifted ? 4 : 0,
+          color: error ? "#ef4444" : lifted ? "#1d6feb" : "#94a3b8",
+        }}
+
+        className={`absolute ${hasIcon ? "left-11" : "left-4"} top-4 origin-left pointer-events-none font-medium text-sm z-10`}
+      >
+        {label}{required && <span className="text-primary/70"> *</span>}
+      </motion.label>
+
+      {multiline ? (
+        <textarea
+          id={id}
+          name={name}
+          rows={rows}
+          required={required}
+          value={value}
+          aria-required={required}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={`${sharedClass} text-base`}
+          autoComplete={autoComplete}
+          enterKeyHint="send"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onChange={handleChange}
+        />
+      ) : (
+        <input
+          id={id}
+          name={name}
+          type={type}
+          required={required}
+          value={value}
+          aria-required={required}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={`${sharedClass} text-base`}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          enterKeyHint="next"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onChange={handleChange}
+        />
+      )}
+
+      {/* Animated bottom accent line */}
+      <motion.div
+        animate={{ scaleX: focused && !error ? 1 : 0, opacity: focused && !error ? 1 : 0 }}
+
+        className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r from-primary to-sky-400 origin-left"
+      />
+
+      {/* Inline error message */}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            id={`${id}-error`}
+            role="alert"
+
+            animate={{ opacity: 1, y: 0, height: "auto" }}
+
+            className="flex items-center gap-1.5 text-red-500 text-xs font-medium mt-1.5 pl-1"
+          >
+            <AlertCircle className="w-4 h-4 shrink-0" /> {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Floating label SELECT wrapper — same shell/spacing/shadows as FloatField ── */
+interface FloatSelectProps {
+  id: string;
+  name: string;
+  label: string;
+  options: string[];
+  required?: boolean;
+  error?: string;
+  value?: string;
+  onValueChange?: (v: string) => void;
+  icon?: React.ComponentType<{ className?: string }>;
+}
+
+function FloatSelect({ id, name, label, options, required, error, value, onValueChange, icon: Icon }: FloatSelectProps) {
+  const [focused, setFocused] = useState(false);
+  const hasValue = !!value && value.length > 0;
+  const lifted = focused || hasValue;
+  const hasIcon = !!Icon;
+
+  const sharedClass = `
+    w-full appearance-none bg-white/70 dark:bg-white/10 border rounded-xl pt-6 pb-3 ${hasIcon ? "pl-11" : "pl-4"} pr-11
+    text-foreground dark:text-white
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25   peer cursor-pointer
+    ${error
+      ? "border-red-400 dark:border-red-400/70 shadow-[0_0_0_3px_rgba(239,68,68,0.12)]"
+      : focused
+      ? "border-primary shadow-[0_0_0_3px_rgba(29,111,235,0.13)]"
+      : "border-slate-200 dark:border-white/15 hover:border-slate-300 dark:hover:border-white/25"
+    }
+  `;
+
+  return (
+    <div className="relative">
+      {/* Leading icon */}
+      {Icon && (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+          <Icon className={`w-[18px] h-[18px]   ${error ? "text-red-400" : focused ? "text-primary" : "text-slate-400"}`} />
+        </div>
+      )}
+
+      {/* Floating label */}
+      <motion.label
+        htmlFor={id}
+        animate={{
+          y: lifted ? -10 : 0,
+          scale: lifted ? 0.78 : 1,
+          x: hasIcon && !lifted ? 4 : 0,
+          color: error ? "#ef4444" : lifted ? "#1d6feb" : "#94a3b8",
+        }}
+
+        className={`absolute ${hasIcon ? "left-11" : "left-4"} top-4 origin-left pointer-events-none font-medium text-sm z-10`}
+      >
+        {label}{required && <span className="text-primary/70"> *</span>}
+      </motion.label>
+
+      <select
+        id={id}
+        name={name}
+        required={required}
+        value={value}
+        aria-required={required}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className={sharedClass}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        onChange={(e) => onValueChange?.(e.target.value)}
+      >
+        <option value="" disabled hidden></option>
+        {options.map((opt) => (
+          <option key={opt} value={opt} className="text-foreground bg-white dark:bg-slate-800">
+            {opt}
+          </option>
+        ))}
+      </select>
+
+      {/* Custom dropdown arrow */}
+      <motion.div
+        animate={{ rotate: focused ? 180 : 0, color: error ? "#ef4444" : focused ? "#1d6feb" : "#94a3b8" }}
+
+        className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10"
+      >
+        <ChevronDown className="w-5 h-5" />
+      </motion.div>
+
+      {/* Animated bottom accent line */}
+      <motion.div
+        animate={{ scaleX: focused && !error ? 1 : 0, opacity: focused && !error ? 1 : 0 }}
+
+        className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r from-primary to-sky-400 origin-left"
+      />
+
+      {/* Inline error message */}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            id={`${id}-error`}
+            role="alert"
+
+            animate={{ opacity: 1, y: 0, height: "auto" }}
+
+            className="flex items-center gap-1.5 text-red-500 text-xs font-medium mt-1.5 pl-1"
+          >
+            <AlertCircle className="w-4 h-4 shrink-0" /> {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+const SUBJECT_OPTIONS = [
+  "Full-Stack Web Development",
+  "Landing Page",
+  "Web Design",
+  "Admin Dashboard",
+  "Video Editing",
+  "Social Media Content",
+  "Other",
+];
+
+const BUDGET_OPTIONS = [
+  "Under ₹5,000",
+  "₹5,000 – ₹15,000",
+  "₹15,000 – ₹30,000",
+  "₹30,000+",
+  "Let's Discuss",
+];
+
+/* Real, verified contact details only — edit these directly to update everywhere */
+const WHATSAPP_NUMBER = "919395722454"; // no "+", no spaces — required for wa.me links
+const PHONE_DISPLAY = "+91 93957 22454";
+
+const contactInfo = [
+  { Icon: Mail,  label: "Email",    value: "nikhilpaharia96@gmail.com", href: "mailto:nikhilpaharia96@gmail.com" },
+  { Icon: Phone, label: "Phone / WhatsApp", value: PHONE_DISPLAY, href: `https://wa.me/${WHATSAPP_NUMBER}` },
+  { Icon: MapPin,label: "Location", value: "Assam, India",              href: undefined },
+];
+
+/* TODO: replace with real profile URLs — icon is hidden automatically until a real link is added */
+const socials = [
+  { Icon: RiGithubFill,    href: "https://github.com/nikhilpaharia96-lang", label: "GitHub"    },
+  { Icon: RiLinkedinFill,  href: "", label: "LinkedIn"  }, // TODO: add LinkedIn URL
+  { Icon: RiInstagramLine, href: "", label: "Instagram" }, // TODO: add Instagram URL
+  { Icon: RiYoutubeFill,   href: "", label: "YouTube"   }, // TODO: add YouTube URL
+  { Icon: RiWhatsappFill,  href: `https://wa.me/${WHATSAPP_NUMBER}`, label: "WhatsApp" },
+].filter((s) => s.href);
+
+const trustBadges = [
+  { Icon: Clock,       line1: "Quick Response",    line2: "Usually within 24–48 hours" },
+  { Icon: ShieldCheck, line1: "100% Confidential", line2: "Your details stay private" },
+  { Icon: Sparkles,    line1: "Free Consultation", line2: "Let's discuss your idea" },
+];
+
+type FormState = { name: string; email: string; phone: string; subject: string; budget: string; message: string };
+type FormErrors = Partial<Record<keyof FormState, string>>;
+
+/* Formspree endpoint for the contact form */
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mgodegyo";
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", subject: "", budget: "", message: "" });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const setField = (key: keyof FormState) => (v: string) => {
+    setForm((f) => ({ ...f, [key]: v }));
+    if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
+  };
+
+  const validate = (): boolean => {
+    const next: FormErrors = {};
+    if (!form.name.trim()) next.name = "Please enter your name";
+    if (!form.email.trim()) next.email = "Please enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Enter a valid email address";
+    if (form.phone.trim() && !/^\+?[0-9](?:[0-9\s-]{5,18})[0-9]$/.test(form.phone.trim()))
+      next.phone = "Enter a valid phone number, e.g. +1 555 123 4567";
+    if (!form.subject.trim()) next.subject = "Please select what you need";
+    if (!form.message.trim()) next.message = "Please write a short message";
+    else if (form.message.trim().length < 10) next.message = "Message should be at least 10 characters";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate()) {
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.success("Message sent successfully!", {
-        description: "I'll get back to you within 24 hours.",
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          subject: form.subject,
+          budget: form.budget,
+          message: form.message,
+        }),
       });
-      (e.target as HTMLFormElement).reset();
-    }, 1500);
+
+      if (!response.ok) {
+        // Formspree returns a JSON body with field-level errors on failure
+        const data = await response.json().catch(() => null);
+        const message = data?.errors?.map((err: { message: string }) => err.message).join(", ");
+        throw new Error(message || "Something went wrong while sending your message.");
+      }
+
+      setSent(true);
+      toast.success("Message sent successfully!", {
+        description: "I'll get back to you as soon as possible.",
+      });
+      formRef.current?.reset();
+      setForm({ name: "", email: "", phone: "", subject: "", budget: "", message: "" });
+      setTimeout(() => setSent(false), 2600);
+    } catch (err) {
+      const description =
+        err instanceof Error
+          ? err.message
+          : "Please check your connection and try again.";
+      toast.error("Couldn't send your message", { description });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section id="contact" className="section-padding relative overflow-hidden bg-transparent">
-      {/* Decorative Background */}
+    <section id="contact" className="section-padding relative overflow-hidden bg-transparent section-wrap max-w-full">
       <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-blue-50/50 to-transparent -z-10" />
-      <div className="absolute -left-[20%] top-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none -z-10" />
+      <div className="absolute -left-20 top-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none z-0" />
 
-      <div className="container-tight relative z-10">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-          
-          <div className="flex-1 w-full relative">
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
+      {/* Floating blurred background elements — soft blue glow, premium depth */}
+      <motion.div
+        aria-hidden="true"
+        animate={{ y: [0, -22, 0], x: [0, 14, 0] }}
+
+        className="absolute top-10 right-[8%] w-56 h-56 rounded-full bg-sky-300/20 blur-3xl pointer-events-none z-0"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ y: [0, 20, 0], x: [0, -16, 0] }}
+
+        className="absolute bottom-0 right-1/3 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none z-0"
+      />
+
+      <div className="container-tight relative z-10 max-w-full">
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24 items-center">
+
+          {/* Left — title + contact info + socials */}
+          <div className="w-full relative">
+            <motion.div
+
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+
+
             >
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-8 leading-[1.1] text-foreground">
-                Ready to start your <br/> <span className="text-gradient">next project?</span>
-              </h2>
-              <p className="text-xl text-slate-600 mb-12 font-light max-w-lg leading-relaxed">
-                Whether you need a full-stack application, a cinematic video, or a complete digital brand overhaul, let's build something extraordinary together.
-              </p>
-              
-              <div className="flex gap-6">
-                <a href="#" className="interactive w-16 h-16 rounded-full bg-white shadow-lg border border-blue-100 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all duration-300 hover:-translate-y-1">
-                  <RiGithubFill className="text-3xl" />
-                </a>
-                <a href="#" className="interactive w-16 h-16 rounded-full bg-white shadow-lg border border-blue-100 flex items-center justify-center hover:bg-[#0A66C2] hover:text-white transition-all duration-300 hover:-translate-y-1">
-                  <RiLinkedinFill className="text-3xl" />
-                </a>
-                <a href="#" className="interactive w-16 h-16 rounded-full bg-white shadow-lg border border-blue-100 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-all duration-300 hover:-translate-y-1">
-                  <RiInstagramLine className="text-3xl" />
-                </a>
-                <a href="#" className="interactive w-16 h-16 rounded-full bg-white shadow-lg border border-blue-100 flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all duration-300 hover:-translate-y-1">
-                  <RiYoutubeFill className="text-3xl" />
-                </a>
+              {/* Eyebrow */}
+              <div className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-primary/20 shadow-[0_2px_12px_rgba(29,111,235,0.08)]">
+                <Send className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-semibold text-primary tracking-[0.14em] uppercase">Let's Connect</span>
               </div>
+
+              <h2 className="text-5xl md:text-6xl font-serif font-bold mb-8 leading-[1.1] text-foreground max-w-full">
+                <SplitText type="words">Let's Build Something</SplitText>
+                <br />
+                <span className="relative inline-block">
+                  <SplitText type="words" delay={0.15} charClassName="text-gradient">Amazing</SplitText>
+                  {/* Hand-drawn brush-stroke underline accent */}
+                  <motion.svg
+                    aria-hidden="true"
+                    viewBox="0 0 180 14"
+                    className="absolute left-0 -bottom-2 w-full h-3 text-primary/70"
+
+                    whileInView={{ pathLength: 1, opacity: 1 }}
+
+
+                  >
+                    <path
+                      d="M2 10.5C40 4 90 2 130 6C150 8 165 6 178 4"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </motion.svg>
+                </span>{" "}
+                <SplitText type="words" delay={0.22}>Together.</SplitText>
+              </h2>
+              <p className="text-xl text-slate-600 mb-10 font-light max-w-lg leading-relaxed">
+                Have a project in mind or just want to say hi? Tell me what you're building and I'll get back to you as soon as possible.
+              </p>
+
+              {/* Contact info cards */}
+              <motion.div
+                variants={staggerContainer}
+
+                whileInView="show"
+
+                className="flex flex-col gap-3 mb-10 max-w-md"
+              >
+                {contactInfo.map(({ Icon, label, value, href }) => {
+                  const Wrapper = href ? motion.a : motion.div;
+                  const isExternal = href?.startsWith("http");
+                  return (
+                    <Wrapper
+                      key={label}
+                      {...(href ? { href } : {})}
+                      {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
+                      variants={cinChildSmall}
+
+                      className={`interactive group flex items-center gap-4 p-3.5 rounded-xl border border-blue-100/70 bg-white/50 backdrop-blur-sm    min-h-[48px] ${href ? "hover:bg-white/80 hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(29,111,235,0.15)]" : ""}`}
+                    >
+                      <motion.div
+
+
+                        className="w-10 h-10 shrink-0 rounded-lg bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center "
+                      >
+                        <Icon className="w-[18px] h-[18px] text-primary" />
+                      </motion.div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-slate-400 font-medium">{label}</p>
+                        <p className="text-sm text-foreground font-semibold truncate">{value}</p>
+                      </div>
+                      {href && (
+                        <div
+                          aria-hidden="true"
+                          className="shrink-0 text-slate-300 opacity-0 -translate-x-1 group-hover:opacity-100  group-hover:text-primary  "
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </div>
+                      )}
+                    </Wrapper>
+                  );
+                })}
+              </motion.div>
+
+              {/* Social icons — circular glass buttons */}
+              <motion.div
+                variants={staggerContainer}
+
+                whileInView="show"
+
+                className="flex gap-4 flex-wrap"
+              >
+                {socials.map(({ Icon, href, label }) => (
+                  <Magnetic key={label} range={40} strength={0.35} scaleHover={1.12}>
+                    <motion.a
+                      href={href}
+                      target={href.startsWith("http") ? "_blank" : undefined}
+                      rel={href.startsWith("http") ? "noreferrer" : undefined}
+                      aria-label={label}
+                      variants={cinChildSmall}
+
+
+                      className="interactive w-11 h-11 rounded-full flex items-center justify-center border border-blue-100/70 bg-white/50 backdrop-blur-md hover:bg-white/80 hover:border-primary/40  text-slate-700 hover:text-primary"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </motion.a>
+                  </Magnetic>
+                ))}
+              </motion.div>
             </motion.div>
           </div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
+
+          {/* Right — form */}
+          <motion.div
+
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex-1 w-full"
+
+
+            className="w-full max-w-full relative"
           >
-            <form onSubmit={handleSubmit} className="glass-card bg-white/95 p-8 md:p-12 flex flex-col gap-8 shadow-2xl border-blue-100/80">
-              <div className="relative">
-                <label 
-                  className={`absolute left-5 transition-all duration-300 font-mono text-sm pointer-events-none z-10 ${
-                    focusedField === 'name' ? '-top-3 bg-white px-2 text-primary font-bold shadow-sm rounded-full' : 'top-5 text-slate-400'
-                  }`}
-                >
-                  Full Name
-                </label>
-                <input 
-                  type="text" 
-                  required
-                  onFocus={() => setFocusedField('name')}
-                  onBlur={(e) => setFocusedField(e.target.value ? 'name' : null)}
-                  className="w-full bg-blue-50/30 border border-blue-200 rounded-2xl px-5 py-5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all interactive text-lg"
-                />
-              </div>
-              
-              <div className="relative">
-                <label 
-                  className={`absolute left-5 transition-all duration-300 font-mono text-sm pointer-events-none z-10 ${
-                    focusedField === 'email' ? '-top-3 bg-white px-2 text-primary font-bold shadow-sm rounded-full' : 'top-5 text-slate-400'
-                  }`}
-                >
-                  Email Address
-                </label>
-                <input 
-                  type="email" 
-                  required
-                  onFocus={() => setFocusedField('email')}
-                  onBlur={(e) => setFocusedField(e.target.value ? 'email' : null)}
-                  className="w-full bg-blue-50/30 border border-blue-200 rounded-2xl px-5 py-5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all interactive text-lg"
-                />
+            {/* Soft blue glow behind the glass card */}
+            <div aria-hidden="true" className="absolute -inset-4 bg-gradient-to-br from-primary/15 via-sky-300/10 to-transparent rounded-[32px] blur-2xl -z-10" />
+
+            <form
+              ref={formRef}
+              action={FORMSPREE_ENDPOINT}
+              method="POST"
+              onSubmit={handleSubmit}
+              noValidate
+              aria-label="Contact form"
+              className="glass-premium p-5 sm:p-8 md:p-12 flex flex-col gap-5 sm:gap-6 relative"
+            >
+              {/* Form header — paper-plane icon + title + subtitle */}
+              <div className="mb-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <motion.div
+
+
+                    className="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br from-primary/15 to-sky-400/15 flex items-center justify-center shadow-inner"
+                    aria-hidden="true"
+                  >
+                    <Send className="w-5 h-5 text-primary" />
+                  </motion.div>
+                  <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground">Send Me a Message</h3>
+                </div>
+                <p className="text-sm text-slate-500 font-light pl-[3.5rem] -mt-1">
+                  Tell me about your project and I'll get back to you.
+                </p>
               </div>
 
-              <div className="relative">
-                <label 
-                  className={`absolute left-5 transition-all duration-300 font-mono text-sm pointer-events-none z-10 ${
-                    focusedField === 'subject' ? '-top-3 bg-white px-2 text-primary font-bold shadow-sm rounded-full' : 'top-5 text-slate-400'
-                  }`}
-                >
-                  Subject
-                </label>
-                <input 
-                  type="text" 
-                  required
-                  onFocus={() => setFocusedField('subject')}
-                  onBlur={(e) => setFocusedField(e.target.value ? 'subject' : null)}
-                  className="w-full bg-blue-50/30 border border-blue-200 rounded-2xl px-5 py-5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all interactive text-lg"
-                />
+              <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
+                <FloatField id="contact-name"    name="name"    label="Your Name"     required value={form.name}    onValueChange={setField("name")}    error={errors.name} icon={User} autoComplete="name" />
+                <FloatField id="contact-email"   name="email"   label="Email Address" type="email" required value={form.email}   onValueChange={setField("email")}   error={errors.email} icon={Mail} autoComplete="email" inputMode="email" />
               </div>
-              
-              <div className="relative">
-                <label 
-                  className={`absolute left-5 transition-all duration-300 font-mono text-sm pointer-events-none z-10 ${
-                    focusedField === 'message' ? '-top-3 bg-white px-2 text-primary font-bold shadow-sm rounded-full' : 'top-5 text-slate-400'
-                  }`}
+              <FloatField id="contact-phone" name="phone" label="WhatsApp / Phone Number" type="tel" value={form.phone} onValueChange={setField("phone")} error={errors.phone} icon={Phone} autoComplete="tel" inputMode="tel" />
+              <FloatSelect id="contact-subject" name="subject" label="What do you need?" options={SUBJECT_OPTIONS} required value={form.subject} onValueChange={setField("subject")} error={errors.subject} icon={ListChecks} />
+              <FloatSelect id="contact-budget"  name="budget"  label="Budget (Optional)" options={BUDGET_OPTIONS}  value={form.budget}  onValueChange={setField("budget")}  error={errors.budget} icon={Wallet} />
+              <FloatField id="contact-message"   name="message" label="Tell me about your project" multiline rows={5} required value={form.message} onValueChange={setField("message")} error={errors.message} icon={PenLine} autoComplete="off" />
+
+              {/* Magnetic submit button */}
+              <Magnetic range={80} strength={0.3} scaleHover={1.02}>
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+
+
+
+                  className={`w-full py-4 font-bold rounded-xl  flex items-center justify-center gap-3 disabled:opacity-80 mt-2 relative overflow-hidden text-white shadow-lg shadow-blue-200/60 ${sent ? "bg-green-500" : "bg-gradient-to-r from-primary to-sky-500"}`}
                 >
-                  Message
-                </label>
-                <textarea 
-                  rows={4}
-                  required
-                  onFocus={() => setFocusedField('message')}
-                  onBlur={(e) => setFocusedField(e.target.value ? 'message' : null)}
-                  className="w-full bg-blue-50/30 border border-blue-200 rounded-2xl px-5 py-5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none interactive text-lg"
-                />
+                  {/* Shine sweep on hover */}
+                  <motion.div
+                    className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none"
+
+
+                  />
+                  <AnimatePresence mode="wait">
+                    {isSubmitting ? (
+                      <motion.div
+                        key="spinner"
+
+                        animate={{ opacity: 1, scale: 1 }}
+
+                        role="status"
+                        aria-label="Sending message"
+                        className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full "
+                      />
+                    ) : sent ? (
+                      <motion.span
+                        key="sent"
+
+                        animate={{ opacity: 1, scale: 1 }}
+
+                        className="flex items-center gap-2"
+                      >
+                        Sent <Check className="w-5 h-5" />
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="label"
+
+                        animate={{ opacity: 1, y: 0 }}
+
+                        className="flex items-center gap-3"
+                      >
+                        <Send className="w-5 h-5" /> Send Message
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </Magnetic>
+
+              <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400 -mt-1">
+                <Lock className="w-3.5 h-3.5" aria-hidden="true" /> Your information stays private and is never shared.
+              </p>
+
+              {/* Trust badges — single horizontal row, no wrap */}
+              <div className="flex items-start justify-between gap-2 pt-1">
+                {trustBadges.map(({ Icon, line1, line2 }) => (
+                  <div key={line1} className="flex flex-col items-center text-center gap-1.5 flex-1 min-w-0">
+                    <div className="w-9 h-9 shrink-0 rounded-full border border-primary/25 bg-primary/5 flex items-center justify-center">
+                      <Icon className="w-4 h-4 text-primary" aria-hidden="true" />
+                    </div>
+                    <p className="text-[11px] sm:text-xs font-medium text-slate-600 leading-tight">
+                      <span className="block font-semibold text-slate-700">{line1}</span>
+                      {line2}
+                    </p>
+                  </div>
+                ))}
               </div>
-              
-              <button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="interactive w-full py-5 bg-primary text-white font-bold rounded-2xl uppercase tracking-widest transition-all duration-300 hover:shadow-[0_0_30px_rgba(29,111,235,0.4)] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed mt-2 text-sm hover:-translate-y-1"
-              >
-                {isSubmitting ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>Send Message <RiSendPlaneFill className="text-xl" /></>
-                )}
-              </button>
             </form>
           </motion.div>
         </div>
