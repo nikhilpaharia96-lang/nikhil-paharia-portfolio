@@ -13,22 +13,23 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="relative overflow-hidden section-wrap max-w-full py-20 sm:py-28 lg:py-32"
+      className="relative overflow-hidden section-wrap max-w-full pt-28 pb-14 sm:pt-32 sm:pb-20 lg:py-32"
       aria-label="Testimonials — Client Stories"
     >
       <BackgroundGlow />
 
       <div className="container-tight relative z-10 max-w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          <div className="lg:col-span-5">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_24px_-12px_rgba(15,45,90,0.25)] mb-6">
-              <span aria-hidden="true" className="text-primary font-black leading-none">“</span>
-              <span className="text-[11px] sm:text-xs font-semibold tracking-[0.12em] uppercase text-primary">
+        {/* Mobile order: intro → feedback card → carousel → stats. Desktop: two columns. */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 lg:gap-y-10 items-start">
+          <div className="lg:col-span-5 lg:row-start-1">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/85 backdrop-blur-xl border border-white shadow-[0_8px_24px_-12px_rgba(15,45,90,0.3)] mb-5 sm:mb-6">
+              <span aria-hidden="true" className="text-primary font-black leading-none text-sm">“</span>
+              <span className="text-[11px] sm:text-xs font-bold tracking-[0.12em] uppercase text-primary">
                 Client Stories
               </span>
             </div>
 
-            <h2 className="font-sans font-extrabold tracking-tight text-[2.7rem] sm:text-6xl lg:text-[4rem] leading-[1] text-[#101828]">
+            <h2 className="font-sans font-extrabold tracking-tight text-[2.3rem] min-[360px]:text-[2.6rem] min-[420px]:text-[3rem] sm:text-6xl lg:text-[4rem] leading-[1.02] text-[#0b1530]">
               Loved by
               <br />
               Clients.
@@ -38,7 +39,7 @@ export default function Testimonials() {
                 Trust.
                 <svg
                   aria-hidden="true"
-                  className="absolute left-0 -bottom-2 w-full h-3"
+                  className="absolute left-0 -bottom-1.5 w-full h-3"
                   viewBox="0 0 200 12"
                   preserveAspectRatio="none"
                   fill="none"
@@ -48,15 +49,13 @@ export default function Testimonials() {
               </span>
             </h2>
 
-            <p className="mt-7 max-w-md text-base sm:text-[1.05rem] leading-relaxed text-slate-600">
+            <p className="mt-6 max-w-md text-[15px] sm:text-[1.05rem] leading-relaxed text-slate-700">
               Real stories from founders, creators and businesses I've worked with. Every project is
               crafted with attention to detail, performance and long-term impact.
             </p>
-
-            <TestimonialStats />
           </div>
 
-          <div className="lg:col-span-7 relative">
+          <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:self-center relative">
             <div className="hidden lg:block absolute -top-24 right-0 z-20 w-64">
               <WorkedWithMeCTA variant="floating" onOpen={() => setModalOpen(true)} />
             </div>
@@ -75,8 +74,15 @@ export default function Testimonials() {
               </span>
               <MoveDownLeft className="w-6 h-6 text-primary -ml-5" strokeWidth={1.6} />
             </div>
+
+            <div className="lg:hidden mb-5">
+              <WorkedWithMeCTA variant="inline" onOpen={() => setModalOpen(true)} />
+            </div>
             <FeaturedTestimonial />
-            <WorkedWithMeCTA variant="inline" onOpen={() => setModalOpen(true)} />
+          </div>
+
+          <div className="lg:col-span-5 lg:row-start-2">
+            <TestimonialStats />
           </div>
         </div>
 
