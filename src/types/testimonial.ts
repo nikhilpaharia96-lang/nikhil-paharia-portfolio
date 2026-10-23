@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+export type TestimonialCategory = "Creators" | "Businesses" | "Travel & Tourism" | "Education" | "Startups";
+
 /** A single client testimonial entry. */
 export type Testimonial = {
   id: number;
@@ -15,6 +17,7 @@ export type Testimonial = {
   companyLogo: string;
   flag: string;
   country: string;
+  category: TestimonialCategory;
   projectType: string;
   result: string;
   content: string;

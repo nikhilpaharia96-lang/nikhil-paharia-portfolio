@@ -19,7 +19,7 @@ export default function WorkedWithMeCTA({ onOpen, variant }: WorkedWithMeCTAProp
 
       className={
         isFloating
-          ? "hidden lg:block absolute -top-4 right-0 z-20 w-72"
+          ? "hidden lg:block w-full"
           : "lg:hidden mt-10 sm:mt-12"
       }
     >

@@ -1,5 +1,5 @@
 import { Users, Layers, Star, ThumbsUp, Globe2 } from "lucide-react";
-import type { Testimonial, TrustStat, TrustedBrand } from "@/types/testimonial";
+import type { Testimonial, TestimonialCategory, TrustStat, TrustedBrand } from "@/types/testimonial";
 
 /**
  * The hero/featured testimonial, shown large above the carousel.
@@ -25,6 +25,7 @@ export const featuredTestimonial: Testimonial = {
     "https://raw.githubusercontent.com/nikhilpaharia96-lang/nikhil-paharia-portfolio-main/main/src/assets/images/testimonials/apunbazar-logo.png",
   flag: "🇮🇳",
   country: "India",
+  category: "Businesses",
   projectType: "E-Commerce Platform",
   result: "↑ 40% Conversion",
   content:
@@ -49,6 +50,7 @@ export const testimonials: Testimonial[] = [
       "https://api.dicebear.com/9.x/initials/svg?seed=JagiroadCollege&backgroundType=gradientLinear&backgroundColor=7c3aed,a78bfa&fontFamily=Arial&fontWeight=700&radius=20",
     flag: "🇮🇳",
     country: "India",
+    category: "Education",
     projectType: "Community Web Platform",
     result: "3x More Engagement",
     content:
@@ -69,6 +71,7 @@ export const testimonials: Testimonial[] = [
       "https://api.dicebear.com/9.x/initials/svg?seed=FitBite&backgroundType=gradientLinear&backgroundColor=059669,34d399&fontFamily=Arial&fontWeight=700&radius=20",
     flag: "🇮🇳",
     country: "India",
+    category: "Startups",
     projectType: "Mobile App Landing",
     result: "500K+ Views",
     content:
@@ -89,6 +92,7 @@ export const testimonials: Testimonial[] = [
       "https://api.dicebear.com/9.x/initials/svg?seed=TravelAssam&backgroundType=gradientLinear&backgroundColor=f59e0b,fbbf24&fontFamily=Arial&fontWeight=700&radius=20",
     flag: "🇮🇳",
     country: "India",
+    category: "Travel & Tourism",
     projectType: "Travel Website",
     result: "2x More Leads",
     content:
@@ -109,6 +113,7 @@ export const testimonials: Testimonial[] = [
       "https://api.dicebear.com/9.x/initials/svg?seed=Nexlify&backgroundType=gradientLinear&backgroundColor=0ea5e9,38bdf8&fontFamily=Arial&fontWeight=700&radius=20",
     flag: "🇦🇪",
     country: "UAE",
+    category: "Startups",
     projectType: "SaaS Dashboard",
     result: "↑ 55% Retention",
     content:
@@ -130,6 +135,7 @@ export const testimonials: Testimonial[] = [
       "https://api.dicebear.com/9.x/initials/svg?seed=PixelCraftStudio&backgroundType=gradientLinear&backgroundColor=e1306c,f472b6&fontFamily=Arial&fontWeight=700&radius=20",
     flag: "🇬🇧",
     country: "UK",
+    category: "Creators",
     projectType: "Brand Video Campaign",
     result: "1M+ Impressions",
     content:
@@ -158,6 +164,15 @@ export const testimonials: Testimonial[] = [
   //   result: "↑ 30% Something",
   //   content: "Client ka actual quote yaha likho.",
   // },
+];
+
+export const testimonialCategories: ("All" | TestimonialCategory)[] = [
+  "All",
+  "Creators",
+  "Businesses",
+  "Travel & Tourism",
+  "Education",
+  "Startups",
 ];
 
 /**

@@ -35,8 +35,8 @@ export default function BackgroundGlow() {
         <div className="absolute inset-0 backdrop-blur-[6px] sm:backdrop-blur-[10px]" />
         {/* Lighter overall wash + stronger center-out fade so the photo recedes
             further at the edges, where cards and copy actually sit. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/88 to-white/95" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-transparent to-blue-50/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-sky-50/85 via-white/70 to-sky-50/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-transparent to-blue-50/30" />
         <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_0%,transparent_15%,rgba(8,20,45,0.05)_100%)]" />
       </div>
 
