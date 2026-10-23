@@ -4,7 +4,6 @@ import BackgroundGlow from "./BackgroundGlow";
 import FeaturedTestimonial from "./FeaturedTestimonial";
 import TestimonialStats from "./TestimonialStats";
 import TrustedByBrands from "./TrustedByBrands";
-import StoriesGrid from "./StoriesGrid";
 import WorkedWithMeCTA from "./WorkedWithMeCTA";
 import SubmitTestimonialModal from "./SubmitTestimonialModal";
 
@@ -82,7 +81,6 @@ export default function Testimonials() {
         </div>
 
         <TrustedByBrands />
-        <StoriesGrid />
       </div>
 
       <SubmitTestimonialModal open={modalOpen} onClose={() => setModalOpen(false)} />

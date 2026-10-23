@@ -1,5 +1,5 @@
 import { Users, Layers, Star, ThumbsUp, Globe2 } from "lucide-react";
-import type { Testimonial, TestimonialCategory, TrustStat, TrustedBrand } from "@/types/testimonial";
+import type { Testimonial, TrustStat, TrustedBrand } from "@/types/testimonial";
 
 /**
  * The hero/featured testimonial, shown large above the carousel.
@@ -164,15 +164,6 @@ export const testimonials: Testimonial[] = [
   //   result: "↑ 30% Something",
   //   content: "Client ka actual quote yaha likho.",
   // },
-];
-
-export const testimonialCategories: ("All" | TestimonialCategory)[] = [
-  "All",
-  "Creators",
-  "Businesses",
-  "Travel & Tourism",
-  "Education",
-  "Startups",
 ];
 
 /**
