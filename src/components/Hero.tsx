@@ -2,12 +2,17 @@ import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVi
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
 import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView, useReducedMotion } from "@/lib/static-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useReducedMotion } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import teaBg from "../assets/images/file_0000000066b08207b18b1ec1e8269869.png";
 import teaBgMobile from "../assets/images/tea-brush-mobile.webp";
 import SplitText from "@/components/ui/SplitText";
 import Magnetic from "@/components/ui/Magnetic";
+import Ripple from "@/components/ui/Ripple";
+import CountUp from "@/components/ui/CountUp";
+import ScrollIndicator from "@/components/ui/ScrollIndicator";
+import { useMouseParallax } from "@/hooks/use-mouse-parallax";
+import { useMotionPresets, EASE_OUT } from "@/lib/motion";
 
 // ── Desktop-only Hero assets ──────────────────────────────────────────────
 import desktopPortrait from "../assets/images/Desktop Nikhil Paharia profile photo.png";
@@ -56,9 +61,9 @@ function TaglineTyping({ text }: { text: string }) {
   );
 }
 
-function StatCounter({ value }: { value: string; duration?: number }) {
-  // Static: the final figure is rendered immediately (no count-up).
-  return <span>{value}</span>;
+function StatCounter({ value, delay = 0 }: { value: string; delay?: number }) {
+  // Counts up to the real figure once visible; the final text is what assistive tech reads.
+  return <CountUp value={value} delay={delay} />;
 }
 
 
@@ -72,12 +77,28 @@ const desktopStats = [
 ];
 
 const socials = [
-  { icon: <FaGithub />,     href: "#", label: "GitHub",    color: "text-slate-800" },
-  { icon: <FaLinkedinIn />, href: "#", label: "LinkedIn",  color: "text-blue-600"  },
-  { icon: <FaInstagram />,  href: "#", label: "Instagram", color: "text-pink-500"  },
-  { icon: <FaYoutube />,    href: "#", label: "YouTube",   color: "text-red-500"   },
-  { icon: <FaXTwitter />,   href: "#", label: "X",         color: "text-slate-900" },
-  { icon: <FaWhatsapp />,   href: "#", label: "WhatsApp",  color: "text-green-500" },
+  { icon: <FaGithub />,     href: "#", label: "GitHub", brand: "#181717",    color: "text-slate-800" },
+  { icon: <FaLinkedinIn />, href: "#", label: "LinkedIn", brand: "#0A66C2",  color: "text-blue-600"  },
+  { icon: <FaInstagram />,  href: "#", label: "Instagram", brand: "#E4405F", color: "text-pink-500"  },
+  { icon: <FaYoutube />,    href: "#", label: "YouTube", brand: "#FF0000",   color: "text-red-500"   },
+  { icon: <FaXTwitter />,   href: "#", label: "X", brand: "#000000",         color: "text-slate-900" },
+  { icon: <FaWhatsapp />,   href: "#", label: "WhatsApp", brand: "#25D366",  color: "text-green-500" },
+];
+
+// Fixed, hand-placed motes (deterministic, so no layout shift)
+const heroParticles = [
+  { left: "8%",  top: "62%", size: 5, delay: "0s",   dur: "11s", dx: "16px" },
+  { left: "17%", top: "38%", size: 4, delay: "2.5s", dur: "13s", dx: "-12px" },
+  { left: "26%", top: "78%", size: 6, delay: "5s",   dur: "14s", dx: "20px" },
+  { left: "35%", top: "24%", size: 4, delay: "1.2s", dur: "12s", dx: "-18px" },
+  { left: "46%", top: "70%", size: 5, delay: "7s",   dur: "15s", dx: "14px" },
+  { left: "54%", top: "30%", size: 4, delay: "3.4s", dur: "11s", dx: "-10px" },
+  { left: "63%", top: "82%", size: 6, delay: "6.2s", dur: "16s", dx: "22px" },
+  { left: "71%", top: "46%", size: 4, delay: "0.8s", dur: "13s", dx: "-16px" },
+  { left: "79%", top: "68%", size: 5, delay: "4.4s", dur: "12s", dx: "12px" },
+  { left: "86%", top: "28%", size: 4, delay: "8s",   dur: "14s", dx: "-20px" },
+  { left: "92%", top: "58%", size: 5, delay: "2s",   dur: "15s", dx: "10px" },
+  { left: "13%", top: "88%", size: 4, delay: "9s",   dur: "13s", dx: "18px" },
 ];
 
 export default function Hero() {
@@ -102,6 +123,22 @@ export default function Hero() {
   const smoothBgY = useSpring(bgY, { stiffness: 45, damping: 20 });
 
   const rm = useReducedMotion();
+  const m = useMotionPresets();
+
+  // Mouse-based parallax (fine pointer + motion-OK only; touch / reduced motion stay still).
+  // Each layer travels a different distance so the scene reads as having depth.
+  const mouse = useMouseParallax(ref);
+  const portraitX = useTransform(mouse.x, [-0.5, 0.5], [-14, 14]);
+  const portraitMouseY = useTransform(mouse.y, [-0.5, 0.5], [-10, 10]);
+  const brushX = useTransform(mouse.x, [-0.5, 0.5], [22, -22]);
+  const brushY = useTransform(mouse.y, [-0.5, 0.5], [14, -14]);
+  const orbitX = useTransform(mouse.x, [-0.5, 0.5], [-30, 30]);
+  const orbitY = useTransform(mouse.y, [-0.5, 0.5], [-22, 22]);
+  const ovalX = useTransform(mouse.x, [-0.5, 0.5], [8, -8]);
+  // Scroll parallax: portrait drifts up slower than the page, the copy a touch faster.
+  const portraitScroll = useSpring(useTransform(scrollYProgress, [0, 1], [0, -60]), { stiffness: 60, damping: 22 });
+  const portraitY = useTransform([portraitScroll, portraitMouseY], ([a, b]: number[]) => a + b);
+  const textScroll = useTransform(scrollYProgress, [0, 1], [0, -28]);
 
 
   /* ── Scroll-direction tracking — drives CTA converge AND the LHS/RHS cloud crossover ──
@@ -152,27 +189,31 @@ export default function Hero() {
   // freely during a scroll fling with zero risk of stealing main-thread time
   // from it, however many times direction flips.
   const cloudCrossoverTransition = { type: "spring" as const, stiffness: 35, damping: 16, mass: 1.4 };
+  // Each cloud = a slow CSS-drift wrapper (transform) + the motion.img that owns
+  // the scroll-direction crossover and the opacity fade-in.
   const cloudLeft = (
-    <motion.img
-      key="cloud-left"
-
-      animate={{ opacity: 0.7, x: isScrollingUp ? "calc(100% + 2rem)" : 0 }}
-
-      src={cloudImg}
-      alt=""
-      className="w-44 sm:w-72 lg:w-96 select-none pointer-events-none"
-    />
+    <div key="cloud-left" className="cloud-drift">
+      <motion.img
+        initial={{ opacity: 0, x: -40 }}
+        animate={{ opacity: 0.7, x: isScrollingUp ? "calc(100% + 2rem)" : 0 }}
+        transition={{ x: cloudCrossoverTransition, opacity: { duration: 2.2, delay: 0.4 } }}
+        src={cloudImg}
+        alt=""
+        className="w-44 sm:w-72 lg:w-96 select-none pointer-events-none"
+      />
+    </div>
   );
   const cloudRight = (
-    <motion.img
-      key="cloud-right"
-
-      animate={{ opacity: 0.7, x: isScrollingUp ? "calc(-100% - 2rem)" : 0 }}
-
-      src={cloudImg}
-      alt=""
-      className="w-44 sm:w-72 lg:w-96 select-none pointer-events-none"
-    />
+    <div key="cloud-right" className="cloud-drift-rev">
+      <motion.img
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 0.7, x: isScrollingUp ? "calc(-100% - 2rem)" : 0 }}
+        transition={{ x: cloudCrossoverTransition, opacity: { duration: 2.2, delay: 0.6 } }}
+        src={cloudImg}
+        alt=""
+        className="w-44 sm:w-72 lg:w-96 select-none pointer-events-none"
+      />
+    </div>
   );
 
 
@@ -181,7 +222,7 @@ export default function Hero() {
 
       {/* Background with scroll parallax — MOBILE/TABLET ONLY, untouched */}
       <motion.div style={{ y: smoothBgY }} className="absolute inset-0 z-0 lg:hidden">
-        <img src={teaBgMobile} alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center', filter: 'brightness(0.97) saturate(0.95)' }} />
+        <motion.img initial={{ scale: 1.12 }} animate={{ scale: 1 }} transition={{ duration: 2.6, ease: EASE_OUT }} src={teaBgMobile} alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center', filter: 'brightness(0.97) saturate(0.95)' }} />
         <div className="absolute inset-0 bg-gradient-to-r from-white/45 via-white/20 to-blue-50/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-white/15" />
       </motion.div>
@@ -190,7 +231,10 @@ export default function Hero() {
           composition (white-left / tea-garden-right) once that asset is
           re-uploaded; see the desktopBg note near the imports above. */}
       <motion.div style={{ y: smoothBgY }} className="absolute inset-0 z-0 hidden lg:block">
-        <img
+        <motion.img
+          initial={{ scale: 1.12 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2.6, ease: EASE_OUT }}
           src={desktopBg}
           alt=""
           className="w-full h-full object-cover"
@@ -206,17 +250,32 @@ export default function Hero() {
 
       {/* Fog orbs */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200/15 rounded-full blur-[120px]" style={{ }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-200/20 rounded-full blur-[100px]" style={{ }} />
+        <div className="fog-drift absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200/15 rounded-full blur-[120px]" />
+        <div className="fog-drift-b absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-200/20 rounded-full blur-[100px]" />
+        {/* Atmospheric sunlight: a soft warm radial gradient (no blur filter) that gently breathes */}
+        <div
+          className="hero-sun absolute -top-[18%] -right-[10%] w-[70%] max-w-[900px] aspect-square rounded-full"
+          style={{ background: 'radial-gradient(circle at 55% 45%, rgba(255,238,200,0.7) 0%, rgba(255,222,165,0.3) 32%, rgba(255,255,255,0) 66%)' }}
+        />
       </div>
 
-      {/* Particles */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] left-[10%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute top-[40%] right-[20%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute bottom-[30%] left-[30%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute top-[60%] left-[80%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute bottom-[10%] right-[10%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
+      {/* Particles: tiny motes that drift upward and fade (transform/opacity only) */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {heroParticles.map((pt, i) => (
+          <div
+            key={i}
+            className="hero-particle absolute rounded-full bg-white/80 shadow-[0_0_8px_rgba(255,255,255,0.9)]"
+            style={{
+              left: pt.left,
+              top: pt.top,
+              width: pt.size,
+              height: pt.size,
+              ["--delay" as string]: pt.delay,
+              ["--dur" as string]: pt.dur,
+              ["--dx" as string]: pt.dx,
+            }}
+          />
+        ))}
       </div>
 
       {/* Cloud photo — sits at the bottom of Hero itself (not a separate
@@ -225,9 +284,9 @@ export default function Hero() {
           and desktop, and animates in on first load. */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 z-[1] w-full pointer-events-none"
-
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-
+        transition={{ duration: 1.8, delay: 0.3, ease: EASE_OUT }}
       >
         <img
           src={cloudPhoto}
@@ -354,30 +413,30 @@ export default function Hero() {
           {/* ── Text Content ── */}
           <motion.div
 
-            animate={{ opacity: 1, x: 0 }}
+            {...m.fade(0, 0.3)}
 
             className="relative z-10 text-left"
           >
             {/* Available for Hire badge */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(0.15, 16)}
 
               className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur border border-blue-200 rounded-full px-2.5 sm:px-3.5 py-1 mb-2"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400  flex-shrink-0" />
+              <span className="ping-dot w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
               <span className="text-[9px] sm:text-[11px] font-mono text-primary uppercase tracking-widest whitespace-nowrap">Available for Hire</span>
             </motion.div>
 
             {/* Hi, I'm */}
             <motion.p
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.fade(0, 0.2)}
 
               style={{ fontSize: 'clamp(1.375rem, 5vw, 1.75rem)', lineHeight: 1.15, fontWeight: 700, letterSpacing: '-0.02em' }}
               className="text-foreground font-bold mb-0.5"
             >
-              <SplitText type="chars" delay={0.1}>Hi, I'm</SplitText>
+              <SplitText type="chars" delay={0.3}>Hi, I'm</SplitText>
             </motion.p>
 
             {/* Name block — underline only under "Nikhil", three-strokes accent above last "a" of Paharia.
@@ -385,7 +444,7 @@ export default function Hero() {
                 never overflowing the viewport (clamp caps both ends). */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.fade(0, 0.2)}
 
               className="relative ul-wrap mb-2"
               style={{ display: 'inline-block', maxWidth: '100%' }}
@@ -395,13 +454,13 @@ export default function Hero() {
                 className="font-bold"
               >
                 <span className="block relative" style={{ width: 'fit-content', maxWidth: '100%' }}>
-                  <SplitText type="chars" delay={0.25}>Nikhil</SplitText>
+                  <motion.span className="inline-block" {...m.wipe(0.5)}>Nikhil</motion.span>
                   {/* Underline — hand-drawn tapered brush stroke under "Nikhil" only,
                       followed by a one-time shine sweep once the stroke finishes drawing. */}
                   <motion.svg
                     viewBox="60 3 775 29"
 
-                    animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                    {...m.draw(1.1, 0.9)}
 
                     style={{ display: 'block', width: '100%', height: 'auto', marginTop: '0px' }}
                     aria-hidden="true"
@@ -416,15 +475,27 @@ export default function Hero() {
                         {/* Sweeps left-to-right over 1.1s, then holds off-screen for the
                             rest of a 2s cycle before repeating — so the shine passes
                             over the underline once every 2 seconds, indefinitely. */}
-                        <animateTransform
-                          attributeName="gradientTransform"
-                          type="translate"
-                          keyTimes="0; 0.55; 1"
-                          values="-1 0; 1 0; 1 0"
-                          begin="1.5s"
-                          dur="2s"
-                          repeatCount="indefinite"
-                        />
+                        {!rm && (
+
+                          <animateTransform
+
+                            attributeName="gradientTransform"
+
+                            type="translate"
+
+                            keyTimes="0; 0.55; 1"
+
+                            values="-1 0; 1 0; 1 0"
+
+                            begin="2.2s"
+
+                            dur="3.5s"
+
+                            repeatCount="indefinite"
+
+                          />
+
+                        )}
                       </linearGradient>
                     </defs>
                     <path
@@ -441,15 +512,18 @@ export default function Hero() {
                   </motion.svg>
                 </span>
                 <span className="block relative" style={{ width: 'fit-content', maxWidth: '100%' }}>
-                  <SplitText type="chars" delay={0.35} charClassName="gradient-text">Paharia</SplitText>
+                  <motion.span className="name-gradient inline-block" {...m.wipe(0.65)}>Paharia</motion.span>
                   {/* Three-strokes accent — above the last "a" in Paharia,
                       replacing the old paint-drops decoration */}
-                  <img
+                  <motion.img
+                    initial={{ opacity: 0, scale: 0.3, rotate: -25 }}
+                    animate={{ opacity: 0.85, scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 180, damping: 14, delay: 1.2 }}
                     src={threeStrokes}
                     alt=""
                     aria-hidden="true"
                     className="absolute pointer-events-none select-none w-6"
-                    style={{ top: '-14px', right: '-14px', opacity: 0.85, zIndex: 10 }}
+                    style={{ top: '-14px', right: '-14px', zIndex: 10 }}
                   />
                 </span>
               </h1>
@@ -460,10 +534,10 @@ export default function Hero() {
                 Placed above the location line per request. */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(0.75, 20)}
 
               className="relative inline-block mb-2"
-              style={{ transform: 'rotate(-1.5deg)' }}
+              style={{ rotate: -1.5 }}
             >
               <p
                 className="text-slate-800"
@@ -498,7 +572,7 @@ export default function Hero() {
                   d="M 3 7.2 C 3 5.3 4.6 4.1 8.4 4.3 C 46 5.4 96 3.7 151 4.6 C 197 5.4 233 6.9 262 8.4 C 277 9.1 289 9.6 297 9.9 C 291 10.3 282 10.2 272 9.7 C 245 8.4 205 7.2 160 7 C 105 6.7 55 8.4 8.4 9.6 C 4.6 9.8 3 8.8 3 7.2 Z"
                   fill="url(#tagline-brush-mobile)"
 
-                  animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                  {...m.draw(1.6, 0.8)}
 
                 />
                 {/* Subtle secondary thin stroke — light hand-redrawn flick */}
@@ -510,7 +584,7 @@ export default function Hero() {
                   strokeLinecap="round"
                   opacity={0.35}
 
-                  animate={{ pathLength: 1, opacity: 0.35 }}
+                  initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.35 }} transition={{ duration: 0.6, delay: 2.1 }}
 
                 />
               </svg>
@@ -521,7 +595,7 @@ export default function Hero() {
                 "to the world" so it doesn't crowd the narrow column */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.rise(0.9, 18)}
 
               className="relative mb-2"
               style={{ paddingRight: '30px' }}
@@ -550,7 +624,7 @@ export default function Hero() {
                 className="absolute pointer-events-none select-none w-29 sm:w-26"
                 style={{ right: '145px', top: '-11px' }}
 
-                animate={{ opacity: 1, y: 0 }}
+                {...m.plane(1.4)}
 
               />
             </motion.div>
@@ -560,7 +634,7 @@ export default function Hero() {
                 one/two words per line */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.rise(1.05, 18)}
 
               className="flex gap-2 mb-2"
               style={{ maxWidth: 'min(64vw, 250px)' }}
@@ -575,19 +649,19 @@ export default function Hero() {
                 line) with icons restored to original size */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.fade(1.15, 0.1)}
 
               className="flex flex-col items-start gap-1 mb-3"
             >
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              <motion.span {...m.rise(1.20, 10, 0.6)} className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiCodeSSlashLine className="text-primary flex-shrink-0" /> 𝐅𝐮𝐥𝐥-𝐒𝐭𝐚𝐜𝐤 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              </motion.span>
+              <motion.span {...m.rise(1.32, 10, 0.6)} className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiVideoLine className="text-primary flex-shrink-0" /> 𝐕𝐢𝐝𝐞𝐨 𝐄𝐝𝐢𝐭𝐨𝐫
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              </motion.span>
+              <motion.span {...m.rise(1.44, 10, 0.6)} className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiPencilLine className="text-primary flex-shrink-0" /> 𝐃𝐢𝐠𝐢𝐭𝐚𝐥 𝐂𝐫𝐞𝐚𝐭𝐨𝐫
-              </span>
+              </motion.span>
             </motion.div>
 
             {/* CTA Buttons — "Hire Me" pill + round icon-only "Work" button.
@@ -596,17 +670,18 @@ export default function Hero() {
                 portrait passes behind it. */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(1.35, 20)}
 
               className="relative z-10 flex items-center gap-2.5 mb-1"
             >
               <Magnetic range={60} strength={0.35} scaleHover={1.03}>
                 <a
                   href="#contact"
-                  className="relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-5 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)]  "
+                  className="cta-btn group relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-5 rounded-full shadow-lg"
                   style={{ fontSize: 'clamp(0.78rem, 2.8vw, 0.88rem)', height: '46px' }}
                 >
                   <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
+                  <Ripple />
                   <RiSendPlaneLine className="flex-shrink-0 plane-wiggle" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
                 </a>
               </Magnetic>
@@ -615,9 +690,10 @@ export default function Hero() {
                 <a
                   href="#projects"
                   aria-label="View Projects"
-                  className="relative overflow-hidden inline-flex flex-col items-center justify-center gap-0.5 bg-white/90 backdrop-blur border border-blue-200 text-primary font-semibold rounded-full hover:bg-blue-50   flex-shrink-0"
+                  className="cta-btn cta-outline group relative overflow-hidden inline-flex flex-col items-center justify-center gap-0.5 bg-white/90 backdrop-blur border border-blue-200 text-primary font-semibold rounded-full flex-shrink-0"
                   style={{ width: '54px', height: '54px' }}
                 >
+                  <Ripple color="rgba(29,111,235,0.3)" />
                   <RiFolderOpenLine className="flex-shrink-0 folder-bounce" style={{ fontSize: '16px' }} />
                   <span style={{ fontSize: '8.5px' }}>Work</span>
                 </a>
@@ -634,7 +710,7 @@ export default function Hero() {
               viewport edge or covers the face/heading. ── */}
           <motion.div
 
-            animate={{ opacity: 1, scale: 1 }}
+            {...m.enter(0.3)}
 
             className="absolute z-0 pointer-events-none"
             style={{
@@ -662,14 +738,15 @@ export default function Hero() {
               alt=""
               aria-hidden="true"
 
-              animate={{ opacity: 0.8, scale: 1 }}
+              {...m.brush(0.8, 0.55)}
 
               className="absolute pointer-events-none select-none z-0"
               style={{
                 width: '150%',
                 top: '29%',
                 left: '7%',
-                transform: 'translate(-50%, 0) rotate(-7deg)',
+                x: '-50%',
+                rotate: -7,
               }}
             />
 
@@ -689,22 +766,22 @@ export default function Hero() {
                 or drifts over the face. */}
             <div className="absolute inset-0 pointer-events-none z-20" aria-hidden="true">
               <div className="orbit-bob-a absolute" style={{ top: '3%', left: '27%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                <motion.div {...m.pop(1.00, 0.3)} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                   <SiReact className="text-primary" style={{ fontSize: '15px' }} />
                 </motion.div>
               </div>
               <div className="orbit-bob-b absolute" style={{ top: '20%', right: '19%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                <motion.div {...m.pop(1.12, 0.3)} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                   <SiNodedotjs className="text-green-500" style={{ fontSize: '14px' }} />
                 </motion.div>
               </div>
               <div className="orbit-bob-c absolute" style={{ top: '49%', right: '19%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                <motion.div {...m.pop(1.24, 0.3)} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                   <RiCodeSSlashLine className="text-slate-700" style={{ fontSize: '14px' }} />
                 </motion.div>
               </div>
               <div className="orbit-bob-d absolute" style={{ top: '64%', right: '65%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-yellow-400 shadow-md flex items-center justify-center">
+                <motion.div {...m.pop(1.36, 0.3)} className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-yellow-400 shadow-md flex items-center justify-center">
                   <SiJavascript className="text-white" style={{ fontSize: '13px' }} />
                 </motion.div>
               </div>
@@ -712,27 +789,23 @@ export default function Hero() {
 
             {/* Portrait — same untouched desktop asset, full width of this block */}
             <div className="relative z-10 w-full">
-              <motion.div
-
-                animate={{ opacity: 1, y: 0 }}
-
-              >
+              <div className="hero-float">
                 <img
                   src={desktopPortrait}
                   alt="Nikhil Paharia"
                   className="w-full h-auto object-contain"
                   style={{ filter: 'drop-shadow(0 20px 28px rgba(15,23,42,0.25))' }}
                 />
-              </motion.div>
+              </div>
 
               {/* Assam location card — pinned to the portrait's own bottom
                   edge, kept within the viewport (right: 0, not negative)
                   and away from the text column. */}
               <motion.div
 
-                animate={{ opacity: 1, y: 0 }}
+                {...m.rise(1.6, 16)}
 
-                className="absolute z-20 pointer-events-auto flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-blue-100/70 rounded-xl px-2 py-1.5"
+                className="glass-lift absolute z-20 pointer-events-auto flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-blue-100/70 rounded-xl px-2 py-1.5"
                 style={{
                   bottom: '7%',
                   right: '24%',
@@ -758,11 +831,11 @@ export default function Hero() {
               rounded card (matches the reference's stat panel) instead of
               floating individually over the landscape background */}
           <div className="relative z-20 grid grid-cols-4 gap-0 bg-white rounded-2xl shadow-lg mt-3 overflow-hidden divide-x divide-slate-100">
-            {desktopStats.map(({ value, label, Icon, color }) => (
+            {desktopStats.map(({ value, label, Icon, color }, i) => (
               <motion.div
                 key={label}
 
-                animate={{ opacity: 1, y: 0 }}
+                {...m.rise(1.3 + i * 0.1, 16)}
 
                 className="flex flex-col items-center text-center py-2 px-1"
               >
@@ -770,7 +843,7 @@ export default function Hero() {
                   <Icon style={{ color, fontSize: '10px' }} />
                 </div>
                 <div className="font-bold leading-tight text-foreground whitespace-nowrap" style={{ fontSize: 'clamp(0.68rem, 3vw, 1rem)' }}>
-                  <StatCounter value={value} />
+                  <StatCounter value={value} delay={1.3 + i * 0.1} />
                 </div>
                 <div className="text-slate-500 font-medium leading-tight mt-0.5" style={{ fontSize: 'clamp(0.44rem, 1.7vw, 0.6rem)' }}>{label}</div>
               </motion.div>
@@ -781,7 +854,7 @@ export default function Hero() {
               matching the reference */}
           <motion.div
 
-            animate={{ opacity: 1, y: 0 }}
+            {...m.rise(1.6, 12)}
 
             className="flex flex-col items-center gap-1.5 mt-3"
           >
@@ -799,12 +872,11 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-
-
-
-                  animate={{ opacity: 1, y: 0 }}
-
-                  className={`w-8 h-8 rounded-full bg-white border border-blue-100 flex items-center justify-center hover:border-primary   text-sm shadow-sm flex-shrink-0 ${s.color}`}
+                  {...m.pop(1.7 + i * 0.08, 0.5)}
+                  whileHover={{ scale: 1.14, y: -3, transition: { type: "spring", stiffness: 320, damping: 16 } }}
+                  whileTap={{ scale: 0.92 }}
+                  style={{ ["--brand" as string]: s.brand }}
+                  className={`social-btn w-8 h-8 rounded-full bg-white border border-blue-100 flex items-center justify-center hover:border-primary   text-sm shadow-sm flex-shrink-0 ${s.color}`}
                 >
                   {s.icon}
                 </motion.a>
@@ -815,10 +887,9 @@ export default function Hero() {
           {/* Scroll indicator — compact, sits inside the normal flow right
               after the social row so it never overlaps content even when
               the Hero is trimmed to exactly one screen. */}
-          <div className="flex flex-col items-center gap-0.5 mt-2 ">
-            <span className="text-[9px] text-slate-500 tracking-widest uppercase font-mono">Scroll</span>
-            <RiArrowDownLine className="text-primary text-sm" />
-          </div>
+          <motion.div {...m.fade(2, 0.8)} className="flex justify-center mt-2">
+            <ScrollIndicator size="sm" />
+          </motion.div>
 
         </div>
 
@@ -851,7 +922,7 @@ export default function Hero() {
               strokeDasharray="1.1 1.6"
               strokeLinecap="round"
 
-              animate={{ pathLength: 1, opacity: 0.4 }}
+              initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.4 }} transition={{ duration: 1.8, delay: 1.7, ease: "easeInOut" }}
 
             />
           </svg>
@@ -859,57 +930,60 @@ export default function Hero() {
           {/* ── LEFT: content ── */}
           <motion.div
 
-            animate={{ opacity: 1, x: 0 }}
+            {...m.fade(0, 0.2)} style={{ y: textScroll }}
 
             className="col-span-5 relative z-20"
           >
             {/* Availability pill */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(0.2, 16)}
 
               className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-blue-200 rounded-full px-4 py-1.5 mb-4 shadow-sm"
             >
-              <span className="w-2 h-2 rounded-full bg-green-400  flex-shrink-0" />
+              <span className="ping-dot w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
               <span className="text-xs font-mono text-primary uppercase tracking-widest whitespace-nowrap">Available for Hire</span>
             </motion.div>
 
             {/* Hi, I'm */}
             <motion.p
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.fade(0, 0.2)}
 
               className="text-foreground font-bold mb-1 text-3xl xl:text-4xl"
               style={{ letterSpacing: '-0.02em' }}
             >
-              Hi, I'm
+              <SplitText type="chars" delay={0.35}>Hi, I'm</SplitText>
             </motion.p>
 
             {/* Name + hand-drawn underline + three-strokes accent */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.fade(0, 0.2)}
 
               className="relative mb-2"
               style={{ display: 'inline-block', maxWidth: '100%' }}
             >
-              <img
+              <motion.img
+                initial={{ opacity: 0, scale: 0.3, rotate: -25 }}
+                animate={{ opacity: 0.85, scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 180, damping: 14, delay: 1.2 }}
                 src={threeStrokes}
                 alt=""
                 aria-hidden="true"
                 className="absolute pointer-events-none select-none w-9 xl:w-11"
-                style={{ top: '-16px', right: '-24px', opacity: 0.85 }}
+                style={{ top: '-16px', right: '-24px' }}
               />
               <h1
                 className="font-bold text-4xl xl:text-5xl 2xl:text-6xl"
                 style={{ lineHeight: 1.0, letterSpacing: '-0.02em' }}
               >
-                <SplitText type="chars" delay={0.3} className="gradient-text">Nikhil Paharia</SplitText>
+                <motion.span className="name-gradient block w-fit" {...m.wipe(0.55)}>Nikhil Paharia</motion.span>
               </h1>
               <motion.svg
                 viewBox="60 4 640 29"
 
-                animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                {...m.draw(1.0, 0.9)}
 
                 style={{ display: 'block', width: '100%', maxWidth: '340px', height: 'auto', marginTop: '3px' }}
                 aria-hidden="true"
@@ -924,15 +998,27 @@ export default function Hero() {
                     {/* Sweeps left-to-right over 1.1s, then holds off-screen for the
                         rest of a 2s cycle before repeating — so the shine passes
                         over the underline once every 2 seconds, indefinitely. */}
-                    <animateTransform
-                      attributeName="gradientTransform"
-                      type="translate"
-                      keyTimes="0; 0.55; 1"
-                      values="-1 0; 1 0; 1 0"
-                      begin="1.65s"
-                      dur="2s"
-                      repeatCount="indefinite"
-                    />
+                    {!rm && (
+
+                      <animateTransform
+
+                        attributeName="gradientTransform"
+
+                        type="translate"
+
+                        keyTimes="0; 0.55; 1"
+
+                        values="-1 0; 1 0; 1 0"
+
+                        begin="2.2s"
+
+                        dur="3.5s"
+
+                        repeatCount="indefinite"
+
+                      />
+
+                    )}
                   </linearGradient>
                 </defs>
                 <path
@@ -947,10 +1033,10 @@ export default function Hero() {
                 with a hand-drawn wavy underline beneath it */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(0.8, 20)}
 
               className="relative inline-block mb-4"
-              style={{ transform: 'rotate(-1.5deg)' }}
+              style={{ rotate: -1.5 }}
             >
               <p
                 className="flex items-center gap-2 text-slate-800"
@@ -988,7 +1074,7 @@ export default function Hero() {
                   d="M 3 7.2 C 3 5.3 4.6 4.1 8.4 4.3 C 46 5.4 96 3.7 151 4.6 C 197 5.4 233 6.9 262 8.4 C 277 9.1 289 9.6 297 9.9 C 291 10.3 282 10.2 272 9.7 C 245 8.4 205 7.2 160 7 C 105 6.7 55 8.4 8.4 9.6 C 4.6 9.8 3 8.8 3 7.2 Z"
                   fill="url(#tagline-brush-desktop)"
 
-                  animate={{ clipPath: 'inset(0 0% 0 0)' }}
+                  {...m.draw(1.5, 0.8)}
 
                 />
                 {/* Subtle secondary thin stroke — a light hand-redrawn
@@ -1001,7 +1087,7 @@ export default function Hero() {
                   strokeLinecap="round"
                   opacity={0.35}
 
-                  animate={{ pathLength: 1, opacity: 0.35 }}
+                  initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.35 }} transition={{ duration: 0.6, delay: 2.0 }}
 
                 />
               </svg>
@@ -1010,7 +1096,7 @@ export default function Hero() {
             {/* Location line */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.rise(0.95, 20)}
 
               className="relative mb-4"
               style={{ paddingRight: '64px' }}
@@ -1037,7 +1123,7 @@ export default function Hero() {
                 className="absolute pointer-events-none select-none w-32 xl:w-36"
                 style={{ right: '-56px', top: '-42px' }}
 
-                animate={{ opacity: 1, y: 0 }}
+                {...m.plane(1.45)}
 
               />
             </motion.div>
@@ -1045,7 +1131,7 @@ export default function Hero() {
             {/* Description */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.rise(1.1, 20)}
 
               className="flex gap-3 mb-4 max-w-md"
             >
@@ -1058,47 +1144,49 @@ export default function Hero() {
             {/* Capabilities */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.fade(1.2, 0.1)}
 
               className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-5"
             >
-              <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
+              <motion.span {...m.rise(1.20, 10, 0.6)} className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
                 <RiCodeSSlashLine className="text-primary flex-shrink-0" /> Full-Stack Developer
-              </span>
+              </motion.span>
               <span className="text-slate-300">•</span>
-              <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
+              <motion.span {...m.rise(1.32, 10, 0.6)} className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
                 <RiVideoLine className="text-primary flex-shrink-0" /> Video Editor
-              </span>
+              </motion.span>
               <span className="text-slate-300">•</span>
-              <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
+              <motion.span {...m.rise(1.44, 10, 0.6)} className="inline-flex items-center gap-1.5 text-sm text-slate-600 font-medium whitespace-nowrap">
                 <RiPencilLine className="text-primary flex-shrink-0" /> Digital Creator
-              </span>
+              </motion.span>
             </motion.div>
 
             {/* CTAs */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.rise(1.5, 20)}
 
               className="flex items-center gap-4 mb-6"
             >
               <Magnetic range={60} strength={0.35} scaleHover={1.03}>
                 <a
                   href="#contact"
-                  className="relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)]   "
+                  className="cta-btn group relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg"
                   style={{ fontSize: '0.95rem', height: '54px' }}
                 >
                   <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" />
-                  <RiSendPlaneLine className="flex-shrink-0" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
+                  <Ripple />
+                  <RiSendPlaneLine className="flex-shrink-0 plane-wiggle" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
                 </a>
               </Magnetic>
               <Magnetic range={60} strength={0.35} scaleHover={1.03}>
                 <a
                   href="#projects"
-                  className="relative overflow-hidden inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50   "
+                  className="cta-btn cta-outline group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full"
                   style={{ fontSize: '0.95rem', height: '54px' }}
                 >
-                  <RiFolderOpenLine className="flex-shrink-0" /> View My Work
+                  <Ripple color="rgba(29,111,235,0.3)" />
+                  <RiFolderOpenLine className="flex-shrink-0 folder-bounce" /> View My Work
                 </a>
               </Magnetic>
             </motion.div>
@@ -1106,7 +1194,7 @@ export default function Hero() {
             {/* Social */}
             <motion.div
 
-              animate={{ opacity: 1, y: 0 }}
+              {...m.fade(1.6, 0.1)}
 
               className="flex items-center gap-3"
             >
@@ -1122,12 +1210,11 @@ export default function Hero() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-
-
-
-                    animate={{ opacity: 1, y: 0 }}
-
-                    className={`w-9 h-9 rounded-full bg-white/85 backdrop-blur border border-blue-100 flex items-center justify-center hover:border-primary   text-base shadow-sm flex-shrink-0 ${s.color}`}
+                  {...m.pop(1.7 + i * 0.08, 0.5)}
+                  whileHover={{ scale: 1.14, y: -3, transition: { type: "spring", stiffness: 320, damping: 16 } }}
+                  whileTap={{ scale: 0.92 }}
+                  style={{ ["--brand" as string]: s.brand }}
+                  className={`social-btn w-9 h-9 rounded-full bg-white/85 backdrop-blur border border-blue-100 flex items-center justify-center hover:border-primary   text-base shadow-sm flex-shrink-0 ${s.color}`}
                   >
                     {s.icon}
                   </motion.a>
@@ -1150,10 +1237,10 @@ export default function Hero() {
                 alt=""
                 aria-hidden="true"
 
-                animate={{ opacity: 2.2 }}
+                {...m.fade(0.4, 1.8)}
 
                 className="absolute pointer-events-none select-none object-contain"
-                style={{ width: '82%', left: '10%', bottom: '-2%' }}
+                style={{ width: '82%', left: '10%', bottom: '-2%', x: ovalX }}
               />
 
               {/* Brush stroke — widened and rotated so it reads as one diagonal
@@ -1164,17 +1251,17 @@ export default function Hero() {
                 alt=""
                 aria-hidden="true"
 
-                animate={{ opacity: 0.85, scale: 1 }}
+                {...m.brush(0.85, 0.6)}
 
                 className="absolute pointer-events-none select-none w-[420px] xl:w-[540px] 2xl:w-[640px] z-0"
-                style={{ top: '36%', left: '2%', transform: 'rotate(-7deg)' }}
+                style={{ top: '36%', left: '2%', rotate: -7, x: brushX, y: brushY }}
               />
 
               {/* Orbit ring — subtle dotted/dashed path only, sized to sit
                   just outside the enlarged portrait */}
               <svg
                 aria-hidden="true"
-                className="absolute pointer-events-none w-[320px] h-[320px] xl:w-[400px] xl:h-[400px] 2xl:w-[470px] 2xl:h-[470px]"
+                className="orbit-spin absolute pointer-events-none w-[320px] h-[320px] xl:w-[400px] xl:h-[400px] 2xl:w-[470px] 2xl:h-[470px]"
                 viewBox="0 0 200 200"
                 style={{ opacity: 0.7 }}
               >
@@ -1187,28 +1274,28 @@ export default function Hero() {
                   small idle bob (a few px) is applied, and it's applied to
                   a wrapping div so it never fights the icon's own entrance
                   animation. */}
-              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+              <motion.div className="absolute inset-0 pointer-events-none" aria-hidden="true" style={{ x: orbitX, y: orbitY }}>
                 <div className="orbit-bob-a absolute" style={{ top: '20%', left: '6%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                  <motion.div {...m.pop(1.00, 0.3)} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                     <SiReact className="text-primary" style={{ fontSize: '18px' }} />
                   </motion.div>
                 </div>
                 <div className="orbit-bob-b absolute" style={{ top: '30%', right: '7%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                  <motion.div {...m.pop(1.12, 0.3)} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                     <SiNodedotjs className="text-green-500" style={{ fontSize: '18px' }} />
                   </motion.div>
                 </div>
                 <div className="orbit-bob-c absolute" style={{ bottom: '7%', left: '2%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                  <motion.div {...m.pop(1.24, 0.3)} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                     <SiJavascript className="text-yellow-400" style={{ fontSize: '16px' }} />
                   </motion.div>
                 </div>
                 <div className="orbit-bob-d absolute" style={{ bottom: '12%', right: '2%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
+                  <motion.div {...m.pop(1.36, 0.3)} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
                     <RiCodeSSlashLine className="text-slate-700" style={{ fontSize: '16px' }} />
                   </motion.div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Portrait — untouched supplied asset. Sized up further
                   (~13% on top of the previous pass) and shifted further
@@ -1216,17 +1303,17 @@ export default function Hero() {
                   landscape. Head stays clear of the navbar and orbit
                   icons; nothing is cropped. */}
               <div className="relative z-0 w-[320px] xl:w-[400px] 2xl:w-[480px]" style={{ transform: 'translate(5%, 5%)' }}>
-                <motion.div
-
-                  animate={{ opacity: 1, y: 0 }}
-
-                >
-                  <img
+                <motion.div style={{ x: portraitX, y: portraitY }}>
+                  <motion.div {...m.enter(0.35)}>
+                    <div className="hero-float">
+                      <img
                     src={desktopPortrait}
                     alt="Nikhil Paharia"
                     className="w-full h-auto object-contain"
                     style={{ filter: 'drop-shadow(0 30px 40px rgba(15,23,42,0.28))' }}
                   />
+                    </div>
+                  </motion.div>
                 </motion.div>
               </div>
 
@@ -1235,15 +1322,15 @@ export default function Hero() {
                   as a premium floating glass card with a subtle blue glow */}
               <motion.div
 
-                animate={{ opacity: 1, y: 0 }}
+                {...m.slide(1.4, 60)} whileHover={{ y: -4, scale: 1.02, transition: { type: "spring", stiffness: 300, damping: 22 } }}
 
-                className="absolute z-20 flex items-center gap-3 bg-white/75 backdrop-blur-md border border-blue-100/70 rounded-2xl px-4 py-3 max-w-[250px]"
+                className="glass-lift absolute z-20 flex items-center gap-3 bg-white/75 backdrop-blur-md border border-blue-100/70 rounded-2xl px-4 py-3 max-w-[250px]"
                 style={{ right: '2%', bottom: '8%', boxShadow: '0 12px 32px rgba(29,111,235,0.16), 0 0 0 1px rgba(29,111,235,0.06)' }}
               >
                 <img src={assamMapImg} alt="" aria-hidden="true" className="w-12 h-12 object-contain flex-shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                    From Assam, India <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
+                    From Assam, India <span className="ping-dot w-1.5 h-1.5 rounded-full bg-primary inline-block" />
                   </p>
                   <p className="text-xs text-slate-500 leading-snug">Inspired by nature, driven by code.</p>
                 </div>
@@ -1253,29 +1340,28 @@ export default function Hero() {
             {/* Stat cards — 4 per spec, stacked, far right */}
             <motion.div
 
-              animate={{ opacity: 1, x: 0 }}
+              {...m.fade(0.9, 0.3)}
 
               className="flex flex-col gap-3 xl:gap-4 justify-center flex-shrink-0 w-[148px] xl:w-[168px]"
             >
               {desktopStats.map(({ value, label, Icon, color, bg }, i) => (
+                <div key={label} className="stat-float" style={{ ["--float-delay" as string]: `${i * 0.8}s` }}>
                 <motion.div
-                  key={label}
-
-                  animate={{ opacity: 1, x: 0 }}
-
-
-                  className={`bg-gradient-to-br ${bg} border border-white/80 backdrop-blur rounded-2xl px-3.5 py-3 xl:px-4 xl:py-3.5 shadow-md flex items-center gap-2.5`}
+                  {...m.slide(1.0 + i * 0.14, 70)}
+                  whileHover={{ y: -6, scale: 1.03, transition: { type: "spring", stiffness: 300, damping: 20 } }}
+                  className={`glass-lift cursor-default bg-gradient-to-br ${bg} border border-white/80 backdrop-blur rounded-2xl px-3.5 py-3 xl:px-4 xl:py-3.5 shadow-md flex items-center gap-2.5`}
                 >
                   <div className="w-8 h-8 xl:w-9 xl:h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: color + '18' }}>
                     <Icon style={{ color, fontSize: '16px' }} />
                   </div>
                   <div className="min-w-0">
                     <div className="text-base xl:text-lg font-bold leading-none mb-0.5" style={{ color }}>
-                      <StatCounter value={value} />
+                      <StatCounter value={value} delay={1.2 + i * 0.14} />
                     </div>
                     <div className="text-[10px] xl:text-[11px] font-semibold text-slate-700 leading-tight">{label}</div>
                   </div>
                 </motion.div>
+                </div>
               ))}
             </motion.div>
           </div>
@@ -1287,10 +1373,9 @@ export default function Hero() {
           (screen-height) section. Mobile has its own compact copy inside
           the normal content flow (see below) so it can never overlap the
           social row when the Hero is trimmed to exactly one screen. */}
-      <div className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-2 ">
-        <span className="text-xs text-slate-500 tracking-widest uppercase font-mono">Scroll</span>
-        <RiArrowDownLine className="text-primary text-xl" />
-      </div>
+      <motion.div {...m.fade(2, 0.8)} className="hidden lg:block absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+        <ScrollIndicator />
+      </motion.div>
     </section>
   );
 }

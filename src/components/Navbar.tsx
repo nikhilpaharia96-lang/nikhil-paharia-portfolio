@@ -1,10 +1,12 @@
 import npLogo from "../assets/logos/np-logo.webp";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "@/lib/static-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { RiMenuLine, RiCloseLine } from "react-icons/ri";
 import Magnetic from "@/components/ui/Magnetic";
 import MusicToggleButton from "@/components/MusicToggleButton";
 import { lockBodyScroll } from "@/lib/scrollLock";
+import { scrollToId } from "@/lib/scroll";
+import { EASE_OUT } from "@/lib/motion";
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -33,7 +35,11 @@ export default function Navbar() {
       sectionOffsets.current = navLinks.map((link) => {
         const id = link.href.substring(1);
         const el = document.getElementById(id);
-        return { id, top: el ? el.offsetTop : Infinity };
+        // getBoundingClientRect (not offsetTop): scroll-reveal wrappers are
+        // transformed, which would make offsetTop relative to the wrapper.
+        const pending = el?.closest<HTMLElement>('[data-revealed="false"]');
+        const shift = pending ? Number(pending.dataset.revealY) || 0 : 0;
+        return { id, top: el ? el.getBoundingClientRect().top + window.scrollY - shift : Infinity };
       });
     };
 
@@ -76,9 +82,9 @@ export default function Navbar() {
     const element = document.querySelector<HTMLElement>(href);
     if (!element) return;
 
-    // Instant jump (no smooth scrolling); keep the 24px offset the source used.
-    const top = element.getBoundingClientRect().top + window.scrollY - 24;
-    window.scrollTo({ top, behavior: "auto" });
+    // Glide to the section (instant for reduced-motion users); keeps the
+    // 24px offset the source used.
+    scrollToId(href);
   };
 
   useEffect(() => {
@@ -87,14 +93,14 @@ export default function Navbar() {
   }, [mobileMenuOpen]);
 
   return (
-    <motion.nav 
-
+    <motion.nav
+      initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-
-      className={`fixed top-0 left-0 right-0 z-[200]   ${
+      transition={{ duration: 0.9, delay: 0.1, ease: EASE_OUT }}
+      className={`fixed top-0 left-0 right-0 z-[200] transition-[padding,background-color,box-shadow,border-color,backdrop-filter] duration-500 ease-out ${
         isScrolled 
-          ? "py-2.5 lg:py-3 bg-white/75 backdrop-blur-md border-b border-blue-100/40 shadow-[0_2px_30px_rgba(29,111,235,0.06)]" 
-          : "py-4 lg:py-6 bg-transparent lg:bg-white/5 lg:backdrop-blur-[2px]"
+          ? "py-2.5 lg:py-3 bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-b border-blue-100/50 shadow-[0_8px_32px_rgba(29,111,235,0.08)]" 
+          : "py-4 lg:py-6 bg-transparent lg:bg-white/10 lg:backdrop-blur-md border-b border-transparent"
       }`}
       style={{ paddingTop: `max(env(safe-area-inset-top, 0px), ${isScrolled ? '10px' : '16px'})` }}
     >
@@ -109,9 +115,9 @@ export default function Navbar() {
          <a 
   href="#home" 
   onClick={(e) => { e.preventDefault(); scrollTo("#home"); }}
-  className="font-mono text-sm sm:text-xl lg:text-2xl font-bold tracking-wider flex items-center gap-1.5 sm:gap-2 text-foreground   hover:text-primary hover:drop-shadow-[0_0_12px_rgba(29,111,235,0.4)] min-w-0 flex-shrink"
+  className="font-mono text-sm sm:text-xl lg:text-2xl font-bold tracking-wider flex items-center gap-1.5 sm:gap-2 text-foreground   hover:text-primary hover:drop-shadow-[0_0_12px_rgba(29,111,235,0.4)] transition-[color,filter] duration-300 min-w-0 flex-shrink group"
 >
-  <img src={npLogo} alt="NP logo" className="h-6 sm:h-8 lg:h-9 w-auto flex-shrink-0" />
+  <img src={npLogo} alt="NP logo" className="h-6 sm:h-8 lg:h-9 w-auto flex-shrink-0 transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-3" />
   <span className="whitespace-nowrap">𝐍𝐢𝐤𝐡𝐢𝐥 <span className="text-primary">𝐏𝐚𝐡𝐚𝐫𝐢𝐚</span></span>
 </a>
         </Magnetic>
@@ -126,16 +132,16 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
-                  className={`relative flex items-center text-xs font-bold   uppercase tracking-widest py-2 px-0.5 hover:text-primary ${
+                  className={`nav-link relative flex items-center text-xs font-bold uppercase tracking-widest py-2 px-0.5 hover:text-primary ${
                     isActive ? "text-primary text-glow" : "text-slate-600"
                   }`}
                 >
                   {link.name}
                   {isActive && (
                     <motion.span
-
+                      layoutId="nav-active-underline"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary rounded-full shadow-[0_1px_8px_rgba(29,111,235,0.6)]"
-
                     />
                   )}
                 </a>
@@ -154,7 +160,7 @@ export default function Navbar() {
         <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
           <MusicToggleButton variant="mobile" />
           <button
-            className="text-slate-800 hover:text-slate-900  w-10 h-10 flex items-center justify-center bg-blue-50/50 rounded-full border border-blue-100/60 z-[210] relative self-center flex-shrink-0"
+            className="text-slate-800 hover:text-slate-900 transition-transform duration-300 active:scale-90 w-10 h-10 flex items-center justify-center bg-blue-50/50 rounded-full border border-blue-100/60 z-[210] relative self-center flex-shrink-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
@@ -167,10 +173,10 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-
-
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.35, ease: EASE_OUT }}
             className="fixed inset-0 bg-white/95 backdrop-blur-xl z-[200] flex flex-col items-center justify-center lg:hidden overflow-y-auto h-[100dvh] py-20 pb-safe"
           >
             <div className="absolute top-0 left-0 right-0 px-4 sm:px-6 pt-safe flex justify-between items-center z-[210] max-w-7xl mx-auto w-full" style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 2rem)' }}>
@@ -188,9 +194,9 @@ export default function Navbar() {
                 const isActive = activeSection === link.href.substring(1);
                 return (
                   <motion.a
-
+                    initial={{ opacity: 0, y: 18 }}
                     animate={{ opacity: 1, y: 0 }}
-
+                    transition={{ duration: 0.5, delay: 0.08 + i * 0.05, ease: EASE_OUT }}
                     key={link.name}
                     href={link.href}
                     onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
@@ -208,9 +214,9 @@ export default function Navbar() {
             </div>
             
             <motion.div
-
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-
+              transition={{ duration: 0.5, delay: 0.08 + navLinks.length * 0.05, ease: EASE_OUT }}
               className="mt-8 flex justify-center w-[80%] max-w-sm"
             >
               <MusicToggleButton variant="desktop" size="large" />

@@ -3,6 +3,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch } from "wouter";
 import { MusicProvider } from "@/lib/MusicProvider";
+import { MotionConfig } from "motion/react";
+import Reveal from "@/components/ui/Reveal";
 
 import GlobalBackground from "@/components/GlobalBackground";
 import Navbar from "@/components/Navbar";
@@ -19,8 +21,8 @@ import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
 
-// Section order matches the design reference. Everything renders statically:
-// no loading screen, no reveal wrappers, no smooth scrolling, no custom cursor.
+// Section order matches the design reference. Sections below the Hero fade/lift
+// in as they scroll into view (see <Reveal>); the Hero runs its own entrance.
 function Portfolio() {
   return (
     <>
@@ -28,12 +30,24 @@ function Portfolio() {
       <main className="max-w-full overflow-x-hidden">
         <Hero />
         <Marquee />
-        <About />
-        <Projects />
-        <VideoShowcase />
-        <Services />
-        <Testimonials />
-        <Contact />
+        <Reveal>
+          <About />
+        </Reveal>
+        <Reveal>
+          <Projects />
+        </Reveal>
+        <Reveal>
+          <VideoShowcase />
+        </Reveal>
+        <Reveal>
+          <Services />
+        </Reveal>
+        <Reveal>
+          <Testimonials />
+        </Reveal>
+        <Reveal>
+          <Contact />
+        </Reveal>
       </main>
       <Footer />
     </>
@@ -43,6 +57,9 @@ function Portfolio() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      {/* reducedMotion="user": visitors who prefer reduced motion get fades only,
+          no movement/scale from any motion/react animation. */}
+      <MotionConfig reducedMotion="user">
       <TooltipProvider>
         <MusicProvider>
           <GlobalBackground />
@@ -55,6 +72,7 @@ function App() {
           <Toaster theme="light" position="bottom-right" />
         </MusicProvider>
       </TooltipProvider>
+      </MotionConfig>
     </QueryClientProvider>
   );
 }

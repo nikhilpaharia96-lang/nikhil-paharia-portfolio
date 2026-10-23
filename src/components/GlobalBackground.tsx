@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform, useSpring } from "@/lib/static-motion";
+import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { useReducedFx } from "@/hooks/use-reduced-fx";
 
 export default function GlobalBackground() {
@@ -17,7 +17,9 @@ export default function GlobalBackground() {
   const blurMd = reducedFx ? "blur-[40px]" : "blur-[130px]";
   const blurMd2 = reducedFx ? "blur-[44px]" : "blur-[140px]";
   const blurMd3 = reducedFx ? "blur-[36px]" : "blur-[120px]";
-  const pulse = reducedFx ? "" : "";
+  // Slow drift on the big soft blobs (transform-only, desktop + motion-OK only).
+  const pulse = reducedFx ? "" : "fog-drift";
+  const pulseB = reducedFx ? "" : "fog-drift-b";
 
   return (
     <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none bg-[#f8fbff]">
@@ -28,7 +30,7 @@ export default function GlobalBackground() {
           style={{ }}
         />
         <div
-          className={`absolute bottom-[-10vw] right-[-10vw] w-[55vw] h-[55vw] rounded-full bg-gradient-to-tr from-indigo-100/40 via-blue-50/30 to-transparent ${blurLg2} ${pulse}`}
+          className={`absolute bottom-[-10vw] right-[-10vw] w-[55vw] h-[55vw] rounded-full bg-gradient-to-tr from-indigo-100/40 via-blue-50/30 to-transparent ${blurLg2} ${pulseB}`}
           style={{  }}
         />
       </div>
@@ -63,7 +65,7 @@ export default function GlobalBackground() {
           style={{ }}
         />
         <div
-          className={`absolute top-[52%] right-[4%] w-[420px] h-[420px] bg-sky-200/25 rounded-full ${blurMd2} ${pulse}`}
+          className={`absolute top-[52%] right-[4%] w-[420px] h-[420px] bg-sky-200/25 rounded-full ${blurMd2} ${pulseB}`}
           style={{  }}
         />
         {!reducedFx && (
@@ -87,11 +89,13 @@ export default function GlobalBackground() {
           ].map((pt, idx) => (
             <div
               key={idx}
-              className="absolute w-1.5 h-1.5 bg-primary/25 rounded-full blur-[0.5px]"
+              className="bg-particle absolute w-1.5 h-1.5 bg-primary/25 rounded-full"
               style={{
                 left: pt.left,
                 top: pt.top,
-                
+                ["--delay" as string]: pt.delay,
+                ["--dur" as string]: pt.dur,
+                ["--dx" as string]: idx % 2 ? "-18px" : "18px",
               }}
             />
           ))}
