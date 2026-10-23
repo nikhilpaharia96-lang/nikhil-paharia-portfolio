@@ -1,4 +1,5 @@
 import { useRef, useMemo, useState, useEffect, useCallback, forwardRef } from "react";
+import HTMLFlipBook from "react-pageflip";
 import {
   motion,
   useMotionValue,
@@ -7,7 +8,7 @@ import {
   useMotionTemplate,
   useReducedMotion,
   useInView,
-} from "@/lib/static-motion";
+} from "framer-motion";
 import {
   SiReact,
   SiNextdotjs,
@@ -26,12 +27,14 @@ import { VscVscode } from "react-icons/vsc";
 import profilePhoto from "../assets/images/profile-nobg.png";
 import myNewPhoto from "../assets/images/my-new-photo.jpg";
 import teaGardenAbout from "../assets/images/tea-sunset-portrait.webp";
+import teaSunsetPortrait from "../assets/images/tea-sunset-portrait.webp";
+// Gallery pages 3–5: put your three images in src/assets/images/ with exactly these names
 import about3 from "../assets/images/about-3.webp";
 import about4 from "../assets/images/about-4.webp";
 import about5 from "../assets/images/about-5.webp";
-import teaSunsetPortrait from "../assets/images/tea-sunset-portrait.webp";
-// Gallery pages 3–5: put your three images in src/assets/images/ with exactly these names
 import SplitText from "@/components/ui/SplitText";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Registered once at module load. This only affects this file/section —
 // ScrollTrigger is the single authority for *when* each notebook phase
@@ -39,6 +42,7 @@ import SplitText from "@/components/ui/SplitText";
 // components above) stays responsible for *how* each element actually
 // animates (hover, idle float, the interpolation curve itself), per the
 // "GSAP for the scroll timeline, Framer for micro-interactions" split.
+gsap.registerPlugin(ScrollTrigger);
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -54,7 +58,7 @@ const NotebookPage = forwardRef<HTMLDivElement, { className?: string; dark?: boo
   ({ className, dark = false, children }, ref) => (
     <div
       ref={ref}
-      className={`page relative overflow-y-auto scrollbar-hide aspect-[390/786] lg:aspect-[550/780] ${dark ? "bg-[#0b0b0e]" : "bg-[#FFFDF7]"} ${className ?? ""}`}
+      className={`page overflow-y-auto scrollbar-hide ${dark ? "bg-[#0b0b0e]" : "bg-[#FFFDF7]"} ${className ?? ""}`}
     >
       {children}
     </div>
@@ -111,9 +115,9 @@ function Marker({ children, delay = 0, active = true }: { children: string; dela
     <span className="relative inline-block px-1 whitespace-nowrap">
       <motion.span
         aria-hidden="true"
-
+        initial={{ scaleX: 0 }}
         animate={active ? { scaleX: 1 } : { scaleX: 0 }}
-
+        transition={{ duration: rm ? 0.2 : 0.55, delay: rm ? 0 : delay, ease: "easeOut" }}
         className="absolute inset-x-0 bottom-[0.06em] h-[0.42em] bg-primary/35 rounded-[2px] origin-left -z-[1]"
         style={{ transform: "skewX(-6deg)" }}
       />
@@ -140,13 +144,13 @@ function HandwrittenNote({
   const rm = useReducedMotion();
   return (
     <motion.p
-
+      initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
       animate={
         active
           ? { clipPath: "inset(0 0% 0 0)", opacity: 1 }
           : { clipPath: "inset(0 100% 0 0)", opacity: 0 }
       }
-
+      transition={{ duration: rm ? 0.3 : 1.1, delay: rm ? 0 : delay, ease: "easeInOut" }}
       className={`font-hand text-primary/90 leading-snug ${className}`}
     >
       {children}
@@ -187,9 +191,9 @@ function MarkerUnderline({
         strokeWidth="2.5"
         strokeLinecap="round"
         fill="none"
-
+        initial={{ pathLength: 0, opacity: 0 }}
         animate={active ? { pathLength: 1, opacity: 0.6 } : { pathLength: 0, opacity: 0 }}
-
+        transition={{ duration: rm ? 0.3 : 0.9, delay: rm ? 0 : delay, ease: "easeInOut" }}
       />
     </svg>
   );
@@ -226,9 +230,9 @@ function CircleHighlight({
           strokeLinecap="round"
           fill="none"
           vectorEffect="non-scaling-stroke"
-
+          initial={{ pathLength: 0, opacity: 0 }}
           animate={active ? { pathLength: 1, opacity: 0.85 } : { pathLength: 0, opacity: 0 }}
-
+          transition={{ duration: rm ? 0.3 : 0.8, delay: rm ? 0 : delay, ease: "easeInOut" }}
         />
       </svg>
       <span className="relative text-primary">{children}</span>
@@ -257,14 +261,20 @@ function HangingTag({
   const rm = useReducedMotion();
   return (
     <motion.div
-
+      initial={{ opacity: 0, y: rm ? 0 : -30, rotate: 0, scale: 0.85 }}
       animate={
         active
           ? { opacity: 1, y: 0, rotate, scale: 1 }
           : { opacity: 0, y: rm ? 0 : -30, rotate: 0, scale: 0.85 }
       }
-
-
+      transition={{
+        duration: rm ? 0.25 : 0.6,
+        delay: rm ? 0 : delay,
+        type: rm ? "tween" : "spring",
+        stiffness: rm ? undefined : 220,
+        damping: rm ? undefined : 16,
+      }}
+      whileHover={{ rotate: rotate * 0.3, scale: 1.05 }}
       className="relative w-32 sm:w-36 px-4 py-3 text-center"
       style={{
         background: "linear-gradient(155deg, #f3e2c2, #e6cfa0)",
@@ -328,9 +338,9 @@ function Signature({ active = true, delay = 0 }: { active?: boolean; delay?: num
       height="60"
       viewBox="0 0 180 60"
       fill="none"
-
+      initial={{ opacity: 0 }}
       animate={active ? { opacity: 1 } : { opacity: 0 }}
-
+      transition={{ duration: 0.3, delay: rm ? 0 : delay }}
     >
       <motion.path
         d="M8 42 C 14 18, 22 14, 26 30 C 29 40, 24 46, 30 40 C 38 32, 44 16, 50 30
@@ -343,9 +353,9 @@ function Signature({ active = true, delay = 0 }: { active?: boolean; delay?: num
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-
+        initial={{ pathLength: 0 }}
         animate={active ? { pathLength: 1 } : { pathLength: 0 }}
-
+        transition={{ duration: rm ? 0.3 : 1.3, delay: rm ? 0 : delay + 0.1, ease: "easeInOut" }}
       />
       <motion.path
         d="M20 50 C 60 56, 120 56, 160 48"
@@ -354,9 +364,9 @@ function Signature({ active = true, delay = 0 }: { active?: boolean; delay?: num
         strokeLinecap="round"
         fill="none"
         opacity={0.5}
-
+        initial={{ pathLength: 0 }}
         animate={active ? { pathLength: 1 } : { pathLength: 0 }}
-
+        transition={{ duration: rm ? 0.2 : 0.5, delay: rm ? 0 : delay + 1.2, ease: "easeOut" }}
       />
     </motion.svg>
   );
@@ -400,13 +410,13 @@ function Tape({
   const border = color === "blue" ? "rgba(147,197,253,0.6)" : "rgba(252,211,77,0.55)";
   return (
     <motion.div
-
+      initial={{ opacity: 0, scale: 0.7, rotate: rotate - 25 }}
       animate={
         active
           ? { opacity: 1, scale: 1, rotate }
           : { opacity: 0, scale: 0.7, rotate: rotate - 25 }
       }
-
+      transition={{ duration: rm ? 0.2 : 0.45, delay: rm ? 0 : floatDelay * 0.3, ease: "backOut" }}
       className={`absolute w-16 h-6 sm:w-20 sm:h-7 pointer-events-auto ${className}`}
     >
       {/* Nested layer: once the tape above has "settled" into place, this
@@ -417,10 +427,18 @@ function Tape({
           (invisible) outer wrapper wouldn't otherwise render anything. */}
       <motion.div
         className="w-full h-full shadow-sm"
-
+        initial={{ rotate: 0 }}
         animate={rm ? {} : { rotate: [0, 1.4, 0], y: [0, -2, 0] }}
-
-
+        transition={
+          rm ? undefined : { duration: floatDuration, delay: floatDelay, repeat: Infinity, ease: "easeInOut" }
+        }
+        whileHover={{
+          rotate: -rotate * 0.3,
+          y: -2,
+          scaleX: 1.08,
+          scaleY: 1.03,
+          transition: { type: "spring", stiffness: 300, damping: 18 },
+        }}
         style={{
           backgroundColor: bg,
           border: `1px solid ${border}`,
@@ -454,9 +472,9 @@ function RealPaperClip({
   return (
     <motion.div
       className={`absolute inline-block pointer-events-none ${className}`}
-
+      initial={{ opacity: 0, scale: 0.6 }}
       animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
-
+      transition={{ duration: rm ? 0.2 : 0.4, delay: rm ? 0 : floatDelay * 0.3, ease: "backOut" }}
     >
       {/* Nested layer for the continuous idle sway + hover response, kept
           separate from the one-time entrance above for the same reason as
@@ -464,10 +482,12 @@ function RealPaperClip({
           visibly fight each other. */}
       <motion.svg
         className="drop-shadow-md"
-
+        initial={{ rotate }}
         animate={rm ? { rotate } : { rotate: [rotate, rotate + 3, rotate - 1.5, rotate] }}
-
-
+        transition={
+          rm ? undefined : { duration: floatDuration, delay: floatDelay, repeat: Infinity, ease: "easeInOut" }
+        }
+        whileHover={{ rotate: rotate + 10, transition: { type: "spring", stiffness: 260, damping: 12 } }}
         width="20"
         height="46"
         viewBox="0 0 22 52"
@@ -553,9 +573,9 @@ function Doodle({
     <motion.div
       aria-hidden="true"
       className={`absolute pointer-events-none ${className}`}
-
+      initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
       animate={active ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 0.6, rotate: -8 }}
-
+      transition={{ duration: rm ? 0.2 : 0.6, delay: rm ? 0 : delay, ease: "backOut" }}
     >
       {/* Nested layer for a very small continuous idle sway, so doodles
           feel hand-drawn/alive rather than static once they've popped in.
@@ -568,7 +588,7 @@ function Doodle({
         fill="none"
         className="text-primary/35"
         animate={rm ? {} : { rotate: [0, 3, -2, 0], y: [0, -1.5, 0] }}
-
+        transition={rm ? undefined : { duration: 6 + delay * 2, repeat: Infinity, ease: "easeInOut" }}
       >
         <path
           d={doodlePaths[type]}
@@ -606,10 +626,10 @@ function Stamp({
   const rm = useReducedMotion();
   return (
     <motion.div
-
+      initial={{ opacity: 0, scale: 1.5, rotate: 0 }}
       animate={active ? { opacity: 0.88, scale: 1, rotate } : { opacity: 0, scale: 1.5, rotate: 0 }}
-
-
+      transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : delay, ease: "backOut" }}
+      whileHover={{ scale: 1.08, rotate: rotate * 0.5 }}
       className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex flex-col items-center justify-center text-center select-none"
       style={{
         border: `2.5px solid ${color}`,
@@ -659,10 +679,14 @@ function StickyNote({
   const rm = useReducedMotion();
   return (
     <motion.div
-
+      initial={{ opacity: 0, y: rm ? 0 : -60, rotate: 0 }}
       animate={active ? { opacity: 1, y: 0, rotate } : { opacity: 0, y: rm ? 0 : -60, rotate: 0 }}
-
-
+      transition={{ duration: rm ? 0.3 : 0.7, delay: rm ? 0 : delay, ease: "backOut" }}
+      whileHover={{
+        rotate: rm ? rotate : [rotate, rotate * 0.2, rotate * 0.7, rotate * 0.35, rotate * 0.5],
+        scale: 1.04,
+        transition: rm ? undefined : { duration: 0.6, ease: "easeInOut" },
+      }}
       className={`relative w-48 sm:w-56 shadow-[0_14px_28px_-12px_rgba(70,50,20,0.35)] ${className}`}
       style={{ backgroundColor: color }}
     >
@@ -674,7 +698,7 @@ function StickyNote({
       <motion.div
         className="p-4"
         animate={rm ? {} : { y: [0, -3, 0, 3, 0] }}
-
+        transition={rm ? undefined : { duration: floatDuration, repeat: Infinity, ease: "easeInOut" }}
       >
         <RealPaperClip className="-top-5 -left-1.5" rotate={-14} active={active} />
         {title && (
@@ -708,10 +732,10 @@ function TornPaper({
   const rm = useReducedMotion();
   return (
     <motion.div
-
+      initial={{ opacity: 0, y: rm ? 0 : 24 }}
       animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 24 }}
-
-
+      transition={{ duration: rm ? 0.3 : 0.6, delay: rm ? 0 : delay, ease }}
+      whileHover={{ rotate: rotate + (rotate >= 0 ? 1.5 : -1.5), y: -3 }}
       className={`relative bg-[#fdfaf3] shadow-[0_10px_24px_-10px_rgba(70,50,20,0.3)] ${className}`}
       style={{
         rotate,
@@ -744,15 +768,15 @@ function FloatingSticker({
   const rm = useReducedMotion();
   return (
     <motion.div
-
+      initial={{ opacity: 0, scale: 0.6 }}
       whileInView={{ opacity: 1, scale: 1 }}
-
-
+      viewport={{ once: false, margin: "-40px" }}
+      transition={{ duration: rm ? 0.25 : 0.6, delay: rm ? 0 : delay, ease: "backOut" }}
       className={`absolute hidden lg:flex items-center justify-center pointer-events-none ${className}`}
     >
       <motion.div
         animate={rm ? {} : { y: [0, -12, 0], rotate: [rotate, rotate + 6, rotate] }}
-
+        transition={{ duration, delay, repeat: rm ? 0 : Infinity, ease: "easeInOut" }}
         className="w-11 h-11 rounded-xl bg-white/85 backdrop-blur-sm border border-slate-200/70 shadow-[0_10px_22px_-8px_rgba(70,50,20,0.35)] flex items-center justify-center"
       >
         {children}
@@ -819,7 +843,7 @@ function NotebookDivider({ scale = 1, visible = true }: { scale?: number; visibl
           "-5px 0 10px -6px rgba(0,0,0,0.5), 5px 0 10px -6px rgba(0,0,0,0.5), 0 6px 18px rgba(0,0,0,0.3)",
       }}
       animate={{ opacity: visible ? 1 : 0 }}
-
+      transition={{ duration: rm ? 0.1 : 0.2, ease: "easeOut" }}
     />
   );
 }
@@ -862,14 +886,14 @@ function TechScatter({ active = true }: { active?: boolean }) {
         return (
           <motion.div
             key={label}
-
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={
               active
                 ? { opacity: 1, scale: 1, y: techOffsets[i].y }
                 : { opacity: 0, scale: 0.5, y: 20 }
             }
-
-
+            transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : 0.06 * i, ease: "backOut" }}
+            whileHover={{ scale: 1.12, rotate: baseRotate + (baseRotate >= 0 ? -10 : 10), y: techOffsets[i].y - 4 }}
             style={{ rotate: baseRotate }}
             className="group relative flex flex-col items-center gap-1.5 cursor-default"
           >
@@ -878,7 +902,7 @@ function TechScatter({ active = true }: { active?: boolean }) {
                 it costs nothing until actually hovered */}
             <div
               aria-hidden="true"
-              className="absolute top-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl opacity-0 group-hover:opacity-100   blur-md"
+              className="absolute top-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"
               style={{ backgroundColor: color }}
             />
             <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white shadow-[0_8px_18px_-8px_rgba(70,50,20,0.4)] border border-slate-200/70 flex items-center justify-center">
@@ -914,10 +938,10 @@ function FavoriteThings({ active = true }: { active?: boolean }) {
       {favorites.map((f, i) => (
         <motion.div
           key={f.label}
-
+          initial={{ opacity: 0, scale: 0.5, y: 16 }}
           animate={active ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.5, y: 16 }}
-
-
+          transition={{ duration: rm ? 0.25 : 0.45, delay: rm ? 0 : 0.08 * i, ease: "backOut" }}
+          whileHover={{ scale: 1.12, rotate: 0, y: -4 }}
           style={{ rotate: favRotate[i] }}
           className="relative w-[4.5rem] h-[4.5rem] sm:w-20 sm:h-20 rounded-full bg-white p-[3px]
                      shadow-[0_10px_20px_-8px_rgba(70,50,20,0.45)] ring-1 ring-slate-200/70 cursor-default"
@@ -957,9 +981,9 @@ function DailyFuel({ active = true }: { active?: boolean }) {
         {dailyFuel.map((item, i) => (
           <motion.li
             key={item}
-
+            initial={{ opacity: 0, x: -12 }}
             animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }}
-
+            transition={{ duration: 0.4, delay: rm ? 0 : 0.15 + i * 0.12, ease }}
             className="flex items-center gap-2"
           >
             <motion.svg
@@ -967,9 +991,9 @@ function DailyFuel({ active = true }: { active?: boolean }) {
               height="16"
               viewBox="0 0 16 16"
               className="shrink-0 text-primary"
-
+              initial={{ pathLength: 0 }}
               animate={active ? { pathLength: 1 } : { pathLength: 0 }}
-
+              transition={{ duration: 0.35, delay: rm ? 0 : 0.25 + i * 0.12 }}
             >
               <motion.path
                 d="M2 8 L6 12 L14 3"
@@ -1019,9 +1043,9 @@ function DrawnArrow({
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeDasharray="3 5"
-
+        initial={{ pathLength: 0, opacity: 0 }}
         animate={active ? { pathLength: 1, opacity: 0.55 } : { pathLength: 0, opacity: 0 }}
-
+        transition={{ duration: rm ? 0.3 : 1.4, delay: rm ? 0 : delay, ease: "easeInOut" }}
       />
     </svg>
   );
@@ -1058,23 +1082,23 @@ function JourneyTimeline({ active = true }: { active?: boolean }) {
             strokeWidth="1.5"
             strokeDasharray="2 8"
             strokeLinecap="round"
-
+            initial={{ pathLength: 0, opacity: 0 }}
             animate={active ? { pathLength: 1, opacity: 0.5 } : { pathLength: 0, opacity: 0 }}
-
+            transition={{ duration: rm ? 0.4 : 1.8, ease: "easeInOut" }}
           />
         </svg>
         <div className="absolute inset-0 grid grid-cols-6">
           {journey.map((step, i) => (
             <motion.div
               key={step.label}
-
+              initial={{ opacity: 0, y: rm ? 0 : i % 2 === 0 ? -14 : 14, scale: 0.7 }}
               animate={
                 active
                   ? { opacity: 1, y: 0, scale: 1 }
                   : { opacity: 0, y: rm ? 0 : i % 2 === 0 ? -14 : 14, scale: 0.7 }
               }
-
-
+              transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : 0.15 * i, ease: "backOut" }}
+              whileHover={{ scale: 1.08, y: -4 }}
               className={`flex flex-col items-center gap-2 text-center ${i % 2 === 0 ? "mt-2" : "mt-14"}`}
             >
               <div className="w-10 h-10 rounded-full bg-white shadow-[0_8px_16px_-6px_rgba(70,50,20,0.4)] border border-slate-200 flex items-center justify-center text-base">
@@ -1098,9 +1122,9 @@ function JourneyTimeline({ active = true }: { active?: boolean }) {
           {journey.map((step, i) => (
             <motion.div
               key={step.label}
-
+              initial={{ opacity: 0, x: rm ? 0 : -16 }}
               animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: rm ? 0 : -16 }}
-
+              transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : 0.08 * i, ease }}
               className="relative flex items-start gap-4"
             >
               <div className="absolute -left-8 top-0 w-6 h-6 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-xs">
@@ -1164,7 +1188,9 @@ function MobileAboutStory() {
   const scrollToSection = (id: string) => {
     const el = document.querySelector(id);
     if (!el) return;
-    el.scrollIntoView({ behavior: "auto" });
+    const lenis = (window as typeof window & { lenis?: { scrollTo: (t: Element, o?: object) => void } }).lenis;
+    if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.2 });
+    else el.scrollIntoView({ behavior: rm ? "auto" : "smooth" });
   };
 
   return (
@@ -1175,9 +1201,9 @@ function MobileAboutStory() {
       <Reveal margin="-40px">
         {(active) => (
           <motion.div
-
+            initial={{ opacity: 0, y: rm ? 0 : 20 }}
             animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 20 }}
-
+            transition={{ duration: rm ? 0.3 : 0.7, ease }}
             className="relative rounded-[28px] overflow-hidden shadow-[0_24px_50px_-24px_rgba(29,111,235,0.35)]"
           >
             <div className="relative aspect-[4/5] w-full">
@@ -1216,9 +1242,9 @@ function MobileAboutStory() {
       <Reveal className="mt-8 flex justify-center">
         {(active) => (
           <motion.div
-
+            initial={{ opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
             animate={active ? { opacity: 1, y: 0, scale: 1, rotate: -1.5 } : { opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
-
+            transition={{ duration: rm ? 0.3 : 0.7, type: rm ? "tween" : "spring", stiffness: 220, damping: 18 }}
             className="relative bg-white p-2.5 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] w-48"
           >
             <Tape className="-top-3 left-1/2 -translate-x-1/2" rotate={-3} active={active} />
@@ -1246,9 +1272,9 @@ function MobileAboutStory() {
       <Reveal className="mt-9 px-1">
         {(active) => (
           <motion.div
-
+            initial={{ opacity: 0, y: rm ? 0 : 16 }}
             animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 16 }}
-
+            transition={{ duration: rm ? 0.3 : 0.6, ease }}
             className="relative"
           >
             <InkSmudge className="-left-3 -top-2" size={30} />
@@ -1290,9 +1316,9 @@ function MobileAboutStory() {
               {["Web Development", "UI/UX Design", "Video Editing", "Content Creation"].map((item, i) => (
                 <motion.li
                   key={item}
-
+                  initial={{ opacity: 0, x: rm ? 0 : -10 }}
                   animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: rm ? 0 : -10 }}
-
+                  transition={{ duration: rm ? 0.25 : 0.4, delay: rm ? 0 : 0.1 + i * 0.08 }}
                   className="flex items-center gap-1.5"
                 >
                   <span className="text-primary">{"</>"}</span> {item}
@@ -1317,9 +1343,9 @@ function MobileAboutStory() {
             ].map((h, i) => (
               <motion.div
                 key={h.value}
-
+                initial={{ opacity: 0, x: rm ? 0 : 20 }}
                 animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: rm ? 0 : 20 }}
-
+                transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : 0.1 * i, ease: "backOut" }}
                 className="snap-center shrink-0 rounded-md border-2 px-5 py-4 text-center bg-white/80 min-w-[8.5rem]"
                 style={{ borderColor: h.color }}
               >
@@ -1361,9 +1387,9 @@ function MobileAboutStory() {
               {favorites.map((f, i) => (
                 <div key={f.label} className="snap-center shrink-0">
                   <motion.div
-
+                    initial={{ opacity: 0, scale: 0.5, y: rm ? 0 : 16 }}
                     animate={active ? { opacity: 1, scale: 1, y: 0, rotate: favRotate[i] } : { opacity: 0, scale: 0.5, y: rm ? 0 : 16 }}
-
+                    transition={{ duration: rm ? 0.25 : 0.45, delay: rm ? 0 : 0.08 * i, ease: "backOut" }}
                     className="relative w-[4.5rem] h-[4.5rem] rounded-full bg-white p-[3px] shadow-[0_10px_20px_-8px_rgba(70,50,20,0.45)] ring-1 ring-slate-200/70"
                   >
                     <div className="w-full h-full rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-white overflow-hidden">
@@ -1387,9 +1413,9 @@ function MobileAboutStory() {
       <Reveal className="mt-9" margin="-40px">
         {(active) => (
           <motion.div
-
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-
+            transition={{ duration: rm ? 0.3 : 0.6, ease }}
             className="relative bg-white px-6 py-6 text-center shadow-[0_16px_40px_-20px_rgba(70,50,20,0.4)] -rotate-[0.4deg]"
           >
             <p className="font-hand text-2xl text-foreground leading-snug mb-1 underline decoration-primary decoration-2 underline-offset-4">
@@ -1411,22 +1437,22 @@ function MobileAboutStory() {
       <Reveal className="mt-8 mb-2">
         {(active) => (
           <motion.div
-
+            initial={{ opacity: 0, y: rm ? 0 : 16 }}
             animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 16 }}
-
+            transition={{ duration: rm ? 0.3 : 0.5, ease }}
             className="flex items-center gap-3"
           >
             <button
               type="button"
               onClick={() => scrollToSection("#projects")}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-white font-bold text-sm px-5 py-3 rounded-full shadow-lg  "
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-white font-bold text-sm px-5 py-3 rounded-full shadow-lg active:scale-[0.98] transition-transform"
             >
               See My Work
             </button>
             <button
               type="button"
               onClick={() => scrollToSection("#contact")}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-white border border-blue-200 text-primary font-bold text-sm px-5 py-3 rounded-full  "
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-white border border-blue-200 text-primary font-bold text-sm px-5 py-3 rounded-full active:scale-[0.98] transition-transform"
             >
               Say Hello
             </button>
@@ -1457,7 +1483,7 @@ export default function About() {
   // ScrollTrigger now scrubs a `phase` value (1–8) as the notebook moves
   // through the viewport; every component below simply asks "is my phase
   // active yet?" via a boolean prop, and Framer Motion handles the actual
-  // eased  to/from that state.
+  // eased transition to/from that state.
   // Everything is visible from the first paint — the scroll no longer gates
   // any text/image reveal (phase is fixed at its final value). Scroll only
   // drives the desktop page-turn below.
@@ -1470,7 +1496,7 @@ export default function About() {
   // — and therefore which aspect ratio — the flip-book below is built with,
   // since react-pageflip only reads those settings once at construction, so
   // crossing this breakpoint remounts it via the `key` on HTMLFlipBook.
-  const [, setIsDesktopViewport] = useState(
+  const [isDesktopViewport, setIsDesktopViewport] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 1024
   );
   useEffect(() => {
@@ -1489,12 +1515,17 @@ export default function About() {
   // pages is currently showing so the scroll handler below only calls
   // flipNext/flipPrev when a flip is actually needed, instead of spamming
   // the library every scroll frame.
+  const flipBook = useRef<{ pageFlip: () => { flipNext: () => void; flipPrev: () => void } } | null>(null);
+  const flippedRef = useRef(false);
 
   // Whether a page is currently mid-turn (dragging a corner, flipping,
   // settling) — the center divider hides while this is true (see
   // NotebookDivider above) rather than sitting statically on top of a
   // page that's folded diagonally mid-drag.
-  const dividerVisible = true;
+  const [dividerVisible, setDividerVisible] = useState(true);
+  const handleFlipStateChange = useCallback((e: { data?: string }) => {
+    setDividerVisible(e?.data === "read");
+  }, []);
 
   // Real size of the notebook as react-pageflip actually renders it
   // (`stretch` + `autoSize` mean that's not a fixed number) — the center
@@ -1518,6 +1549,69 @@ export default function About() {
   const dividerScale = notebookWidth
     ? Math.min(1.15, Math.max(0.55, notebookWidth / 1100))
     : 1;
+
+  // Pages 3–10: a straight photo gallery, one full-bleed image per page —
+  // deliberately no story text competing with them, just a short caption.
+  // URLs rather than bundled assets, so swapping any one of these later is
+  // a one-line change here rather than a re-import + rebuild.
+  const galleryPages = [
+    { src: about3, label: "03", caption: "Hi, I'm Massoom Ahmed." },
+    { src: about4, label: "04", caption: "Skill." },
+    { src: about5, label: "05", caption: "My team member." },
+    { src: "https://www.gopalkrishnatea.com/static/media/Brochure7.993bd0c86c8cd0f40c24.webp", label: "06", caption: "Home, from every angle." },
+    { src: "https://www.gopalkrishnatea.com/static/media/Brochure11.b8524a9ef142de897823.webp", label: "07", caption: "The hills don't change much." },
+    { src: "https://www.gopalkrishnatea.com/static/media/Brochure12.214390bf5cd20d1cb55e.webp", label: "08", caption: "This is what I'm building toward." },
+    { src: "https://www.gopalkrishnatea.com/static/media/Brochure5.6a73e6331e62e365caec.webp", label: "09", caption: "A little further down the road." },
+    { src: "https://www.gopalkrishnatea.com/static/media/Brochure10.d942bbc39eaebfc165dd.webp", label: "10", caption: "Almost there." },
+  ];
+
+  useEffect(() => {
+    if (rm) {
+      // Reduced motion: skip scroll-scrubbed choreography entirely and
+      // just show the finished page — each component's own `rm`-aware
+      // transition already collapses to a quick, simple fade. The
+      // flip-book still renders (so page 2's content stays reachable via
+      // its own click/drag corners), it just isn't auto-flipped by scroll.
+      return;
+    }
+    if (!sectionRef.current) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: "top 78%",
+      end: "bottom 55%",
+      scrub: 0.6, // smooths the raw scroll input into real "paper inertia" rather than snapping straight to each phase
+      onUpdate: (self) => {
+        // Turn page 1 → page 2 once the reader is past the section's
+        // midpoint, and turn it back once they scroll back above it —
+        // so the physical page-turn tracks scroll direction exactly like
+        // the rest of the reveal does. Desktop only — on mobile the page
+        // turn is driven purely by the reader's own swipe/tap, like a real
+        // notebook, never automatically by scroll.
+        if (!isDesktopViewport) return;
+        const shouldBeFlipped = self.progress > 0.5;
+        if (shouldBeFlipped !== flippedRef.current) {
+          flippedRef.current = shouldBeFlipped;
+          const api = flipBook.current?.pageFlip();
+          if (api) shouldBeFlipped ? api.flipNext() : api.flipPrev();
+        }
+      },
+      onLeaveBack: () => {
+        // Scrolled back above the section entirely — reset to the "pages
+        // almost empty" resting state so scrolling back down replays the
+        // full reveal, matching the site's established reversible-scroll
+        // convention. Page 1 and 2 fold shut against the spine again too,
+        // so re-entering the section always starts from a closed notebook.
+        if (!isDesktopViewport) return;
+        if (flippedRef.current) {
+          flippedRef.current = false;
+          flipBook.current?.pageFlip()?.flipPrev();
+        }
+      },
+    });
+
+    return () => trigger.kill();
+  }, [rm, isDesktopViewport]);
 
   // Soft cursor-follow light highlight, scoped entirely to the notebook —
   // reuses the same mx/my tracking already driving the tilt above, so no
@@ -1578,7 +1672,7 @@ export default function About() {
               height: i % 3 === 0 ? 3 : 2,
             }}
             animate={rm ? {} : { y: [0, -22, 0], opacity: [0.1, 0.4, 0.1] }}
-
+            transition={{ duration: 7 + (i % 4), delay: i * 0.4, repeat: rm ? 0 : Infinity, ease: "easeInOut" }}
           />
         ))}
       </div>
@@ -1626,10 +1720,22 @@ export default function About() {
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
             style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 1400 }}
-
+            initial={{ opacity: 0, y: rm ? 0 : 50, scale: rm ? 1 : 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-
-
+            viewport={{ once: true, margin: "-100px" }}
+            transition={
+              rm
+                ? { duration: 0.4 }
+                : {
+                    opacity: { duration: 0.8, ease },
+                    y: { duration: 0.9, ease },
+                    // A light spring (rather than a tween) on scale gives the
+                    // notebook a small, physical overshoot-then-settle right
+                    // as it lands — the "paper settling" beat requested,
+                    // distinct from the smooth fade/lift above it.
+                    scale: { type: "spring", stiffness: 170, damping: 14, mass: 1 },
+                  }
+            }
             className="relative rounded-[24px] overflow-hidden
                        shadow-[0_2px_0_rgba(0,0,0,0.05)_inset,0_50px_100px_-30px_rgba(70,50,20,0.35)]
                        border border-[#e8dcc4]
@@ -1675,7 +1781,7 @@ export default function About() {
                 either of those for control of `scale`. */}
             <motion.div
               animate={rm ? {} : { scale: [1, 1.004, 1] }}
-
+              transition={rm ? undefined : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
               {/* paper grain texture, warm cream base */}
               <div
@@ -1697,7 +1803,7 @@ export default function About() {
                       "repeating-radial-gradient(circle at 50% 50%, rgba(120,90,40,0.025) 0, rgba(120,90,40,0.025) 1px, transparent 1px, transparent 3px)",
                   }}
                   animate={rm ? {} : { opacity: [0.85, 1, 0.85] }}
-
+                  transition={rm ? undefined : { duration: 9, repeat: Infinity, ease: "easeInOut" }}
                 />
 
                 {/* gentle light sweep — crosses the paper roughly every
@@ -1712,9 +1818,9 @@ export default function About() {
                         "linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.5) 50%, transparent 80%)",
                       mixBlendMode: "overlay",
                     }}
-
+                    initial={{ x: "-140%", opacity: 0 }}
                     animate={{ x: ["-140%", "340%"], opacity: [0, 0.7, 0.7, 0] }}
-
+                    transition={{ duration: 3, repeat: Infinity, repeatDelay: 22, ease: "easeInOut" }}
                   />
                 )}
 
@@ -1737,7 +1843,34 @@ export default function About() {
                     between the two open pages */}
                 <NotebookDivider scale={dividerScale} visible={dividerVisible} />
 
-                <div className="notebook-static grid grid-cols-1 lg:grid-cols-2">
+                <HTMLFlipBook
+                  key={isDesktopViewport ? "desktop" : "mobile"}
+                  ref={flipBook as never}
+                  width={isDesktopViewport ? 550 : 390}
+                  height={isDesktopViewport ? 780 : 786}
+                  size="stretch"
+                  minWidth={280}
+                  maxWidth={isDesktopViewport ? 900 : 500}
+                  minHeight={isDesktopViewport ? 420 : 565}
+                  maxHeight={isDesktopViewport ? 900 : 1010}
+                  drawShadow
+                  flippingTime={800}
+                  usePortrait={true}
+                  startPage={0}
+                  startZIndex={10}
+                  autoSize
+                  maxShadowOpacity={0.4}
+                  showCover={false}
+                  mobileScrollSupport
+                  clickEventForward
+                  useMouseEvents
+                  swipeDistance={30}
+                  showPageCorners
+                  disableFlipByClick={false}
+                  onChangeState={handleFlipStateChange}
+                  className="notebook-flipbook"
+                  style={{}}
+                >
                   <NotebookPage className="px-6 py-7 sm:px-10 sm:py-6 lg:pr-14 lg:pl-12">
                 <CoffeeStain className="top-2 right-6 sm:right-10" size={70} />
                 <Doodle type="swirl" className="top-24 right-2 sm:right-6" delay={0.3} active={phase >= 3} />
@@ -1751,13 +1884,13 @@ export default function About() {
                     reader sees once the notebook lands open, fades out once
                     the "how it all started" headline begins building */}
                 <motion.div
-
+                  initial={{ opacity: 0, y: rm ? 0 : 10 }}
                   animate={
                     phase >= 1 && phase < 3
                       ? { opacity: 1, y: 0 }
                       : { opacity: 0, y: rm ? 0 : -6 }
                   }
-
+                  transition={{ duration: rm ? 0.2 : 0.5, ease }}
                   className="mb-2 max-w-xs"
                 >
                   <p className="font-hand text-sm sm:text-base text-foreground leading-snug">
@@ -1792,9 +1925,9 @@ export default function About() {
                 {/* headline with marker highlight — Phase 3: builds line
                     by line as the notebook scrolls */}
                 <motion.h3
-
+                  initial={{ opacity: 0, y: rm ? 0 : 24 }}
                   animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 24 }}
-
+                  transition={{ duration: rm ? 0.3 : 0.7, ease }}
                   className="font-serif font-extrabold text-xl sm:text-2xl leading-[1.15] text-foreground mb-1.5 max-w-sm sm:max-w-none"
                 >
                   I started making <Marker delay={0.15} active={phase >= 3}>CREATIVE STUFF</Marker> four
@@ -1804,9 +1937,9 @@ export default function About() {
 
                 {/* personal paragraph — Phase 4: story blocks fade in one at a time */}
                 <motion.div
-
+                  initial={{ opacity: 0, y: rm ? 0 : 16 }}
                   animate={phase >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 16 }}
-
+                  transition={{ duration: rm ? 0.3 : 0.6, delay: rm ? 0 : 0.1 }}
                   className="relative text-sm text-slate-600 leading-relaxed mb-3 max-w-md"
                 >
                   <InkSmudge className="-left-3 top-2" size={30} />
@@ -1835,14 +1968,28 @@ export default function About() {
                 <div className="flex items-start gap-4 mb-3">
                 <div className="relative w-28 sm:w-32 shrink-0">
                   <motion.div
-
+                    initial={{ opacity: 0, y: rm ? 0 : 40, scale: 0.9, rotate: 0 }}
                     animate={
                       phase >= 2
                         ? { opacity: 1, y: 0, scale: 1, rotate: -2 }
                         : { opacity: 0, y: rm ? 0 : 40, scale: 0.9, rotate: 0 }
                     }
-
-
+                    transition={{
+                      duration: rm ? 0.3 : 0.8,
+                      // A spring (rather than a tween) gives the photo a
+                      // genuine small physical bounce as it lands, instead
+                      // of just easing to a stop.
+                      type: rm ? "tween" : "spring",
+                      stiffness: rm ? undefined : 260,
+                      damping: rm ? undefined : 16,
+                      mass: rm ? undefined : 0.9,
+                    }}
+                    whileHover={{
+                      rotate: 0,
+                      y: -4,
+                      scale: 1.02,
+                      boxShadow: "0 30px 55px -16px rgba(70,50,20,0.5)",
+                    }}
                     className="relative bg-white p-1.5 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)]"
                   >
                     <Tape className="-top-3 left-1/2 -translate-x-1/2" rotate={-3} floatDuration={5.5} floatDelay={0.5} active={phase >= 2} />
@@ -1860,9 +2007,9 @@ export default function About() {
                   </motion.div>
                   {/* name tag, sitting just below the photo like a caption card */}
                   <motion.div
-
+                    initial={{ opacity: 0, y: rm ? 0 : 12 }}
                     animate={phase >= 2 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 12 }}
-
+                    transition={{ duration: rm ? 0.2 : 0.5, delay: rm ? 0 : 0.35 }}
                     className="mt-1"
                   >
                     <p className="font-serif font-bold text-xs text-foreground leading-tight">
@@ -1879,14 +2026,26 @@ export default function About() {
                     photo above */}
                 <div className="relative w-28 sm:w-32 shrink-0">
                   <motion.div
-
+                    initial={{ opacity: 0, y: rm ? 0 : 40, scale: 0.9, rotate: 0 }}
                     animate={
                       phase >= 2
                         ? { opacity: 1, y: 0, scale: 1, rotate: -2 }
                         : { opacity: 0, y: rm ? 0 : 40, scale: 0.9, rotate: 0 }
                     }
-
-
+                    transition={{
+                      duration: rm ? 0.3 : 0.8,
+                      delay: rm ? 0 : 0.2,
+                      type: rm ? "tween" : "spring",
+                      stiffness: rm ? undefined : 260,
+                      damping: rm ? undefined : 16,
+                      mass: rm ? undefined : 0.9,
+                    }}
+                    whileHover={{
+                      rotate: 0,
+                      y: -4,
+                      scale: 1.02,
+                      boxShadow: "0 30px 55px -16px rgba(70,50,20,0.5)",
+                    }}
                     className="relative bg-white p-1.5 pb-5 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)]"
                   >
                     <Tape className="-top-3 left-6" rotate={-6} floatDuration={5.5} floatDelay={1.1} active={phase >= 2} />
@@ -1947,9 +2106,9 @@ export default function About() {
                 </StickyNote>
 
                 <motion.p
-
+                  initial={{ opacity: 0 }}
                   animate={phase >= 6 ? { opacity: 1 } : { opacity: 0 }}
-
+                  transition={{ duration: rm ? 0.2 : 0.5, delay: rm ? 0 : 0.4 }}
                   className="font-hand text-xs text-slate-400 underline decoration-slate-300 mt-2"
                 >
                   God's Plan
@@ -1959,7 +2118,7 @@ export default function About() {
                   </NotebookPage>
 
                   {/* ═══════════ PAGE 2 ═══════════ */}
-                  <NotebookPage className="hidden lg:block px-6 py-7 sm:px-10 sm:py-6 lg:pl-14 lg:pr-12">
+                  <NotebookPage className="px-6 py-7 sm:px-10 sm:py-6 lg:pl-14 lg:pr-12">
                 <Doodle type="spark" className="top-6 right-8" delay={0.2} size={24} />
 
                 <div className="flex items-center justify-between mb-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400">
@@ -2000,9 +2159,9 @@ export default function About() {
                   active={phase >= 4}
                 />
                 <motion.p
-
+                  initial={{ opacity: 0 }}
                   animate={phase >= 4 ? { opacity: 0.7 } : { opacity: 0 }}
-
+                  transition={{ duration: 0.5, delay: rm ? 0 : 1.3 }}
                   className="hidden lg:block absolute top-8 right-4 max-w-[7rem] font-hand text-primary text-sm leading-tight -rotate-3"
                 >
                   creating content and code, you never know where it'll take you.
@@ -2017,9 +2176,9 @@ export default function About() {
                     {["Web Development", "UI/UX Design", "Video Editing", "Content Creation"].map((item, i) => (
                       <motion.li
                         key={item}
-
+                        initial={{ opacity: 0, x: rm ? 0 : -10 }}
                         animate={phase >= 4 ? { opacity: 1, x: 0 } : { opacity: 0, x: rm ? 0 : -10 }}
-
+                        transition={{ duration: rm ? 0.25 : 0.4, delay: rm ? 0 : 0.15 + i * 0.08 }}
                         className="flex items-center gap-1.5"
                       >
                         <span className="text-primary">{"</>"}</span> {item}
@@ -2037,9 +2196,9 @@ export default function About() {
                   ].map((h, i) => (
                     <motion.div
                       key={h.value}
-
+                      initial={{ opacity: 0, y: rm ? 0 : 14 }}
                       animate={phase >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 14 }}
-
+                      transition={{ duration: rm ? 0.25 : 0.5, delay: rm ? 0 : 0.5 + i * 0.1, ease: "backOut" }}
                       className="rounded-md border-2 px-2 py-1.5 text-center bg-white/70"
                       style={{ borderColor: h.color }}
                     >
@@ -2071,9 +2230,9 @@ export default function About() {
                 {/* ending banner — kept inside this page so the notebook
                     stays exactly two pages, no separate full-width strip */}
                 <motion.div
-
+                  initial={{ opacity: 0, scale: 0.96 }}
                   animate={phase >= 8 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-
+                  transition={{ duration: rm ? 0.3 : 0.6, ease }}
                   className="relative bg-white mx-auto max-w-md px-4 py-3 sm:px-6 sm:py-4 text-center shadow-[0_16px_40px_-20px_rgba(70,50,20,0.4)] -rotate-[0.4deg] mb-2"
                 >
                   <p className="font-hand text-lg sm:text-xl text-foreground leading-snug mb-1 underline decoration-primary decoration-2 underline-offset-4">
@@ -2086,16 +2245,134 @@ export default function About() {
                 </motion.div>
 
                 <motion.p
-
+                  initial={{ opacity: 0 }}
                   animate={phase >= 8 ? { opacity: 1 } : { opacity: 0 }}
-
+                  transition={{ duration: 0.5, delay: rm ? 0 : 1.6 }}
                   className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 text-center"
                 >
                   Keep Scrolling →
                 </motion.p>
                   </NotebookPage>
 
-                </div>
+                  {/* ═══════════ PAGES 3–10 — the photo gallery ═══════════
+                      One full-bleed image per page, straight from the URLs
+                      given — no story text competing with them, just a
+                      short caption. */}
+                  {galleryPages.map((g, i) => (
+                    <NotebookPage key={g.src} className="p-0 flex items-center justify-center overflow-hidden">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 1.06 }}
+                        animate={phase >= 6 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.06 }}
+                        transition={{ duration: rm ? 0.3 : 1, delay: rm ? 0 : i * 0.05, ease }}
+                        className="relative w-full h-full"
+                      >
+                        <img
+                          src={g.src}
+                          alt={g.caption}
+                          loading="eager"
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
+                        <div
+                          className={`absolute top-6 left-6 right-6 sm:top-10 sm:left-10 sm:right-10 flex items-center text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-white/70 ${
+                            i % 2 === 0 ? "justify-between" : "justify-end"
+                          }`}
+                        >
+                          <span>{g.label}</span>
+                        </div>
+                        <p
+                          className={`absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10 font-hand text-white text-2xl sm:text-3xl leading-snug ${
+                            i % 2 === 1 ? "text-right" : ""
+                          }`}
+                        >
+                          {g.caption}
+                        </p>
+                      </motion.div>
+                    </NotebookPage>
+                  ))}
+
+                  {/* ═══════════ PAGE 11 — closing spread, left half ═══════════
+                      One final, quiet beat: just the signature. Everything
+                      else on this page has been building toward this — it's
+                      the one moment that gets to be almost empty. */}
+                  <NotebookPage className="px-6 py-6 sm:px-10 sm:py-8 lg:pr-14 lg:pl-12 flex flex-col items-end justify-center">
+                    <div className="absolute top-6 left-6 right-6 sm:top-10 sm:left-10 sm:right-10 flex items-center justify-between text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400">
+                      <span>11 — Closing</span>
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
+                      animate={phase >= 8 ? { opacity: 1, y: 0, scale: 1, rotate: -2 } : { opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
+                      transition={{ duration: rm ? 0.3 : 0.7, type: rm ? "tween" : "spring", stiffness: 220, damping: 18 }}
+                      className="relative bg-white p-2 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] w-28 mb-6"
+                    >
+                      <Tape className="-top-3 left-1/2 -translate-x-1/2" rotate={-4} active={phase >= 8} />
+                      <div className="relative aspect-[4/5] w-full overflow-hidden">
+                        <img
+                          src={profilePhoto}
+                          alt="Nikhil Paharia"
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover object-top"
+                        />
+                      </div>
+                    </motion.div>
+                    <motion.p
+                      initial={{ opacity: 0, y: rm ? 0 : 16 }}
+                      animate={phase >= 8 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 16 }}
+                      transition={{ duration: rm ? 0.3 : 0.9, delay: rm ? 0 : 0.3, ease }}
+                      className="font-hand text-foreground text-6xl sm:text-7xl leading-none"
+                    >
+                      Nikhil
+                    </motion.p>
+                  </NotebookPage>
+
+                  {/* ═══════════ PAGE 12 — closing spread, right half ═══════════ */}
+                  <NotebookPage className="px-6 py-6 sm:px-10 sm:py-8 lg:pl-14 lg:pr-12 flex flex-col items-start justify-center">
+                    <div className="absolute top-6 left-6 right-6 sm:top-10 sm:left-10 sm:right-10 flex items-center justify-end text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400">
+                      <span>Thank You</span>
+                    </div>
+                    <motion.p
+                      initial={{ opacity: 0, y: rm ? 0 : 16 }}
+                      animate={phase >= 8 ? { opacity: 1, y: 0 } : { opacity: 0, y: rm ? 0 : 16 }}
+                      transition={{ duration: rm ? 0.3 : 0.9, delay: rm ? 0 : 0.45, ease }}
+                      className="font-hand text-foreground text-6xl sm:text-7xl leading-none mb-6"
+                    >
+                      Paharia
+                    </motion.p>
+                    <motion.div
+                      initial={{ opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
+                      animate={phase >= 8 ? { opacity: 1, y: 0, scale: 1, rotate: 2 } : { opacity: 0, y: rm ? 0 : 30, scale: 0.94 }}
+                      transition={{ duration: rm ? 0.3 : 0.7, delay: rm ? 0 : 0.2, type: rm ? "tween" : "spring", stiffness: 220, damping: 18 }}
+                      className="relative bg-white p-2 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] w-24 mb-6"
+                    >
+                      <Tape className="-top-3 left-1/2 -translate-x-1/2" rotate={4} color="blue" active={phase >= 8} />
+                      <div className="relative aspect-[4/5] w-full overflow-hidden">
+                        <img
+                          src={teaSunsetPortrait}
+                          alt="Golden hour, Assam"
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
+                    </motion.div>
+                    <motion.blockquote
+                      initial={{ opacity: 0 }}
+                      animate={phase >= 8 ? { opacity: 1 } : { opacity: 0 }}
+                      transition={{ duration: rm ? 0.3 : 0.8, delay: rm ? 0 : 1, ease }}
+                      className="text-slate-500 italic text-sm sm:text-base leading-relaxed max-w-xs mb-6"
+                    >
+                      "If I ever write a book on how I see creativity, it will
+                      have infinite pages. And I'll still be figuring it out."
+                    </motion.blockquote>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={phase >= 8 ? { opacity: 1 } : { opacity: 0 }}
+                      transition={{ duration: rm ? 0.3 : 0.6, delay: rm ? 0 : 1.5 }}
+                      className="font-hand text-primary text-2xl underline decoration-primary/50 underline-offset-4"
+                    >
+                      Thank you.
+                    </motion.p>
+                  </NotebookPage>
+                </HTMLFlipBook>
 
             </div>
             </motion.div>
@@ -2112,82 +2389,7 @@ export default function About() {
             the rest of the site on mobile, just told in the same warm,
             handwritten voice as the notebook above it. */}
         <MobileAboutStory />
-
-        <AboutMorePages />
       </div>
     </section>
-  );
-}
-
-/* ═══════════════ REMAINING NOTEBOOK PAGES (static) ═══════════════
-   In the design reference these pages are reached by turning the notebook's
-   pages. Page-turning is an animation, so here the same content is laid out
-   as plain, always-visible cards. Only images bundled in this repo are used
-   (the reference also hot-links five photos from another site; those are
-   intentionally not reproduced). */
-const MORE_PAGES = [
-  { src: about3, label: "03", caption: "Hi, I'm Massoom Ahmed." },
-  { src: about4, label: "04", caption: "Skill." },
-  { src: about5, label: "05", caption: "My team member." },
-];
-
-function AboutMorePages() {
-  return (
-    <div className="relative mt-16 sm:mt-20 max-w-[1100px] mx-auto" aria-label="More from the notebook">
-      <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400 mb-5 text-center">
-        More pages
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
-        {MORE_PAGES.map((g, i) => (
-          <figure
-            key={g.label}
-            className="relative aspect-[550/780] overflow-hidden rounded-2xl shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] bg-slate-100"
-          >
-            <img src={g.src} alt={g.caption} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
-            <span
-              className={`absolute top-5 left-5 right-5 flex text-[10px] sm:text-xs font-mono tracking-[0.2em] text-white/80 ${
-                i % 2 === 0 ? "justify-between" : "justify-end"
-              }`}
-            >
-              {g.label}
-            </span>
-            <figcaption className="absolute bottom-5 left-5 right-5 font-hand text-white text-2xl leading-tight">
-              {g.caption}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-
-      <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-        <div className="relative rounded-2xl bg-[#fdfbf5] border border-amber-100 px-6 py-8 sm:px-10 flex flex-col items-center sm:items-end justify-center shadow-sm">
-          <span className="absolute top-5 left-6 text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400">
-            11 — Closing
-          </span>
-          <div className="bg-white p-2 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] w-28 mb-6 -rotate-2">
-            <div className="relative aspect-[4/5] w-full overflow-hidden">
-              <img src={profilePhoto} alt="Nikhil Paharia" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top" />
-            </div>
-          </div>
-          <p className="font-hand text-foreground text-6xl sm:text-7xl leading-none">Nikhil</p>
-        </div>
-
-        <div className="relative rounded-2xl bg-[#fdfbf5] border border-amber-100 px-6 py-8 sm:px-10 flex flex-col items-center sm:items-start text-center sm:text-left justify-center shadow-sm">
-          <span className="absolute top-5 right-6 text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-slate-400">
-            Thank You
-          </span>
-          <p className="font-hand text-foreground text-6xl sm:text-7xl leading-none mb-6">Paharia</p>
-          <div className="bg-white p-2 shadow-[0_20px_40px_-16px_rgba(70,50,20,0.4)] w-24 mb-6 rotate-2">
-            <div className="relative aspect-[4/5] w-full overflow-hidden">
-              <img src={teaSunsetPortrait} alt="Golden hour, Assam" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-            </div>
-          </div>
-          <blockquote className="text-slate-500 italic text-sm sm:text-base leading-relaxed max-w-xs mb-6">
-            "If I ever write a book on how I see creativity, it will have infinite pages. And I'll still be figuring it out."
-          </blockquote>
-          <p className="font-hand text-primary text-2xl underline decoration-primary/50 underline-offset-4">Thank you.</p>
-        </div>
-      </div>
-    </div>
   );
 }
