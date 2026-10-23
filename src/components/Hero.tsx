@@ -2,8 +2,8 @@ import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVi
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
 import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useReducedMotion } from "motion/react";
-import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { useRef } from "react";
 import teaBg from "../assets/images/file_0000000066b08207b18b1ec1e8269869.png";
 import teaBgMobile from "../assets/images/tea-brush-mobile.webp";
 import SplitText from "@/components/ui/SplitText";
@@ -120,7 +120,7 @@ export default function Hero() {
 
   // Background landscape parallax
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const smoothBgY = useSpring(bgY, { stiffness: 45, damping: 20 });
+  const smoothBgY = bgY; // direct (no spring): zero extra per-frame work while scrolling
 
   const rm = useReducedMotion();
   const m = useMotionPresets();
@@ -136,7 +136,7 @@ export default function Hero() {
   const orbitY = useTransform(mouse.y, [-0.5, 0.5], [-22, 22]);
   const ovalX = useTransform(mouse.x, [-0.5, 0.5], [8, -8]);
   // Scroll parallax: portrait drifts up slower than the page, the copy a touch faster.
-  const portraitScroll = useSpring(useTransform(scrollYProgress, [0, 1], [0, -60]), { stiffness: 60, damping: 22 });
+  const portraitScroll = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const portraitY = useTransform([portraitScroll, portraitMouseY], ([a, b]: number[]) => a + b);
   const textScroll = useTransform(scrollYProgress, [0, 1], [0, -28]);
 
@@ -156,26 +156,9 @@ export default function Hero() {
      change direction" rather than "did the finger wobble"), and only
      calling setState when the direction actually flipped (skips the
      re-render + layout animation entirely on same-direction frames). */
-  const { scrollY: pageScrollY } = useScroll();
-  const [isScrollingUp, setIsScrollingUp] = useState(false);
-  const lastScrollY = useRef(0);
-  const isScrollingUpRef = useRef(false);
-  useMotionValueEvent(pageScrollY, "change", (latest) => {
-    const diff = latest - lastScrollY.current;
-    if (Math.abs(diff) > 48) {
-      lastScrollY.current = latest;
-      // Only react to scroll direction while the Hero section itself is still
-      // in view (i.e. hasn't fully scrolled past yet) — once the user has
-      // scrolled below Hero, the crossover stops responding.
-      if (scrollYProgress.get() < 1) {
-        const nextIsScrollingUp = diff < 0;
-        if (nextIsScrollingUp !== isScrollingUpRef.current) {
-          isScrollingUpRef.current = nextIsScrollingUp;
-          setIsScrollingUp(nextIsScrollingUp);
-        }
-      }
-    }
-  });
+  // Clouds no longer react to scroll direction: that needed a React re-render
+  // mid-scroll. They keep their slow CSS drift instead.
+  const isScrollingUp = false;
 
   // Crossover effect, WITHOUT ever reordering the DOM or using Framer
   // Motion's `layout` prop. Each cloud has one fixed DOM slot (left/right)

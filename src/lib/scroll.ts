@@ -10,7 +10,7 @@ export function prefersReducedMotion() {
  * Scroll to an element by id. Smooth unless the visitor prefers reduced
  * motion. `offset` mirrors the navbar's existing 24px breathing room.
  */
-export function scrollToId(id: string, offset = 24) {
+export function scrollToId(id: string, offset = 24, behavior?: ScrollBehavior) {
   const el = document.getElementById(id.replace(/^#/, ""));
   if (!el) return false;
   // A not-yet-revealed section sits `data-reveal-y` px lower than where it will
@@ -18,6 +18,6 @@ export function scrollToId(id: string, offset = 24) {
   const pending = el.closest<HTMLElement>('[data-revealed="false"]');
   const pendingShift = pending ? Number(pending.dataset.revealY) || 0 : 0;
   const top = el.getBoundingClientRect().top + window.scrollY - pendingShift - offset;
-  window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+  window.scrollTo({ top, behavior: behavior ?? (prefersReducedMotion() ? "auto" : "smooth") });
   return true;
 }

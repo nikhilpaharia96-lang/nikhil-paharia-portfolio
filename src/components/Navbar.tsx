@@ -82,9 +82,9 @@ export default function Navbar() {
     const element = document.querySelector<HTMLElement>(href);
     if (!element) return;
 
-    // Glide to the section (instant for reduced-motion users); keeps the
-    // 24px offset the source used.
-    scrollToId(href);
+    // Instant jump (unchanged from the original): the page's scroll feel is
+    // deliberately left exactly as it was.
+    scrollToId(href, 24, "auto");
   };
 
   useEffect(() => {
@@ -97,9 +97,9 @@ export default function Navbar() {
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.9, delay: 0.1, ease: EASE_OUT }}
-      className={`fixed top-0 left-0 right-0 z-[200] transition-[padding,background-color,box-shadow,border-color,backdrop-filter] duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-[200] transition-[background-color,box-shadow,border-color] duration-500 ease-out ${
         isScrolled 
-          ? "py-2.5 lg:py-3 bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-b border-blue-100/50 shadow-[0_8px_32px_rgba(29,111,235,0.08)]" 
+          ? "py-2.5 lg:py-3 bg-white/75 backdrop-blur-md border-b border-blue-100/50 shadow-[0_8px_32px_rgba(29,111,235,0.08)]" 
           : "py-4 lg:py-6 bg-transparent lg:bg-white/10 lg:backdrop-blur-md border-b border-transparent"
       }`}
       style={{ paddingTop: `max(env(safe-area-inset-top, 0px), ${isScrolled ? '10px' : '16px'})` }}

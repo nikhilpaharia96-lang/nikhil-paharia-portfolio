@@ -1,13 +1,7 @@
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { useReducedFx } from "@/hooks/use-reduced-fx";
 
 export default function GlobalBackground() {
-  const { scrollYProgress } = useScroll();
   const reducedFx = useReducedFx();
-
-  // Subtle background elements parallax
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const smoothY = useSpring(yParallax, { stiffness: 45, damping: 20 });
 
   // Lighter blur radii + no infinite pulse on small/low-power screens — large
   // blur filters are one of the most GPU-expensive things a mobile compositor
@@ -59,7 +53,7 @@ export default function GlobalBackground() {
       </svg>
 
       {/* subtle moving fog (drifts slower than layout scrolls) */}
-      <motion.div style={{ y: reducedFx ? 0 : smoothY }} className="absolute inset-0 opacity-[0.3]">
+      <div className="absolute inset-0 opacity-[0.3]">
         <div
           className={`absolute top-[18%] left-[8%] w-[380px] h-[380px] bg-blue-200/20 rounded-full ${blurMd} ${pulse}`}
           style={{ }}
@@ -74,7 +68,7 @@ export default function GlobalBackground() {
             style={{  }}
           />
         )}
-      </motion.div>
+      </div>
 
       {/* slow floating subtle particles — skip entirely on low-power/reduced-motion */}
       {!reducedFx && (
