@@ -4,7 +4,7 @@ import {
   AnimatePresence,
   useInView,
   type PanInfo,
-} from "@/lib/static-motion";
+} from "framer-motion";
 import {
   ExternalLink,
   FileText,
@@ -480,7 +480,7 @@ function FolderHeader({ project, showHint }: { project: Project; showHint: boole
           <span
             className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                        hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wide
-                       bg-slate-900 text-white opacity-0 scale-90   group-hover/peek:opacity-100 group-hover/peek:scale-100"
+                       bg-slate-900 text-white opacity-0 scale-90 transition-all duration-200 group-hover/peek:opacity-100 group-hover/peek:scale-100"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-white" />
             Click to expand
@@ -502,7 +502,7 @@ function FolderPeek({
       aria-label={`Expand ${project.title}`}
       className="group/peek block w-full rounded-lg cursor-pointer text-left overflow-hidden
                  border-2 shadow-[0_10px_28px_-8px_rgba(0,0,0,0.5)]
-                   
+                 transition-transform duration-200 hover:-translate-y-0.5
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
       style={{ background: tone.bg, borderColor: tone.border }}
     >
@@ -524,10 +524,10 @@ function FolderExpanded({
 
   return (
     <motion.div
-
-
-
-
+      drag={total > 1 ? "x" : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.12}
+      onDragEnd={handleDragEnd}
       className={`relative rounded-lg sm:rounded-xl overflow-hidden border-2 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.55)] ${total > 1 ? "cursor-grab active:cursor-grabbing" : ""}`}
       style={{ background: tone.bg, borderColor: tone.border }}
     >
@@ -551,12 +551,12 @@ function FolderExpanded({
             alt={`${project.title} — screenshot`}
             draggable={false}
             className={`w-full h-full object-cover ${project.imagePosition} pointer-events-none
-                           group-hover/shot:scale-[1.04]`}
+                        transition-transform duration-700 ease-out group-hover/shot:scale-[1.04]`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           {/* glass reflection sweep on hover */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-0 group-hover/shot:opacity-100  "
+            className="pointer-events-none absolute inset-0 opacity-0 group-hover/shot:opacity-100 transition-opacity duration-300"
             style={{
               background: "linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.22) 50%, transparent 60%)",
             }}
@@ -697,23 +697,23 @@ function FolderRow({
   return (
     <motion.div
       layout
-
+      transition={{ type: "spring", stiffness: 280, damping: 32 }}
       className="relative"
       style={{ zIndex: idx, marginTop: idx === 0 ? 0 : -18 }}
     >
       <motion.div
-
+        layoutId={`folder-${project.id}`}
         layout
-
+        transition={{ type: "spring", stiffness: 280, damping: 32 }}
         animate={{ x: a.x, rotate: a.rotate, marginRight: a.inset }}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {isActive ? (
-            <motion.div key="expanded" animate={{ opacity: 1 }}>
+            <motion.div key="expanded" initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} exit={{ opacity: 0.4 }} transition={{ duration: 0.15 }}>
               <FolderExpanded project={project} onNext={onNext} onPrev={onPrev} total={total} position={position} />
             </motion.div>
           ) : (
-            <motion.div key="collapsed" animate={{ opacity: 1 }}>
+            <motion.div key="collapsed" initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} exit={{ opacity: 0.4 }} transition={{ duration: 0.15 }}>
               <FolderPeek project={project} onSelect={onSelect} />
             </motion.div>
           )}
@@ -754,10 +754,10 @@ function FolderStack({ projects }: { projects: Project[] }) {
       {projects.map((p, idx) => (
         <motion.div
           key={p.id}
-
+          initial={{ opacity: 0, x: idx % 2 === 0 ? -90 : 90 }}
           whileInView={{ opacity: 1, x: 0 }}
-
-
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.65, ease, delay: Math.min(idx, 3) * 0.06 }}
         >
           <FolderRow
             project={p}
@@ -822,9 +822,9 @@ export default function Projects() {
         <div ref={headerRef} className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-10 items-start mb-14">
           <div>
             <motion.div
-
+              initial={{ opacity: 0, y: 14 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
-
+              transition={{ duration: 0.5, ease }}
               className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest border-2"
               style={{ borderColor: "#1d6feb", color: "#1d6feb", background: "#fff" }}
             >
@@ -832,9 +832,9 @@ export default function Projects() {
             </motion.div>
 
             <motion.h2
-
+              initial={{ opacity: 0, x: 100 }}
               animate={headerInView ? { opacity: 1, x: 0 } : {}}
-
+              transition={{ duration: 0.7, delay: 0.1, ease }}
               className="relative inline-block mb-4"
             >
               <span
@@ -854,9 +854,9 @@ export default function Projects() {
             </motion.h2>
 
             <motion.p
-
+              initial={{ opacity: 0, y: 14 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
-
+              transition={{ duration: 0.5, delay: 0.2, ease }}
               className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-md mt-3"
               style={{ fontFamily: FONT_NOTE }}
             >
@@ -867,9 +867,9 @@ export default function Projects() {
 
           {/* sticky note */}
           <motion.div
-
+            initial={{ opacity: 0, y: 14, rotate: 6 }}
             animate={headerInView ? { opacity: 1, y: 0, rotate: 3 } : {}}
-
+            transition={{ duration: 0.55, delay: 0.25, ease }}
             className="relative justify-self-start lg:justify-self-end w-full max-w-[280px] rounded-sm p-5"
             style={{
               background: "#FFF6D6",
@@ -895,7 +895,7 @@ export default function Projects() {
               <button
                 key={tab.key}
                 onClick={() => setActiveFilter(tab.key)}
-                className="relative px-4 py-3 text-sm font-bold "
+                className="relative px-4 py-3 text-sm font-bold transition-colors"
                 style={{
                   color: isActive ? "#1d6feb" : "#64748b",
                   fontFamily: FONT_NOTE,
@@ -904,8 +904,8 @@ export default function Projects() {
                 {tab.label}
                 {isActive && (
                   <motion.span
-
-
+                    layoutId="projectsFilterUnderline"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     className="absolute left-2 right-2 -bottom-[1px] h-[3px] rounded-full"
                     style={{ background: "#1d6feb" }}
                   />
@@ -920,10 +920,10 @@ export default function Projects() {
 
         {/* ── closing note ── */}
         <motion.div
-
+          initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-
-
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1, ease }}
           className="mt-10 flex items-center justify-center gap-2 text-slate-400 text-sm"
           style={{ fontFamily: FONT_NOTE }}
         >

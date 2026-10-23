@@ -6,7 +6,7 @@ import {
   useMotionValue,
   useSpring,
   useMotionValueEvent,
-} from "@/lib/static-motion";
+} from "framer-motion";
 import { SiReact, SiCss, SiNextdotjs, SiMongodb, SiFigma, SiInstagram } from "react-icons/si";
 import ServicesMobileStack from "@/components/ServicesMobileStack";
 import premiereProLogo from "../assets/logos/premiere-pro.svg";
@@ -97,10 +97,10 @@ export default function Services() {
         {/* Header — enters from the RIGHT; grows on scroll-down, shrinks on scroll-up */}
         <motion.div
           ref={headerRef}
-
+          initial={{ opacity: 0, x: rm ? 0 : 140 }}
           whileInView={{ opacity: 1, x: 0 }}
-
-
+          viewport={{ once: false, margin: "-80px" }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-20"
         >
           <motion.h2 style={{ scale }} className="section-title mb-4 inline-block">

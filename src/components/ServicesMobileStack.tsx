@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "@/lib/static-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { playCardPop } from "@/lib/sound";
 
 export type ServiceItem = {
@@ -57,12 +57,12 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
       style={{ top: BASE_TOP_PX + index * PEEK_PX, zIndex: index + 1 }}
     >
       <motion.article
-
+        initial={{ opacity: 0, x: rm ? 0 : index % 2 === 0 ? -90 : 90, y: rm ? 0 : 16, rotate: 0 }}
         whileInView={{ opacity: 1, x: 0, y: 0, rotate: isLast ? 0 : tilt }}
-
+        viewport={{ once: false, margin: "-40px" }}
         onViewportEnter={() => !rm && playCardPop()}
-
-
+        transition={{ duration: rm ? 0.2 : 0.65, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ rotate: 0, scale: 1.02 }}
         style={{ scale, filter, transformOrigin: "top center" }}
         className={`interactive relative rounded-2xl sm:rounded-3xl border-2 border-black/10 overflow-hidden mb-5
                     shadow-[0_28px_55px_-18px_rgba(15,23,42,0.4)] cursor-default
