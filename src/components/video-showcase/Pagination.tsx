@@ -1,4 +1,5 @@
-import { motion } from "@/lib/static-motion";
+import { motion } from "framer-motion";
+import { pillSpring } from "@/animations/videoShowcase.motion";
 
 type PaginationProps = {
   count: number;
@@ -23,7 +24,7 @@ export default function Pagination({ count, selectedIndex, onSelect }: Paginatio
           >
             <motion.span
               animate={{ width: active ? 24 : 8, backgroundColor: active ? "#1d6feb" : "#cbd5e1" }}
-
+              transition={pillSpring}
               className="block rounded-full h-2 focus-visible:ring-2 focus-visible:ring-primary/50"
             />
           </button>

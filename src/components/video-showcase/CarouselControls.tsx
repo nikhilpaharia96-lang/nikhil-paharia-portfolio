@@ -1,6 +1,7 @@
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "@/lib/static-motion";
+import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { magneticSpring } from "@/animations/videoShowcase.motion";
 
 function Magnetic({
   children,
@@ -15,8 +16,8 @@ function Magnetic({
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, undefined);
-  const springY = useSpring(y, undefined);
+  const springX = useSpring(x, magneticSpring);
+  const springY = useSpring(y, magneticSpring);
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (prefersReducedMotion) return;
@@ -54,7 +55,7 @@ export default function CarouselControls({ onPrev, onNext, canScrollPrev, canScr
           aria-label="Previous project"
           onClick={onPrev}
           disabled={!canScrollPrev}
-          className="interactive w-12 h-12 rounded-full bg-white/55 backdrop-blur-xl border border-white/70 flex items-center justify-center text-slate-600 hover:text-primary hover:border-primary/40 shadow-[0_10px_28px_-12px_rgba(15,45,90,0.3)]   disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-slate-600 disabled:hover:border-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          className="interactive w-12 h-12 rounded-full bg-white/55 backdrop-blur-xl border border-white/70 flex items-center justify-center text-slate-600 hover:text-primary hover:border-primary/40 shadow-[0_10px_28px_-12px_rgba(15,45,90,0.3)] transition-colors duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-slate-600 disabled:hover:border-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         >
           <ChevronLeft className="w-5 h-5" aria-hidden="true" />
         </button>
@@ -65,7 +66,7 @@ export default function CarouselControls({ onPrev, onNext, canScrollPrev, canScr
           aria-label="Next project"
           onClick={onNext}
           disabled={!canScrollNext}
-          className="interactive w-12 h-12 rounded-full bg-white/55 backdrop-blur-xl border border-white/70 flex items-center justify-center text-slate-600 hover:text-primary hover:border-primary/40 shadow-[0_10px_28px_-12px_rgba(15,45,90,0.3)]   disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-slate-600 disabled:hover:border-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          className="interactive w-12 h-12 rounded-full bg-white/55 backdrop-blur-xl border border-white/70 flex items-center justify-center text-slate-600 hover:text-primary hover:border-primary/40 shadow-[0_10px_28px_-12px_rgba(15,45,90,0.3)] transition-colors duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-slate-600 disabled:hover:border-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         >
           <ChevronRight className="w-5 h-5" aria-hidden="true" />
         </button>
