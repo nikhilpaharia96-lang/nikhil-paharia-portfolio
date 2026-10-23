@@ -70,6 +70,8 @@
     "zod": "^3.23.8"
   },
   "dependencies": {
-    "framer-motion": "^11.18.2"
+    "framer-motion": "^11.18.2",
+    "gsap": "^3.15.0",
+    "react-pageflip": "^2.0.3"
   }
 }
