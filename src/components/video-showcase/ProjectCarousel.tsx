@@ -1,4 +1,4 @@
-import { projects } from "@/constants/videoShowcase";
+import { projects as allProjects } from "@/constants/videoShowcase";
 import { useProjectCarousel } from "@/hooks/useProjectCarousel";
 import type { Project } from "@/types/video";
 import ProjectCard from "./ProjectCard";
@@ -6,10 +6,12 @@ import CarouselControls from "./CarouselControls";
 import Pagination from "./Pagination";
 
 type ProjectCarouselProps = {
+  items?: Project[];
   onPlay?: (project: Project) => void;
 };
 
-export default function ProjectCarousel({ onPlay }: ProjectCarouselProps) {
+export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps) {
+  const projects = items ?? allProjects;
   const {
     emblaRef,
     selectedIndex,

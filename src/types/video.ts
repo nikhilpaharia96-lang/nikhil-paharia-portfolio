@@ -35,3 +35,5 @@ export type ShowcaseStat = {
   value: string;
   label: string;
 };
+
+export type CardVariant = "featured" | "active" | "side";

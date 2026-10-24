@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Volume2, Settings, Maximize } from "lucide-react";
 import bgVideo from "@/assets/videos/loading-bg-desktop.mp4";
 import { featuredVideo } from "@/constants/videoShowcase";
 import { ease, tiltSpring } from "@/animations/videoShowcase.motion";
@@ -78,7 +78,7 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
           }}
           className="group relative rounded-[32px] p-[1.5px]"
         >
-          <div className="absolute -inset-[1.5px] rounded-[32px] bg-[conic-gradient(from_0deg,rgba(29,111,235,0.6),rgba(255,255,255,0.2),rgba(29,111,235,0.6))] opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute -inset-[1.5px] rounded-[32px] bg-gradient-to-br from-white/90 via-white/50 to-white/80 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute -inset-6 rounded-[40px] bg-primary/20 blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 -z-10" />
 
           <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-video w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_40px_80px_-24px_rgba(8,20,45,0.55)]">
@@ -118,7 +118,7 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
             />
 
             <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
-              <span className="px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.14em]">
+              <span className="px-3.5 py-1.5 rounded-full bg-white/95 border border-white text-slate-800 text-[11px] font-bold uppercase tracking-[0.14em] shadow-sm">
                 {featuredVideo.category}
               </span>
               <span className="px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white/90 text-xs font-mono font-semibold">
@@ -168,10 +168,43 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
               </motion.button>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 z-20">
-              <h3 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-white leading-tight max-w-xl">
+            <div className="absolute inset-x-0 bottom-14 sm:bottom-16 px-6 sm:px-8 z-20 pointer-events-none">
+              <h3 className="font-sans font-extrabold uppercase text-3xl sm:text-5xl tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
                 {featuredVideo.title}
               </h3>
+              <div className="mt-2 flex items-center gap-3">
+                <span aria-hidden="true" className="h-px w-8 sm:w-12 bg-white/70" />
+                <span className="font-script font-medium italic text-2xl sm:text-4xl leading-none text-white/95">
+                  {featuredVideo.subtitle}
+                </span>
+              </div>
+            </div>
+
+            {/* Player bar — play/fullscreen open the video, the rest is visual only */}
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 sm:gap-4 px-5 sm:px-7 pb-4 sm:pb-5 pt-8 text-white bg-gradient-to-t from-black/60 to-transparent">
+              <button
+                type="button"
+                aria-label={`Play ${featuredVideo.title}`}
+                onClick={() => (featuredVideo.videoUrl ? onPlay?.(featuredVideo.videoUrl) : setPlaying((p) => !p))}
+                className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
+              >
+                <Play className="w-4 h-4" fill="currentColor" aria-hidden="true" />
+              </button>
+              <span aria-hidden="true" className="shrink-0 text-xs font-mono tabular-nums text-white/90">0:00 / {featuredVideo.duration}</span>
+              <div aria-hidden="true" className="relative h-1 flex-1 rounded-full bg-white/30">
+                <div className="absolute inset-y-0 left-0 w-[12%] rounded-full bg-primary" />
+                <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary border-2 border-white" />
+              </div>
+              <Volume2 className="hidden xs:block w-4 h-4 shrink-0 text-white/90" aria-hidden="true" />
+              <Settings className="hidden xs:block w-4 h-4 shrink-0 text-white/90" aria-hidden="true" />
+              <button
+                type="button"
+                aria-label={`Open ${featuredVideo.title} player`}
+                onClick={() => featuredVideo.videoUrl && onPlay?.(featuredVideo.videoUrl)}
+                className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
+              >
+                <Maximize className="w-4 h-4" aria-hidden="true" />
+              </button>
             </div>
           </div>
         </motion.div>
