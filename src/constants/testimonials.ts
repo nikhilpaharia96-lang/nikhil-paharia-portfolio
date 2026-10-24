@@ -1,3 +1,4 @@
+import apunbazarLogo from "@/assets/images/testimonials/apunbazar-logo.png";
 import { Users, Layers, Star, ThumbsUp, Globe2 } from "lucide-react";
 import type { Testimonial, TrustStat, TrustedBrand } from "@/types/testimonial";
 
@@ -202,20 +203,20 @@ export const trustStats: TrustStat[] = [
 export const trustedBrands: TrustedBrand[] = [
   {
     name: "ApunBazar",
-    logo: "https://www.apunbazar.shop/logo.png",
+    logo: apunbazarLogo,
     shortName: "AB",
     color: "#1d6feb",
   },
   {
     name: "Jagiroad College",
     logo: "https://api.dicebear.com/9.x/initials/svg?seed=JagiroadCollege&backgroundType=gradientLinear&backgroundColor=7c3aed,a78bfa&fontFamily=Arial&fontWeight=700&radius=20",
-    shortName: "JC",
+    shortName: "JA",
     color: "#7c3aed",
   },
   {
     name: "FitBite",
     logo: "https://api.dicebear.com/9.x/initials/svg?seed=FitBite&backgroundType=gradientLinear&backgroundColor=059669,34d399&fontFamily=Arial&fontWeight=700&radius=20",
-    shortName: "FB",
+    shortName: "FI",
     color: "#059669",
   },
   {
