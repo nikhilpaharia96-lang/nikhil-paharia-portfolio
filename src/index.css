@@ -686,3 +686,23 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .nav-enter { animation: none; }
 }
+
+/* Testimonials — photo fades into the glass card */
+.testi-photo {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 30%, #000 70%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 30%, #000 70%);
+}
+@media (min-width: 360px) {
+  .testi-photo {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 62%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 62%);
+  }
+}
+@keyframes testi-swap {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.testi-swap { animation: testi-swap 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .testi-swap { animation: none; }
+}
