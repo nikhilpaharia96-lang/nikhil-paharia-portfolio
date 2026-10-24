@@ -1,6 +1,6 @@
 import { motion } from "@/lib/static-motion";
 import { RiArrowUpLine, RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill } from "react-icons/ri";
-import teaBg from "../assets/images/tea-sunset-person-wide.webp";
+import footerBg from "../assets/images/footer-bg.webp";
 import Magnetic from "@/components/ui/Magnetic";
 import SplitText from "@/components/ui/SplitText";
 import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
@@ -25,9 +25,17 @@ export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "auto" });
 
   return (
-    <footer className="relative bg-gradient-to-b from-blue-50/30 to-white pt-32 pb-12 border-t border-blue-100 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none">
-        <img src={teaBg} className="w-full h-full object-cover object-center grayscale" alt="" />
+    <footer className="relative bg-blue-50 pt-32 pb-12 border-t border-blue-100 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <img
+          src={footerBg}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover object-[center_64%]"
+        />
+        <div className="absolute inset-0 bg-white/30" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/80 to-transparent" />
       </div>
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
@@ -44,7 +52,7 @@ export default function Footer() {
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6">
             <SplitText type="words">Let's build the future.</SplitText>
           </h2>
-          <p className="text-lg text-slate-500 font-light">
+          <p className="text-lg text-slate-600 font-light">
             Available for freelance opportunities globally. Bring your boldest ideas.
           </p>
         </motion.div>
@@ -64,7 +72,7 @@ export default function Footer() {
                 Nikhil <span className="text-primary">Paharia</span>
               </a>
             </Magnetic>
-            <p className="text-slate-500 text-base">Crafting cinematic digital experiences.</p>
+            <p className="text-slate-600 text-base">Crafting cinematic digital experiences.</p>
           </motion.div>
 
           {/* Nav + Socials — from RIGHT */}
@@ -100,7 +108,7 @@ export default function Footer() {
                     aria-label={label}
 
                     variants={cinChildSmall}
-                    className={`interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center ${hoverBg} hover:text-white  `}
+                    className={`interactive w-10 h-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center ${hoverBg} hover:text-white  `}
                   >
                     <Icon className="text-lg" />
                   </motion.a>
@@ -118,10 +126,10 @@ export default function Footer() {
 
           className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-blue-100"
         >
-          <p className="text-slate-500 text-sm font-medium">
+          <p className="text-slate-700 text-sm font-medium">
             © {new Date().getFullYear()} Nikhil Paharia. <span className="hidden sm:inline">All rights reserved.</span>
           </p>
-          <p className="text-slate-500 text-sm italic">Crafted in Assam, for the world.</p>
+          <p className="text-slate-700 text-sm italic">Crafted in Assam, for the world.</p>
 
           {/* Back-to-top — elastic morph button with Magnetic */}
           <Magnetic range={60} strength={0.45} scaleHover={1.1}>
@@ -130,7 +138,7 @@ export default function Footer() {
 
 
 
-              className="interactive w-12 h-12 rounded-full bg-white border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary   text-slate-600"
+              className="interactive w-12 h-12 rounded-full bg-white/90 border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary   text-slate-600"
               aria-label="Scroll to top"
             >
               <motion.div
