@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { allTestimonials } from "@/constants/testimonials";
-import photo from "@/assets/images/tea-sunset-person-wide.webp";
+import photo from "@/assets/images/my-new-photo.jpg";
 import AvatarImage from "./AvatarImage";
 
 const arrow =
-  "w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-white shadow-[0_10px_24px_-10px_rgba(15,45,90,0.45)] flex items-center justify-center text-slate-900 transition hover:bg-white hover:shadow-[0_0_0_4px_rgba(8,102,255,0.16)] active:scale-95 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40";
+  "w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 backdrop-blur border border-white shadow-[0_10px_24px_-10px_rgba(15,45,90,0.45)] flex items-center justify-center text-slate-900 transition hover:bg-white hover:shadow-[0_0_0_4px_rgba(8,102,255,0.16)] active:scale-95 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40";
 
 export default function FeaturedTestimonial() {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.max(0, allTestimonials.findIndex((x) => x.company === "Travel Assam")));
   const touchX = useRef<number | null>(null);
   const count = allTestimonials.length;
   const t = allTestimonials[index];
@@ -33,30 +33,30 @@ export default function FeaturedTestimonial() {
       }}
       className="focus-visible:outline-none"
     >
-      <figure className="relative overflow-hidden rounded-[26px] bg-white/80 backdrop-blur-2xl border border-white/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_30px_60px_-30px_rgba(15,45,90,0.5)] min-[420px]:min-h-[19rem] lg:min-h-[22rem]">
-        <div key={index} className="testi-swap relative z-10 p-5 sm:p-8 min-[420px]:w-[60%] lg:w-[62%] flex flex-col min-[420px]:min-h-[inherit]">
-          <Quote className="w-9 h-9 sm:w-12 sm:h-12 text-primary mb-3" fill="currentColor" strokeWidth={0} aria-hidden="true" />
-          <blockquote className="flex-1 text-[15px] sm:text-lg lg:text-xl leading-[1.55] text-slate-800">
+      <figure className="relative overflow-hidden rounded-[26px] bg-white/80 backdrop-blur-2xl border border-white/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_30px_60px_-30px_rgba(15,45,90,0.5)] min-[360px]:min-h-[clamp(15rem,60vw,19rem)] lg:min-h-[22rem]">
+        <div key={index} className="testi-swap relative z-10 p-4 sm:p-8 min-[360px]:w-[58%] lg:w-[62%] flex flex-col min-[360px]:min-h-[inherit]">
+          <Quote className="w-[clamp(1.75rem,8.5vw,3rem)] h-[clamp(1.75rem,8.5vw,3rem)] text-primary mb-2 sm:mb-3" fill="currentColor" strokeWidth={0} aria-hidden="true" />
+          <blockquote className="flex-1 text-[clamp(0.8rem,3.5vw,1.15rem)] lg:text-xl leading-[1.5] text-slate-800">
             “{t.content}”
           </blockquote>
-          <div className="h-px bg-primary/15 my-4 sm:my-5" />
+          <div className="h-px bg-primary/15 my-3 sm:my-5" />
           <figcaption className="flex items-center gap-3">
             <div
-              className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-black shrink-0 ring-2 ring-white"
+              className="w-[clamp(2rem,10vw,3rem)] h-[clamp(2rem,10vw,3rem)] rounded-full overflow-hidden flex items-center justify-center text-white text-xs font-black shrink-0 ring-2 ring-white"
               style={{ background: `linear-gradient(135deg, ${t.avatarFrom}, ${t.avatarTo})` }}
             >
               <AvatarImage src={t.avatarImg} alt={t.name} fallback={t.initials} />
             </div>
             <div className="min-w-0 leading-tight">
-              <p className="font-bold text-slate-900 text-[15px]">{t.name}</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">
+              <p className="font-bold text-slate-900 text-[clamp(0.8rem,3.4vw,1rem)]">{t.name}</p>
+              <p className="text-[clamp(0.66rem,2.9vw,0.85rem)] text-slate-500 mt-0.5">
                 {t.role} · <span className="font-semibold text-primary">{t.company}</span>
               </p>
             </div>
           </figcaption>
         </div>
 
-        <div className="relative h-44 min-[420px]:absolute min-[420px]:inset-y-0 min-[420px]:right-0 min-[420px]:h-auto min-[420px]:w-[52%] lg:w-[48%] pointer-events-none">
+        <div className="relative h-52 min-[360px]:absolute min-[360px]:inset-y-0 min-[360px]:right-0 min-[360px]:h-auto min-[360px]:w-[50%] lg:w-[48%] pointer-events-none">
           <img
             src={photo}
             alt=""
@@ -65,7 +65,7 @@ export default function FeaturedTestimonial() {
             height={1024}
             loading="lazy"
             decoding="async"
-            className="testi-photo absolute inset-0 w-full h-full object-cover object-[38%_center] brightness-110 saturate-110"
+            className="testi-photo absolute inset-0 w-full h-full object-cover object-[50%_72%]"
           />
         </div>
       </figure>
@@ -74,8 +74,8 @@ export default function FeaturedTestimonial() {
         Testimonial {index + 1} of {count}: {t.name}, {t.company}
       </p>
 
-      <div className="mt-4 flex items-center justify-between min-[400px]:grid min-[400px]:grid-cols-[1fr_auto_1fr]">
-        <div className="hidden min-[400px]:block" aria-hidden="true" />
+      <div className="mt-4 flex items-center justify-between min-[360px]:grid min-[360px]:grid-cols-[1fr_auto_1fr]">
+        <div className="hidden min-[360px]:block" aria-hidden="true" />
         <div className="flex items-center" role="group" aria-label="Choose testimonial">
           {allTestimonials.map((item, i) => (
             <button

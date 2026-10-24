@@ -21,15 +21,16 @@ export default function Testimonials() {
       <div className="container-tight relative z-10 max-w-full">
         {/* Mobile order: intro → feedback card → carousel → stats. Desktop: two columns. */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 lg:gap-y-10 items-start">
-          <div className="lg:col-span-5 lg:row-start-1">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/85 backdrop-blur-xl border border-white shadow-[0_8px_24px_-12px_rgba(15,45,90,0.3)] mb-5 sm:mb-6">
+          {/* Intro. Phones/tablets: heading column on the left, compact feedback card on the right (as in the design). */}
+          <div className="lg:col-span-5 lg:row-start-1 grid grid-cols-1 min-[360px]:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)] gap-x-[clamp(0.6rem,3vw,1.5rem)] lg:block">
+            <div className="inline-flex w-fit items-center gap-2 px-4 py-2 rounded-full bg-white/85 backdrop-blur-xl border border-white shadow-[0_8px_24px_-12px_rgba(15,45,90,0.3)] mb-[clamp(0.75rem,3.5vw,1.5rem)]">
               <span aria-hidden="true" className="text-primary font-black leading-none text-sm">“</span>
-              <span className="text-[11px] sm:text-xs font-bold tracking-[0.12em] uppercase text-primary">
+              <span className="text-[clamp(0.6rem,2.8vw,0.75rem)] font-bold tracking-[0.12em] uppercase text-primary">
                 Client Stories
               </span>
             </div>
 
-            <h2 className="font-sans font-extrabold tracking-tight text-[2.3rem] min-[360px]:text-[2.6rem] min-[420px]:text-[3rem] sm:text-6xl lg:text-[4rem] leading-[1.02] text-[#0b1530]">
+            <h2 className="font-sans font-extrabold tracking-tight text-[clamp(1.6rem,8.2vw,3.6rem)] lg:text-[4rem] leading-[1.02] text-[#0b1530] min-[360px]:row-start-2">
               Loved by
               <br />
               Clients.
@@ -49,10 +50,14 @@ export default function Testimonials() {
               </span>
             </h2>
 
-            <p className="mt-6 max-w-md text-[15px] sm:text-[1.05rem] leading-relaxed text-slate-700">
+            <p className="mt-[clamp(0.8rem,4vw,1.5rem)] max-w-md text-[clamp(0.72rem,3.1vw,1rem)] lg:text-[1.05rem] leading-[1.55] text-slate-700 min-[360px]:row-start-3">
               Real stories from founders, creators and businesses I've worked with. Every project is
               crafted with attention to detail, performance and long-term impact.
             </p>
+
+            <div className="mt-5 min-[360px]:mt-0 min-[360px]:col-start-2 min-[360px]:row-start-2 min-[360px]:row-span-2 min-[360px]:self-start lg:hidden">
+              <WorkedWithMeCTA variant="inline" onOpen={() => setModalOpen(true)} />
+            </div>
           </div>
 
           <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:self-center relative">
@@ -75,9 +80,6 @@ export default function Testimonials() {
               <MoveDownLeft className="w-6 h-6 text-primary -ml-5" strokeWidth={1.6} />
             </div>
 
-            <div className="lg:hidden mb-5">
-              <WorkedWithMeCTA variant="inline" onOpen={() => setModalOpen(true)} />
-            </div>
             <FeaturedTestimonial />
           </div>
 
