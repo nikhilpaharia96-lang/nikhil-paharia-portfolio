@@ -34,8 +34,7 @@ export default function Navbar() {
       sectionOffsets.current = navLinks.map((link) => {
         const id = link.href.substring(1);
         const el = document.getElementById(id);
-        // Absolute document position (offsetTop is wrong for sections nested in positioned wrappers).
-        return { id, top: el ? el.getBoundingClientRect().top + window.scrollY : Infinity };
+        return { id, top: el ? el.offsetTop : Infinity };
       });
     };
     measure();
