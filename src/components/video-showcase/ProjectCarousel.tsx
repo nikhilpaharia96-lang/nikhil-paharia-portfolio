@@ -33,8 +33,11 @@ export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps)
       tabIndex={0}
       onKeyDown={onKeyDown}
     >
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-5 sm:gap-6 pb-4 -ml-5 sm:-ml-6">
+      <div
+        className="overflow-hidden py-8 -my-2 [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]"
+        ref={emblaRef}
+      >
+        <div className="flex gap-5 sm:gap-6 -ml-5 sm:-ml-6">
           {projects.map((project, index) => {
             const distance = getDistance(index);
             const isActive = distance === 0;
@@ -64,9 +67,14 @@ export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps)
         Showing project {selectedIndex + 1} of {projects.length}: {projects[selectedIndex]?.title}
       </p>
 
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex items-center justify-between mt-2">
         <Pagination count={projects.length} selectedIndex={selectedIndex} onSelect={scrollTo} />
-        <CarouselControls onPrev={scrollPrev} onNext={scrollNext} canScrollPrev={canScrollPrev} canScrollNext={canScrollNext} />
+        <div className="flex items-center gap-4">
+          <span aria-hidden="true" className="hidden md:block text-sm font-mono tabular-nums text-slate-600">
+            {String(selectedIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+          </span>
+          <CarouselControls onPrev={scrollPrev} onNext={scrollNext} canScrollPrev={canScrollPrev} canScrollNext={canScrollNext} />
+        </div>
       </div>
     </div>
   );
