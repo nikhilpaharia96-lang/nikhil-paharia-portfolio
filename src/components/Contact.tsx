@@ -10,8 +10,8 @@ import {
   RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill, RiWhatsappFill,
 } from "react-icons/ri";
 import Magnetic from "@/components/ui/Magnetic";
-import SplitText from "@/components/ui/SplitText";
 import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
+import connectBg from "@/assets/images/showcase-bg.webp";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -406,39 +406,50 @@ export default function Contact() {
 
 
             >
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-primary/20 shadow-[0_2px_12px_rgba(29,111,235,0.08)]">
-                <Send className="w-3.5 h-3.5 text-primary" />
-                <span className="text-xs font-semibold text-primary tracking-[0.14em] uppercase">Let's Connect</span>
+              {/* Mountain sky backdrop — fades softly into the page */}
+              <div aria-hidden="true" className="pointer-events-none absolute -inset-x-6 -top-10 h-[34rem] sm:h-[36rem] -z-10 overflow-hidden rounded-[2rem] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)]">
+                <img src={connectBg} alt="" className="w-full h-full object-cover object-left opacity-90" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/55 via-white/65 to-white/85" />
+                {/* tiny birds */}
+                <svg viewBox="0 0 60 30" className="absolute right-6 top-24 w-14 text-[#0f2a5c]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                  <path d="M4 12c4-5 8-5 11 0 3-5 7-5 11 0" />
+                  <path d="M34 22c3-4 6-4 8.5 0 2.5-4 5.5-4 8.5 0" />
+                </svg>
               </div>
 
-              <h2 className="text-5xl md:text-6xl font-serif font-bold mb-8 leading-[1.1] text-foreground max-w-full">
-                <SplitText type="words">Let's Build Something</SplitText>
-                <br />
-                <span className="relative inline-block">
-                  <SplitText type="words" delay={0.15} charClassName="text-gradient">Amazing</SplitText>
-                  {/* Hand-drawn brush-stroke underline accent */}
-                  <motion.svg
-                    aria-hidden="true"
-                    viewBox="0 0 180 14"
-                    className="absolute left-0 -bottom-2 w-full h-3 text-primary/70"
+              {/* Eyebrow — red dot pill */}
+              <div className="inline-flex items-center gap-2 mb-7 px-4 py-1.5 rounded-full bg-white/85 backdrop-blur-xl border border-white/80 shadow-[0_8px_24px_-12px_rgba(15,45,90,0.25)]">
+                <span className="w-2 h-2 rounded-full bg-red-500" aria-hidden="true" />
+                <span className="text-[11px] sm:text-xs font-bold tracking-[0.12em] uppercase text-slate-800">Let's Connect</span>
+              </div>
 
-                    whileInView={{ pathLength: 1, opacity: 1 }}
+              <div className="relative">
+                {/* Handwritten note + curved arrow */}
+                <div aria-hidden="true" className="hidden sm:block absolute -left-4 lg:-left-20 top-6 font-script font-bold text-xl leading-[1.15] text-[#14284f] -rotate-[10deg] select-none">
+                  Creative<br />Ideas<br />Collaboration
+                  <svg viewBox="0 0 70 60" className="mt-1 ml-6 w-14 h-12 text-primary" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 4C10 30 28 46 58 50" />
+                    <path d="M48 42l11 8-12 6" />
+                  </svg>
+                </div>
 
+                <h2 className="font-sans font-extrabold tracking-tight text-[2.9rem] sm:text-6xl lg:text-[4.2rem] leading-[0.98] text-[#0a0f1e] mb-7 sm:pl-14 lg:pl-0">
+                  Let's Build
+                  <br />
+                  Something
+                  <br />
+                  <span className="relative inline-block font-script font-bold italic text-primary text-[1.18em] leading-none -rotate-3 align-baseline my-1">
+                    Amazing
+                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full h-3 text-primary" viewBox="0 0 200 12" preserveAspectRatio="none" fill="none">
+                      <path d="M3 8 C 40 2, 110 2, 197 6" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <br />
+                  Together.
+                </h2>
+              </div>
 
-                  >
-                    <path
-                      d="M2 10.5C40 4 90 2 130 6C150 8 165 6 178 4"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                  </motion.svg>
-                </span>{" "}
-                <SplitText type="words" delay={0.22}>Together.</SplitText>
-              </h2>
-              <p className="text-xl text-slate-600 mb-10 font-light max-w-lg leading-relaxed">
+              <p className="text-base sm:text-[1.05rem] text-slate-700 mb-10 max-w-md leading-relaxed">
                 Have a project in mind or just want to say hi? Tell me what you're building and I'll get back to you as soon as possible.
               </p>
 
