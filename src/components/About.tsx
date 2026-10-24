@@ -1646,7 +1646,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative overflow-hidden section-wrap max-w-full py-12 sm:py-16 md:py-16 lg:py-16 bg-white"
+      className="relative overflow-hidden section-wrap max-w-full py-3 sm:py-16 md:py-16 lg:py-16 bg-white"
       aria-label="About — My Story"
     >
       {/* subtle blueprint grid backdrop — keeps the notebook as the focal point */}
@@ -1679,7 +1679,7 @@ export default function About() {
         ))}
       </div>
 
-      <div className="container-tight !px-2 sm:!px-6 relative z-10 max-w-full">
+      <div className="container-tight !px-0 sm:!px-6 relative z-10 max-w-full">
         {/* ═══════════════ THE NOTEBOOK (all breakpoints) ═══════════════
             Same notebook, same content, same styling at every size. The
             cursor-tilt/spotlight effects are mouse-only and simply no-op
@@ -1738,13 +1738,13 @@ export default function About() {
                     scale: { type: "spring", stiffness: 170, damping: 14, mass: 1 },
                   }
             }
-            className="relative rounded-[24px] overflow-hidden
+            className="relative rounded-none sm:rounded-[24px] overflow-hidden
                        shadow-[0_2px_0_rgba(0,0,0,0.05)_inset,0_50px_100px_-30px_rgba(70,50,20,0.35)]
-                       border border-[#e8dcc4]
-                       max-w-[90vw] mx-auto sm:max-w-none sm:mx-0"
+                       border-0 sm:border border-[#e8dcc4]
+                       w-full max-w-full mx-0 sm:max-w-none"
           >
             {/* leather-ish outer frame */}
-            <div className="absolute inset-0 pointer-events-none rounded-[24px] ring-1 ring-inset ring-black/5 z-30" />
+            <div className="absolute inset-0 pointer-events-none rounded-none sm:rounded-[24px] ring-1 ring-inset ring-black/5 z-30" />
 
             {/* folded corner (top-right) */}
             <div
