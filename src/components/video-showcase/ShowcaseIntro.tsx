@@ -39,7 +39,7 @@ export default function ShowcaseIntro({ onWatchShowreel }: ShowcaseIntroProps) {
         emotion, tell stories and leave a lasting impact.
       </p>
 
-      <div className="mt-7 flex flex-wrap items-center gap-3">
+      <div className="mt-7 hidden sm:flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={onWatchShowreel}
@@ -57,7 +57,7 @@ export default function ShowcaseIntro({ onWatchShowreel }: ShowcaseIntroProps) {
         </a>
       </div>
 
-      <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5">
+      <dl className="mt-8 hidden sm:grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5">
         {showcaseStats.map(({ icon: Icon, value, label }) => (
           <div key={label} className="flex items-center gap-2.5">
             <div className="w-10 h-10 shrink-0 rounded-xl bg-white/80 border border-white/90 flex items-center justify-center shadow-[0_8px_20px_-10px_rgba(15,45,90,0.35)]">
