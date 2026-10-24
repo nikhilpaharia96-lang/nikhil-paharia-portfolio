@@ -15,6 +15,7 @@ import Services from "@/components/Services";
 import Testimonials from "@/components/testimonials/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import CinematicSection from "@/components/CinematicSection";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -33,9 +34,13 @@ function Portfolio() {
         <VideoShowcase />
         <Services />
         <Testimonials />
-        <Contact />
+        <CinematicSection parallax={40} delay={0.05}>
+          <Contact />
+        </CinematicSection>
       </main>
-      <Footer />
+      <CinematicSection parallax={20} delay={0}>
+        <Footer />
+      </CinematicSection>
     </>
   );
 }

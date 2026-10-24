@@ -1,9 +1,9 @@
-import { motion } from "@/lib/static-motion";
+import { motion } from "framer-motion";
 import { RiArrowUpLine, RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill } from "react-icons/ri";
 import teaBg from "../assets/images/tea-sunset-person-wide.webp";
-import Magnetic from "@/components/ui/Magnetic";
-import SplitText from "@/components/ui/SplitText";
-import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
+import Magnetic from "@/components/ui/live/Magnetic";
+import SplitText from "@/components/ui/live/SplitText";
+import { staggerContainer, cinChildSmall } from "@/components/CinematicSection";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -22,7 +22,7 @@ const navLinks = [
 ];
 
 export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "auto" });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <footer className="relative bg-gradient-to-b from-blue-50/30 to-white pt-32 pb-12 border-t border-blue-100 overflow-hidden">
@@ -35,10 +35,10 @@ export default function Footer() {
 
         {/* Hero text */}
         <motion.div
-
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-
-
+          viewport={{ once: false, margin: "-100px" }}
+          transition={{ duration: 0.8, ease }}
           className="text-center mb-24 max-w-2xl mx-auto"
         >
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6">
@@ -53,14 +53,14 @@ export default function Footer() {
 
           {/* Brand — from LEFT */}
           <motion.div
-
+            initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-
-
+            viewport={{ once: false, margin: "-80px" }}
+            transition={{ duration: 0.65, ease }}
             className="text-center md:text-left"
           >
             <Magnetic range={50} strength={0.2}>
-              <a href="#home" className="font-mono text-3xl font-bold tracking-wider block mb-3 flex items-center justify-center md:justify-start gap-2 text-foreground hover:opacity-80 ">
+              <a href="#home" className="font-mono text-3xl font-bold tracking-wider block mb-3 flex items-center justify-center md:justify-start gap-2 text-foreground hover:opacity-80 transition-opacity">
                 Nikhil <span className="text-primary">Paharia</span>
               </a>
             </Magnetic>
@@ -70,10 +70,10 @@ export default function Footer() {
           {/* Nav + Socials — from RIGHT */}
           <motion.div
             variants={staggerContainer}
-
+            initial="hidden"
             whileInView="show"
-
-
+            viewport={{ once: false, margin: "-80px" }}
+            transition={{ delayChildren: 0.1 }}
             className="flex flex-col items-center gap-6"
           >
             {/* Nav links */}
@@ -82,9 +82,9 @@ export default function Footer() {
                 <motion.a
                   key={link.label}
                   href={link.href}
-
+                  whileHover={{ y: -2, color: "#1D6FEB" }}
                   variants={cinChildSmall}
-                  className="hover:text-primary  interactive"
+                  className="hover:text-primary transition-colors interactive"
                 >
                   {link.label}
                 </motion.a>
@@ -98,9 +98,9 @@ export default function Footer() {
                   <motion.a
                     href={href}
                     aria-label={label}
-
+                    whileTap={{ scale: 0.88 }}
                     variants={cinChildSmall}
-                    className={`interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center ${hoverBg} hover:text-white  `}
+                    className={`interactive w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center ${hoverBg} hover:text-white transition-colors duration-300`}
                   >
                     <Icon className="text-lg" />
                   </motion.a>
@@ -112,10 +112,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <motion.div
-
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-
-
+          viewport={{ once: false, margin: "-60px" }}
+          transition={{ duration: 0.5, delay: 0.2, ease }}
           className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-blue-100"
         >
           <p className="text-slate-500 text-sm font-medium">
@@ -127,15 +127,20 @@ export default function Footer() {
           <Magnetic range={60} strength={0.45} scaleHover={1.1}>
             <motion.button
               onClick={scrollToTop}
-
-
-
-              className="interactive w-12 h-12 rounded-full bg-white border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary   text-slate-600"
+              whileHover={{
+                scale: 1.15,
+                y: -4,
+                borderRadius: "14px",
+                boxShadow: "0 0 24px rgba(29,111,235,0.45)",
+              }}
+              whileTap={{ scale: 0.9, rotate: 180 }}
+              transition={{ type: "spring", stiffness: 280, damping: 18 }}
+              className="interactive w-12 h-12 rounded-full bg-white border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors duration-300 text-slate-600"
               aria-label="Scroll to top"
             >
               <motion.div
-
-
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 400 }}
               >
                 <RiArrowUpLine className="text-2xl" />
               </motion.div>
