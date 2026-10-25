@@ -45,7 +45,7 @@ export default function VideoShowcase() {
         </div>
 
         {visibleProjects.length > 0 ? (
-          <ProjectCarousel key={filter} items={visibleProjects} onPlay={handlePlayProject} />
+          <ProjectCarousel key={filter} items={visibleProjects} onPlay={handlePlayProject} paused={!!activeVideo} />
         ) : (
           <p className="mt-8 text-center text-sm text-slate-500">No videos in this category yet.</p>
         )}

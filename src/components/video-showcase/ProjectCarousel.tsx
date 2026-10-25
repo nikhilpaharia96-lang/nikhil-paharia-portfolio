@@ -8,9 +8,11 @@ import Pagination from "./Pagination";
 type ProjectCarouselProps = {
   items?: Project[];
   onPlay?: (project: Project) => void;
+  /** Pause autoplay (e.g. while the video lightbox is open). */
+  paused?: boolean;
 };
 
-export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps) {
+export default function ProjectCarousel({ items, onPlay, paused }: ProjectCarouselProps) {
   const projects = items ?? allProjects;
   const {
     emblaRef,
@@ -22,7 +24,8 @@ export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps)
     scrollTo,
     getDistance,
     onKeyDown,
-  } = useProjectCarousel(projects.length);
+    setHovered,
+  } = useProjectCarousel(projects.length, { autoplayMs: 3000, paused });
 
   return (
     <div
@@ -32,6 +35,8 @@ export default function ProjectCarousel({ items, onPlay }: ProjectCarouselProps)
       aria-label="Project reel"
       tabIndex={0}
       onKeyDown={onKeyDown}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div
         className="overflow-hidden py-8 -my-2 [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]"
