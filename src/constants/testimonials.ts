@@ -172,6 +172,17 @@ export const testimonials: Testimonial[] = [
  * testimonial as an equal-weight card in a single row/carousel (no
  * "one big card + smaller ones" split).
  */
+/*
+ * CLIENT VIDEO MESSAGES
+ * ---------------------
+ * To make the play button on a testimonial card open that client's video message,
+ * add a `videoUrl` to the testimonial below. Accepted:
+ *   • a YouTube / Instagram link:   videoUrl: "https://youtu.be/xxxx"
+ *   • a hosted video file:          videoUrl: "https://your-site.com/priya.mp4"
+ *   • a file inside this project:   import priya from "@/assets/videos/priya.mp4";  videoUrl: priya
+ * Optional: videoPoster: <image> to show a custom thumbnail. Testimonials without a
+ * videoUrl show a small "Video message coming soon" note when the button is pressed.
+ */
 export const allTestimonials: Testimonial[] = [featuredTestimonial, ...testimonials];
 
 /** Trust bar stats — `value` is numeric so it can be counted up on scroll-into-view. */
