@@ -81,7 +81,7 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
           <div className="absolute -inset-[1.5px] rounded-[32px] bg-gradient-to-br from-white/90 via-white/50 to-white/80 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute -inset-6 rounded-[40px] bg-primary/20 blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 -z-10" />
 
-          <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-[4/3] sm:aspect-[16/10] w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_50px_100px_-28px_rgba(8,20,45,0.6)]">
+          <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-[5/4] sm:aspect-[16/10] w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_50px_100px_-28px_rgba(8,20,45,0.6)]">
             <motion.img
               src={featuredVideo.image}
               alt=""
@@ -90,7 +90,7 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
               decoding="async"
               animate={{
                 scale: active ? 1.08 : 1,
-                filter: active ? "blur(1px) brightness(0.6)" : "brightness(0.85)",
+                filter: active ? "blur(1px) brightness(0.6)" : "brightness(0.95)",
               }}
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="absolute inset-0 w-full h-full object-cover"
@@ -109,8 +109,7 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
               }`}
             />
 
-            <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/25 pointer-events-none" />
 
             <motion.div
               className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -126,9 +125,9 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
               </span>
             </div>
 
-            {/* Center play/pause control — a real button now: keyboard-focusable,
-                operable by Enter/Space, and works for touch users who have no hover state. */}
-            <div className="absolute inset-0 flex items-center justify-center z-20">
+            {/* Centered stack: play button, title, script subtitle with side lines.
+                The play control is a real button: keyboard-focusable and touch-friendly. */}
+            <div className="absolute inset-x-0 top-0 bottom-14 sm:bottom-[4.5rem] z-20 flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 text-center">
               <motion.button
                 type="button"
                 onClick={() => {
@@ -147,41 +146,42 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
                 }
                 aria-pressed={playing}
                 className="interactive relative focus-visible:outline-none"
-                animate={{ scale: active ? 1.15 : 1 }}
+                animate={{ scale: active ? 1.1 : 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
               >
                 {!prefersReducedMotion && (
                   <motion.span
                     aria-hidden="true"
                     className="absolute inset-0 rounded-full bg-white/40"
-                    animate={{ scale: [1, 1.6, 1], opacity: [0.5, 0, 0.5] }}
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
                     transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
                   />
                 )}
-                <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow-[0_20px_45px_-10px_rgba(0,0,0,0.5)] group-focus-visible:ring-4 group-focus-visible:ring-primary/40 focus-visible:ring-4 focus-visible:ring-primary/50">
+                <div className="relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-white flex items-center justify-center shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] focus-visible:ring-4 focus-visible:ring-primary/50">
                   {playing && !featuredVideo.videoUrl ? (
-                    <Pause className="w-8 h-8 sm:w-11 sm:h-11 text-primary" fill="currentColor" aria-hidden="true" />
+                    <Pause className="w-6 h-6 sm:w-9 sm:h-9 text-primary" fill="currentColor" aria-hidden="true" />
                   ) : (
-                    <Play className="w-8 h-8 sm:w-11 sm:h-11 text-primary ml-1" fill="currentColor" aria-hidden="true" />
+                    <Play className="w-6 h-6 sm:w-9 sm:h-9 text-primary ml-0.5 sm:ml-1" fill="currentColor" aria-hidden="true" />
                   )}
                 </div>
               </motion.button>
-            </div>
 
-            <div className="absolute inset-x-0 bottom-16 sm:bottom-20 px-6 sm:px-10 z-20 pointer-events-none">
-              <h3 className="font-sans font-extrabold uppercase text-4xl sm:text-6xl lg:text-[4.25rem] tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
-                {featuredVideo.title}
-              </h3>
-              <div className="mt-2 flex items-center gap-3">
-                <span aria-hidden="true" className="h-px w-10 sm:w-16 bg-white/70" />
-                <span className="font-script font-medium italic text-3xl sm:text-5xl leading-none text-white/95">
-                  {featuredVideo.subtitle}
-                </span>
+              <div className="pointer-events-none">
+                <h3 className="font-sans font-extrabold uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
+                  {featuredVideo.title}
+                </h3>
+                <div className="mt-2 sm:mt-3 flex items-center justify-center gap-3 sm:gap-4">
+                  <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
+                  <span className="font-script font-medium italic text-2xl sm:text-4xl leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+                    {featuredVideo.subtitle}
+                  </span>
+                  <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
+                </div>
               </div>
             </div>
 
             {/* Player bar — play/fullscreen open the video, the rest is visual only */}
-            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 sm:gap-5 px-5 sm:px-8 pb-5 sm:pb-6 pt-10 text-white bg-gradient-to-t from-black/60 to-transparent">
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 sm:gap-5 px-5 sm:px-8 pb-5 sm:pb-6 pt-10 text-white bg-gradient-to-t from-black/45 to-transparent">
               <button
                 type="button"
                 aria-label={`Play ${featuredVideo.title}`}
@@ -190,10 +190,10 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
               >
                 <Play className="w-5 h-5" fill="currentColor" aria-hidden="true" />
               </button>
-              <span aria-hidden="true" className="shrink-0 text-xs sm:text-sm font-mono tabular-nums text-white/90">0:00 / {featuredVideo.duration}</span>
-              <div aria-hidden="true" className="relative h-1.5 flex-1 rounded-full bg-white/30">
+              <span aria-hidden="true" className="shrink-0 text-xs sm:text-sm font-medium tabular-nums text-white">0:00 / {featuredVideo.duration}</span>
+              <div aria-hidden="true" className="relative h-1 sm:h-1.5 flex-1 rounded-full bg-white/40">
                 <div className="absolute inset-y-0 left-0 w-[12%] rounded-full bg-primary" />
-                <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary border-2 border-white shadow" />
+                <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-primary border-2 border-white shadow-md" />
               </div>
               <Volume2 className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
               <Settings className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
