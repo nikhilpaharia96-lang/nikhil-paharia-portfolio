@@ -134,7 +134,7 @@ export default function FeaturedVideoCard() {
 
           {!playing ? (
             /* ───────── Poster: same look as the reference design ───────── */
-            <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-[5/4] sm:aspect-[16/10] w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_50px_100px_-28px_rgba(8,20,45,0.6)]">
+            <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-video w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_50px_100px_-28px_rgba(8,20,45,0.6)]">
               <motion.img
                 src={featuredVideo.image}
                 alt=""
@@ -170,17 +170,17 @@ export default function FeaturedVideoCard() {
               />
 
               {/* Badges */}
-              <div className="absolute top-5 left-5 right-5 sm:top-7 sm:left-7 sm:right-7 flex items-center justify-between z-20">
-                <span className="px-4 py-2 rounded-full bg-white/95 border border-white text-slate-800 text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em] shadow-sm">
+              <div className="absolute top-3 left-3 right-3 sm:top-6 sm:left-6 sm:right-6 flex items-center justify-between z-20">
+                <span className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-white/95 border border-white text-slate-800 text-[9px] sm:text-[13px] font-bold uppercase tracking-[0.14em] shadow-sm">
                   {featuredVideo.category}
                 </span>
-                <span className="px-4 py-2 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-white/95 text-xs sm:text-sm font-mono font-semibold">
+                <span className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-white/95 text-[10px] sm:text-sm font-mono font-semibold">
                   {featuredVideo.duration}
                 </span>
               </div>
 
               {/* Centered stack: play button, title, script subtitle with side lines */}
-              <div className="absolute inset-x-0 top-0 bottom-14 sm:bottom-[4.5rem] z-20 flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 text-center">
+              <div className="absolute inset-x-0 top-8 sm:top-0 bottom-9 sm:bottom-14 lg:bottom-[4.5rem] z-20 flex flex-col items-center justify-center gap-1.5 sm:gap-4 px-4 text-center">
                 <motion.button
                   type="button"
                   onClick={() => open(0)}
@@ -198,18 +198,18 @@ export default function FeaturedVideoCard() {
                       transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
                     />
                   )}
-                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-white flex items-center justify-center shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] focus-visible:ring-4 focus-visible:ring-primary/50">
-                    <Play className="w-6 h-6 sm:w-9 sm:h-9 text-primary ml-0.5 sm:ml-1" fill="currentColor" aria-hidden="true" />
+                  <div className="relative w-11 h-11 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-white flex items-center justify-center shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] focus-visible:ring-4 focus-visible:ring-primary/50">
+                    <Play className="w-4 h-4 sm:w-9 sm:h-9 text-primary ml-0.5 sm:ml-1" fill="currentColor" aria-hidden="true" />
                   </div>
                 </motion.button>
 
                 <div className="pointer-events-none">
-                  <h3 className="font-sans font-extrabold uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
+                  <h3 className="font-sans font-extrabold uppercase text-xl sm:text-5xl lg:text-6xl tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
                     {featuredVideo.title}
                   </h3>
-                  <div className="mt-2 sm:mt-3 flex items-center justify-center gap-3 sm:gap-4">
-                    <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
-                    <span className="font-script font-medium italic text-2xl sm:text-4xl leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+                  <div className="mt-0.5 sm:mt-3 flex items-center justify-center gap-2 sm:gap-4">
+                    <span aria-hidden="true" className="h-px w-6 sm:w-16 bg-white/70" />
+                    <span className="font-script font-medium italic text-base sm:text-4xl leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
                       {featuredVideo.subtitle}
                     </span>
                     <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
@@ -218,7 +218,7 @@ export default function FeaturedVideoCard() {
               </div>
 
               {/* Player bar — play / fullscreen start the video, the rest is visual only */}
-              <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 sm:gap-5 px-5 sm:px-8 pb-5 sm:pb-6 pt-10 text-white bg-gradient-to-t from-black/45 to-transparent">
+              <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-2.5 sm:gap-5 px-3 sm:px-8 pb-2.5 sm:pb-6 pt-6 sm:pt-10 text-white bg-gradient-to-t from-black/45 to-transparent">
                 <button
                   type="button"
                   aria-label={`Play ${featuredVideo.title}`}
@@ -226,14 +226,14 @@ export default function FeaturedVideoCard() {
                   disabled={!hasVideos}
                   className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
                 >
-                  <Play className="w-5 h-5" fill="currentColor" aria-hidden="true" />
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" aria-hidden="true" />
                 </button>
-                <span aria-hidden="true" className="shrink-0 text-xs sm:text-sm font-medium tabular-nums text-white">
+                <span aria-hidden="true" className="shrink-0 text-[10px] sm:text-sm font-medium tabular-nums text-white">
                   0:00 / {featuredVideo.duration}
                 </span>
                 <div aria-hidden="true" className="relative h-1 sm:h-1.5 flex-1 rounded-full bg-white/40">
                   <div className="absolute inset-y-0 left-0 w-[12%] rounded-full bg-primary" />
-                  <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-primary border-2 border-white shadow-md" />
+                  <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-3 h-3 sm:w-[18px] sm:h-[18px] rounded-full bg-primary border-2 border-white shadow-md" />
                 </div>
                 <Volume2 className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
                 <Settings className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
@@ -244,7 +244,7 @@ export default function FeaturedVideoCard() {
                   disabled={!hasVideos}
                   className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
                 >
-                  <Maximize className="w-5 h-5" aria-hidden="true" />
+                  <Maximize className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
