@@ -21,6 +21,10 @@ export type Testimonial = {
   projectType: string;
   result: string;
   content: string;
+  /** Optional client video message: a direct .mp4/.webm file (local import or URL) or a YouTube / Instagram link. */
+  videoUrl?: string;
+  /** Optional poster image shown behind the play button (defaults to the scenic background). */
+  videoPoster?: string;
 };
 
 /** A single entry in the trust / stats bar. */
