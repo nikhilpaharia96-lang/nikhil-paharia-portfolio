@@ -1,25 +1,13 @@
-/* ===== 1) src/index.css ki sabse upar wali line me ye @import add karein ===== */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
-
-/* ===== 2) src/index.css ke END me ye poora block paste karein ===== */
-.font-script { font-family: 'Caveat', cursive; }
-
-/* Testimonials — photo fades into the glass card */
-.testi-photo {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 30%, #000 70%);
-  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 30%, #000 70%);
+/* Testimonials — "Trusted by People & Brands" endless marquee.
+   The track holds the brand list repeated; translating -50% loops seamlessly. */
+@keyframes brand-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
-@media (min-width: 420px) {
-  .testi-photo {
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 62%);
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 30%, #000 62%);
-  }
-}
-@keyframes testi-swap {
-  from { opacity: 0; transform: translateX(14px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-.testi-swap { animation: testi-swap 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.brand-marquee-track { animation: brand-marquee 32s linear infinite; will-change: transform; }
+.brand-marquee:hover .brand-marquee-track,
+.brand-marquee:focus-within .brand-marquee-track { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
-  .testi-swap { animation: none; }
+  .brand-marquee-track { animation: none; }
+  .brand-marquee { overflow-x: auto; }
 }
