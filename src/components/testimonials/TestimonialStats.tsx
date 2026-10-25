@@ -1,21 +1,31 @@
+import { Users, Clapperboard, Star, Heart } from "lucide-react";
 import { trustStats } from "@/constants/testimonials";
 
-// Only numbers already present in the repo's data — nothing invented.
+// Icons follow the design (people, clapperboard, star, heart). Numbers and labels
+// come from the existing trustStats data — nothing invented.
+const icons = [Users, Clapperboard, Star, Heart];
+
 export default function TestimonialStats() {
   return (
-    <dl className="grid grid-cols-2 min-[360px]:grid-cols-4 rounded-[clamp(1.1rem,5vw,1.6rem)] bg-white/80 backdrop-blur-2xl border border-white/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_24px_50px_-28px_rgba(15,45,90,0.45)] lg:gap-x-3 lg:px-4 lg:py-1 lg:rounded-[22px]">
-      {trustStats.slice(0, 4).map(({ icon: Icon, value, suffix, label, staticText }) => (
-        <div
-          key={label}
-          className="flex flex-col items-center text-center gap-1 px-1.5 py-[clamp(0.7rem,3.4vw,1.1rem)] border-slate-300/60 max-[359px]:[&:nth-child(even)]:border-l max-[359px]:[&:nth-child(n+3)]:border-t min-[360px]:[&:not(:first-child)]:border-l lg:border-0! lg:flex-row lg:text-left lg:gap-2.5 lg:py-3 lg:px-1"
-        >
-          <Icon className="w-[clamp(1.3rem,6.4vw,1.9rem)] h-[clamp(1.3rem,6.4vw,1.9rem)] shrink-0 text-primary lg:w-7 lg:h-7" strokeWidth={1.5} aria-hidden="true" />
-          <div className="leading-tight">
-            <dd className="font-bold text-[clamp(0.95rem,4.6vw,1.4rem)] lg:text-lg text-slate-900 order-first">{staticText ?? `${value}${suffix ?? ""}`}</dd>
-            <dt className="text-[clamp(0.6rem,2.7vw,0.8rem)] lg:text-[11px] text-slate-500 text-balance mt-0.5">{label}</dt>
+    <dl className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-x-4 gap-y-5 rounded-[clamp(1.1rem,5vw,1.5rem)] bg-white/55 backdrop-blur-md border border-white/70 px-[clamp(0.9rem,4vw,1.5rem)] py-[clamp(0.9rem,4vw,1.25rem)]">
+      {trustStats.slice(0, 4).map(({ value, suffix, label, staticText }, i) => {
+        const Icon = icons[i] ?? Star;
+        return (
+          <div key={label} className="flex items-center gap-[clamp(0.5rem,2.4vw,0.85rem)] min-w-0">
+            <Icon
+              className="w-[clamp(1.75rem,8vw,2.5rem)] h-[clamp(1.75rem,8vw,2.5rem)] shrink-0 text-[#0866FF]"
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+            <div className="min-w-0 leading-none">
+              <dd className="order-first whitespace-nowrap font-sans font-extrabold tracking-tight text-[#0b1530] text-[clamp(1.35rem,6vw,2rem)]">
+                {staticText ?? `${value}${suffix ?? ""}`}
+              </dd>
+              <dt className="mt-1.5 text-[clamp(0.7rem,3vw,0.9rem)] leading-tight text-slate-500 text-balance">{label}</dt>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </dl>
   );
 }
