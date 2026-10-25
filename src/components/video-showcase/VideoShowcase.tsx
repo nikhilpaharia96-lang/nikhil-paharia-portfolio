@@ -36,7 +36,7 @@ export default function VideoShowcase() {
             />
           </div>
           <div className="lg:col-span-7">
-            <FeaturedVideoCard onPlay={(url) => setActiveVideo({ url, title: featuredVideo.title })} />
+            <FeaturedVideoCard />
           </div>
         </div>
 

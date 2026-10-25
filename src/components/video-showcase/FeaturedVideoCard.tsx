@@ -1,59 +1,68 @@
-import { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
-import { Play, Pause, Volume2, Settings, Maximize } from "lucide-react";
-import bgVideo from "@/assets/videos/loading-bg-desktop.mp4";
-import { featuredVideo } from "@/constants/videoShowcase";
-import { ease, tiltSpring } from "@/animations/videoShowcase.motion";
+import { useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Play, X } from "lucide-react";
+import { featuredVideo, projects } from "@/constants/videoShowcase";
+import { parseVideoUrl } from "@/utils/videoEmbed";
+import { ease } from "@/animations/videoShowcase.motion";
 
-type FeaturedVideoCardProps = {
-  onPlay?: (url: string) => void;
+type PlaylistItem = {
+  key: string;
+  title: string;
+  desc: string;
+  image: string;
+  url: string;
 };
 
-export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
+/**
+ * Story card: a photo collage that turns into an inline player (no popup),
+ * with a small playlist of thumbnails underneath so visitors can hop between
+ * films without leaving the section.
+ */
+export default function FeaturedVideoCard() {
   const prefersReducedMotion = useReducedMotion();
-  const [hovered, setHovered] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  const active = hovered || playing;
-
-  const mx = useMotionValue(0.5);
-  const my = useMotionValue(0.5);
-  const rotateX = useSpring(useTransform(my, [0, 1], [4, -4]), tiltSpring);
-  const rotateY = useSpring(useTransform(mx, [0, 1], [-4, 4]), tiltSpring);
-  const glowX = useTransform(mx, (v) => `${v * 100}%`);
-  const glowY = useTransform(my, (v) => `${v * 100}%`);
-  const glowBg = useTransform(
-    [glowX, glowY],
-    ([x, y]) => `radial-gradient(480px circle at ${x} ${y}, rgba(29,111,235,0.25), transparent 70%)`,
-  );
-
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-    if (active) {
-      if (!playing) vid.currentTime = 0;
-      vid.play().catch(() => {});
-    } else {
-      vid.pause();
-      vid.currentTime = 0;
+  // Playable videos, featured one first, duplicates (same link) removed.
+  const playlist = useMemo<PlaylistItem[]>(() => {
+    const seen = new Set<string>();
+    const items: PlaylistItem[] = [];
+    const add = (item: PlaylistItem) => {
+      const parsed = parseVideoUrl(item.url);
+      if (!parsed || parsed.kind === "unknown" || seen.has(parsed.embedUrl)) return;
+      seen.add(parsed.embedUrl);
+      items.push(item);
+    };
+    const featuredMatch = projects.find((p) => p.videoUrl && p.videoUrl === featuredVideo.videoUrl);
+    if (featuredVideo.videoUrl) {
+      add({
+        key: "featured",
+        title: featuredMatch?.title ?? `${featuredVideo.title} — ${featuredVideo.subtitle}`,
+        desc: featuredMatch?.description ?? featuredVideo.category,
+        image: featuredVideo.image,
+        url: featuredVideo.videoUrl,
+      });
     }
-  }, [active, playing]);
+    projects.forEach((p) => p.videoUrl && add({ key: `p-${p.id}`, title: p.title, desc: p.description, image: p.image, url: p.videoUrl }));
+    return items;
+  }, []);
 
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (prefersReducedMotion) return;
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    mx.set((e.clientX - rect.left) / rect.width);
-    my.set((e.clientY - rect.top) / rect.height);
+  const collage = useMemo(() => {
+    const imgs = [featuredVideo.image, ...projects.map((p) => p.image)];
+    return Array.from(new Set(imgs)).slice(0, 5);
+  }, []);
+
+  const current = playlist[activeIdx];
+  const parsed = parseVideoUrl(current?.url);
+  const hasVideos = playlist.length > 0;
+
+  const open = (idx = 0) => {
+    if (!hasVideos) return;
+    setActiveIdx(idx);
+    setPlaying(true);
   };
 
-  const handleLeave = () => {
-    setHovered(false);
-    mx.set(0.5);
-    my.set(0.5);
-  };
+  const cardTitle = `${featuredVideo.title} — ${featuredVideo.subtitle}`.toLowerCase();
 
   return (
     <motion.div
@@ -63,151 +72,167 @@ export default function FeaturedVideoCard({ onPlay }: FeaturedVideoCardProps) {
       transition={{ duration: 0.9, ease }}
     >
       <motion.div
-        animate={prefersReducedMotion || active ? { y: 0 } : { y: [0, -10, 0] }}
-        transition={active ? { duration: 0.4 } : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        animate={prefersReducedMotion || playing ? { y: 0 } : { y: [0, -8, 0] }}
+        transition={playing ? { duration: 0.3 } : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
       >
-        <motion.div
-          ref={ref}
-          onMouseEnter={() => setHovered(true)}
-          onMouseMove={handleMove}
-          onMouseLeave={handleLeave}
-          style={{
-            rotateX: prefersReducedMotion ? 0 : rotateX,
-            rotateY: prefersReducedMotion ? 0 : rotateY,
-            transformStyle: "preserve-3d",
-          }}
-          className="group relative rounded-[32px] p-[3px] sm:p-[4px]"
-        >
-          <div className="absolute -inset-[1.5px] rounded-[32px] bg-gradient-to-br from-white/90 via-white/50 to-white/80 opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute -inset-6 rounded-[40px] bg-primary/20 blur-3xl opacity-0 group-hover:opacity-60 transition-opacity duration-700 -z-10" />
+        <div className="group relative rounded-[30px] p-[3px] sm:p-[4px] bg-gradient-to-br from-white/90 via-white/50 to-white/80 shadow-[0_50px_100px_-30px_rgba(8,20,45,0.55)]">
+          <div className="relative rounded-[27px] overflow-hidden bg-white">
+            {!playing ? (
+              <>
+                {/* ── Collage (click anywhere to play) ── */}
+                <button
+                  type="button"
+                  onClick={() => open(0)}
+                  disabled={!hasVideos}
+                  aria-label={`Play ${cardTitle}`}
+                  className="relative block w-full aspect-[5/4] sm:aspect-[16/10] overflow-hidden bg-[#0a1220] text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 focus-visible:ring-inset disabled:cursor-default"
+                >
+                  <div className="absolute inset-0 grid grid-cols-[1.25fr_1fr_1fr] grid-rows-2 gap-[3px]">
+                    {collage.map((src, i) => (
+                      <div key={src} className={`overflow-hidden ${i === 0 ? "row-span-2" : ""}`}>
+                        <img
+                          src={src}
+                          alt=""
+                          aria-hidden="true"
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                      </div>
+                    ))}
+                  </div>
 
-          <div className="relative rounded-[31px] overflow-hidden bg-[#0a1220] aspect-[5/4] sm:aspect-[16/10] w-full shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_50px_100px_-28px_rgba(8,20,45,0.6)]">
-            <motion.img
-              src={featuredVideo.image}
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              decoding="async"
-              animate={{
-                scale: active ? 1.08 : 1,
-                filter: active ? "blur(1px) brightness(0.6)" : "brightness(0.95)",
-              }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+                  <div aria-hidden="true" className="absolute inset-0 bg-[#06142b]/35 transition-colors duration-500 group-hover:bg-[#06142b]/25" />
+                  <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/75 to-transparent" />
 
-            <video
-              ref={videoRef}
-              src={bgVideo}
-              muted
-              loop
-              playsInline
-              preload="none"
-              aria-hidden="true"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 pointer-events-none ${
-                active ? "opacity-100" : "opacity-0"
-              }`}
-            />
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 right-4 sm:top-6 sm:left-6 sm:right-6 flex items-center justify-between z-10">
+                    <span className="px-3.5 py-1.5 rounded-full bg-white/95 text-slate-800 text-[11px] sm:text-xs font-bold uppercase tracking-[0.14em] shadow-sm">
+                      {featuredVideo.category}
+                    </span>
+                    <span className="px-3.5 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-white text-[11px] sm:text-xs font-semibold tabular-nums">
+                      {featuredVideo.duration}
+                    </span>
+                  </div>
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/25 pointer-events-none" />
+                  {/* Play button */}
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="relative">
+                      {!prefersReducedMotion && (
+                        <motion.span
+                          aria-hidden="true"
+                          className="absolute inset-0 rounded-full bg-white/50"
+                          animate={{ scale: [1, 1.55, 1], opacity: [0.55, 0, 0.55] }}
+                          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      )}
+                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white flex items-center justify-center shadow-[0_18px_40px_-10px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-110">
+                        <Play className="w-6 h-6 sm:w-8 sm:h-8 text-primary ml-0.5 sm:ml-1" fill="currentColor" aria-hidden="true" />
+                      </div>
+                    </div>
+                  </div>
 
-            <motion.div
-              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: glowBg }}
-            />
+                  {/* Bottom bar */}
+                  <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 px-4 pb-3.5 sm:px-6 sm:pb-5">
+                    <div className="min-w-0">
+                      <p className="text-white font-extrabold text-lg sm:text-2xl leading-tight capitalize truncate">{cardTitle}</p>
+                      <p className="text-white/75 text-xs sm:text-sm mt-0.5">Cinematic travel film · {featuredVideo.duration}</p>
+                    </div>
+                    {hasVideos && (
+                      <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-[11px] sm:text-xs font-bold text-white shadow-md">
+                        <Play className="w-3 h-3" fill="currentColor" aria-hidden="true" />
+                        {playlist.length} {playlist.length === 1 ? "Video" : "Videos"}
+                      </span>
+                    )}
+                  </div>
+                </button>
 
-            <div className="absolute top-5 left-5 right-5 sm:top-7 sm:left-7 sm:right-7 flex items-center justify-between z-20">
-              <span className="px-4 py-2 rounded-full bg-white/95 border border-white text-slate-800 text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em] shadow-sm">
-                {featuredVideo.category}
-              </span>
-              <span className="px-4 py-2 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-white/95 text-xs sm:text-sm font-mono font-semibold">
-                {featuredVideo.duration}
-              </span>
-            </div>
-
-            {/* Centered stack: play button, title, script subtitle with side lines.
-                The play control is a real button: keyboard-focusable and touch-friendly. */}
-            <div className="absolute inset-x-0 top-0 bottom-14 sm:bottom-[4.5rem] z-20 flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 text-center">
-              <motion.button
-                type="button"
-                onClick={() => {
-                  if (featuredVideo.videoUrl) {
-                    onPlay?.(featuredVideo.videoUrl);
-                    return;
-                  }
-                  setPlaying((p) => !p);
-                }}
-                aria-label={
-                  featuredVideo.videoUrl
-                    ? `Play ${featuredVideo.title}`
-                    : playing
-                      ? `Pause preview of ${featuredVideo.title}`
-                      : `Play preview of ${featuredVideo.title}`
-                }
-                aria-pressed={playing}
-                className="interactive relative focus-visible:outline-none"
-                animate={{ scale: active ? 1.1 : 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                {/* "Click to play" strip */}
+                <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6 bg-white border-t border-slate-100">
+                  <Play className="w-3.5 h-3.5 text-primary shrink-0" fill="currentColor" aria-hidden="true" />
+                  <div aria-hidden="true" className="flex-1 h-[3px] rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-full w-1/6 rounded-full bg-primary/70" />
+                  </div>
+                  <span className="text-[11px] sm:text-xs text-slate-400 whitespace-nowrap">Click to play</span>
+                </div>
+              </>
+            ) : (
+              /* ── Inline player + playlist ── */
+              <motion.div
+                initial={prefersReducedMotion ? undefined : { opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.35, ease }}
+                className="bg-black"
               >
-                {!prefersReducedMotion && (
-                  <motion.span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-full bg-white/40"
-                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                    transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                )}
-                <div className="relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-white flex items-center justify-center shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] focus-visible:ring-4 focus-visible:ring-primary/50">
-                  {playing && !featuredVideo.videoUrl ? (
-                    <Pause className="w-6 h-6 sm:w-9 sm:h-9 text-primary" fill="currentColor" aria-hidden="true" />
-                  ) : (
-                    <Play className="w-6 h-6 sm:w-9 sm:h-9 text-primary ml-0.5 sm:ml-1" fill="currentColor" aria-hidden="true" />
+                <div className="bg-black">
+                  <div
+                    className={`relative mx-auto bg-black ${
+                      parsed?.isVertical ? "w-[min(100%,300px)] aspect-[9/16]" : "w-full aspect-video"
+                    }`}
+                  >
+                    {parsed && parsed.kind !== "unknown" && (
+                      <iframe
+                        key={parsed.embedUrl}
+                        src={parsed.embedUrl}
+                        title={current.title}
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full border-0"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-[#0a1220] px-4 py-3 sm:px-5 sm:py-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-base font-bold text-white truncate">{current.title}</p>
+                      <p className="text-xs text-white/55 line-clamp-1">{current.desc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPlaying(false)}
+                      aria-label="Close video"
+                      className="shrink-0 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                    >
+                      <X className="w-4 h-4" aria-hidden="true" />
+                    </button>
+                  </div>
+
+                  {playlist.length > 1 && (
+                    <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1" role="tablist" aria-label="More videos">
+                      {playlist.map((item, i) => {
+                        const active = i === activeIdx;
+                        return (
+                          <button
+                            key={item.key}
+                            type="button"
+                            role="tab"
+                            aria-selected={active}
+                            onClick={() => setActiveIdx(i)}
+                            className={`shrink-0 w-28 sm:w-32 rounded-lg overflow-hidden text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                              active ? "opacity-100 ring-2 ring-primary" : "opacity-60 hover:opacity-100 hover:-translate-y-0.5"
+                            }`}
+                          >
+                            <div className="relative aspect-video bg-slate-800">
+                              <img src={item.image} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+                              {active && (
+                                <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                                  <Play className="w-4 h-4 text-white" fill="currentColor" aria-hidden="true" />
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-[10px] sm:text-[11px] text-white leading-tight px-1.5 pt-1 pb-1.5 line-clamp-2">{item.title}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
-              </motion.button>
-
-              <div className="pointer-events-none">
-                <h3 className="font-sans font-extrabold uppercase text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white leading-none drop-shadow-[0_4px_18px_rgba(0,0,0,0.5)]">
-                  {featuredVideo.title}
-                </h3>
-                <div className="mt-2 sm:mt-3 flex items-center justify-center gap-3 sm:gap-4">
-                  <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
-                  <span className="font-script font-medium italic text-2xl sm:text-4xl leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
-                    {featuredVideo.subtitle}
-                  </span>
-                  <span aria-hidden="true" className="h-px w-8 sm:w-16 bg-white/70" />
-                </div>
-              </div>
-            </div>
-
-            {/* Player bar — play/fullscreen open the video, the rest is visual only */}
-            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 sm:gap-5 px-5 sm:px-8 pb-5 sm:pb-6 pt-10 text-white bg-gradient-to-t from-black/45 to-transparent">
-              <button
-                type="button"
-                aria-label={`Play ${featuredVideo.title}`}
-                onClick={() => (featuredVideo.videoUrl ? onPlay?.(featuredVideo.videoUrl) : setPlaying((p) => !p))}
-                className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
-              >
-                <Play className="w-5 h-5" fill="currentColor" aria-hidden="true" />
-              </button>
-              <span aria-hidden="true" className="shrink-0 text-xs sm:text-sm font-medium tabular-nums text-white">0:00 / {featuredVideo.duration}</span>
-              <div aria-hidden="true" className="relative h-1 sm:h-1.5 flex-1 rounded-full bg-white/40">
-                <div className="absolute inset-y-0 left-0 w-[12%] rounded-full bg-primary" />
-                <div className="absolute left-[12%] top-1/2 -translate-y-1/2 w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-primary border-2 border-white shadow-md" />
-              </div>
-              <Volume2 className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
-              <Settings className="hidden xs:block w-5 h-5 shrink-0 text-white/90" aria-hidden="true" />
-              <button
-                type="button"
-                aria-label={`Open ${featuredVideo.title} player`}
-                onClick={() => featuredVideo.videoUrl && onPlay?.(featuredVideo.videoUrl)}
-                className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
-              >
-                <Maximize className="w-5 h-5" aria-hidden="true" />
-              </button>
-            </div>
+              </motion.div>
+            )}
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </motion.div>
   );
