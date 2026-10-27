@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, Send } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import npLogo from "../assets/logos/np-logo.webp";
 import MusicToggleButton from "@/components/MusicToggleButton";
 import { lockBodyScroll } from "@/lib/scrollLock";
@@ -15,6 +15,10 @@ const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
+// Links shown in the bar / menu. "Contact" lives in the CTA button, but stays in
+// `navLinks` above so active-section tracking still works when the contact section is in view.
+const menuLinks = navLinks.filter((l) => l.href !== "#contact");
+
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40";
 
@@ -25,52 +29,45 @@ export default function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Section offsets are measured once (and on resize), never inside the scroll
-  // handler — reading offsetTop per scroll tick forces layout work.
-  const sectionOffsets = useRef<{ id: string; top: number }[]>([]);
-
+  // Scrolled state (glass gets a little more opaque) — passive listener, one cheap state flip.
   useEffect(() => {
-    const measure = () => {
-      sectionOffsets.current = navLinks.map((link) => {
-        const id = link.href.substring(1);
-        const el = document.getElementById(id);
-        // Absolute document position (offsetTop is wrong for sections nested in positioned wrappers).
-        return { id, top: el ? el.getBoundingClientRect().top + window.scrollY : Infinity };
-      });
-    };
-    measure();
-
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(measure, 150);
-    };
-    window.addEventListener("resize", handleResize, { passive: true });
-    const settleTimer = setTimeout(measure, 1500);
-
-    const onScroll = () => {
-      const y = window.scrollY;
-      setIsScrolled(y > 40);
-      let current = "";
-      for (const { id, top } of sectionOffsets.current) {
-        if (y >= top - 220) current = id;
-      }
-      if (current) setActiveSection(current);
-    };
+    const onScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(resizeTimer);
-      clearTimeout(settleTimer);
-    };
+  // Active-section tracking: a section is "current" while it crosses a thin band ~30% down the
+  // viewport. IntersectionObserver stays correct when lazy content shifts layout, and needs no
+  // cached offsets or per-scroll layout reads.
+  useEffect(() => {
+    const ids = navLinks.map((link) => link.href.substring(1));
+    const crossing = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) crossing.add(entry.target.id);
+          else crossing.delete(entry.target.id);
+        }
+        let current = "";
+        for (const id of ids) if (crossing.has(id)) current = id; // last one in page order wins
+        if (current) setActiveSection(current);
+      },
+      { rootMargin: "-30% 0px -69% 0px", threshold: 0 },
+    );
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    }
+    return () => io.disconnect();
   }, []);
 
   const scrollTo = useCallback((href: string) => {
     setMenuOpen(false);
-    const element = document.querySelector<HTMLElement>(href);
+    // There is no standalone Skills section — the "Tech I work with" spread lives in About.
+    const element =
+      document.querySelector<HTMLElement>(href) ??
+      (href === "#skills" ? document.querySelector<HTMLElement>("#about") : null);
     if (!element) return;
     // Instant jump; sections carry generous top padding so headings clear the floating bar.
     const top = element.getBoundingClientRect().top + window.scrollY - 24;
@@ -111,17 +108,17 @@ export default function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="fixed inset-x-0 top-0 z-[200] pointer-events-none px-3 sm:px-5 transition-[padding] duration-300 motion-reduce:transition-none"
+      className="fixed inset-x-0 top-0 z-[200] pointer-events-none px-4 sm:px-6 lg:px-10 transition-[padding] duration-300 motion-reduce:transition-none"
       style={{
-        paddingTop: `max(env(safe-area-inset-top, 0px), ${isScrolled ? "8px" : "14px"})`,
+        paddingTop: `max(env(safe-area-inset-top, 0px), ${isScrolled ? "12px" : "20px"})`,
       }}
     >
       <nav
         aria-label="Primary"
-        className={`nav-enter pointer-events-auto mx-auto max-w-[1240px] flex items-center justify-between gap-3 rounded-full border border-white/85 backdrop-blur-[20px] px-2.5 sm:px-3 xl:px-4 h-[60px] sm:h-[68px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
+        className={`nav-enter pointer-events-auto mx-auto w-full max-w-[1400px] flex items-center justify-between gap-3 xl:gap-6 rounded-[20px] border border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-3 sm:px-4 xl:px-5 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
           isScrolled
-            ? "bg-white/90 shadow-[0_18px_50px_-18px_rgba(8,102,255,0.38)]"
-            : "bg-white/78 shadow-[0_14px_40px_-20px_rgba(8,102,255,0.28)]"
+            ? "bg-white/[0.86] shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
+            : "bg-white/[0.72] shadow-[0_8px_32px_rgba(30,100,200,0.10)]"
         }`}
       >
         {/* Brand */}
@@ -132,21 +129,24 @@ export default function Navbar() {
             scrollTo("#home");
           }}
           aria-label="Nikhil Paharia — back to top"
-          className={`group flex items-center gap-2.5 sm:gap-3 min-w-0 rounded-full pr-2 ${focusRing}`}
+          className={`group flex items-center gap-2.5 sm:gap-3.5 min-w-0 rounded-xl pr-2 ${focusRing}`}
         >
-          <span className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full bg-white ring-1 ring-blue-100 shadow-[0_6px_16px_-6px_rgba(8,102,255,0.4)] flex items-center justify-center overflow-hidden">
-            <img src={npLogo} alt="" width={28} height={28} className="h-6 sm:h-7 w-auto" />
-          </span>
-          <span className="font-sans font-extrabold text-[17px] sm:text-xl tracking-tight text-[#101828] whitespace-nowrap">
-            Nikhil <span className="text-primary">Paharia</span>
+          <img
+            src={npLogo}
+            alt=""
+            width={60}
+            height={60}
+            className="h-10 sm:h-12 xl:h-[60px] w-auto shrink-0 -my-1 transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_4px_10px_rgba(18,102,241,0.35)] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          />
+          <span aria-hidden="true" className="hidden sm:block w-px h-7 bg-slate-300/80 shrink-0" />
+          <span className="font-sans font-extrabold text-[17px] sm:text-xl xl:text-[22px] leading-none tracking-tight text-[#172033] whitespace-nowrap truncate">
+            Nikhil <span className="text-[#1266F1]">Paharia</span>
           </span>
         </a>
 
-        <span aria-hidden="true" className="hidden xl:block w-px h-7 bg-slate-300/70 shrink-0" />
-
         {/* Desktop links */}
-        <ul className="hidden xl:flex items-center gap-1 2xl:gap-2">
-          {navLinks.map((link) => {
+        <ul className="hidden xl:flex flex-1 items-center justify-center gap-0.5 2xl:gap-2">
+          {menuLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
               <li key={link.name}>
@@ -157,15 +157,17 @@ export default function Navbar() {
                     scrollTo(link.href);
                   }}
                   aria-current={isActive ? "page" : undefined}
-                  className={`relative block rounded-full px-3 2xl:px-3.5 py-2 text-[15px] font-medium transition-colors duration-200 motion-reduce:transition-none hover:text-primary ${focusRing} ${
-                    isActive ? "text-primary" : "text-[#101828]"
+                  className={`group relative block rounded-full px-4 2xl:px-5 py-2.5 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] transition-[color,background-color,box-shadow] duration-200 motion-reduce:transition-none hover:text-[#1266F1] ${focusRing} ${
+                    isActive
+                      ? "text-[#1266F1] bg-blue-50/80 shadow-[0_6px_16px_-8px_rgba(18,102,241,0.45)]"
+                      : "text-[#172033]"
                   }`}
                 >
                   {link.name}
                   <span
                     aria-hidden="true"
-                    className={`absolute left-3 right-3 -bottom-0.5 h-[2px] rounded-full bg-primary origin-center transition-transform duration-300 motion-reduce:transition-none ${
-                      isActive ? "scale-x-100" : "scale-x-0"
+                    className={`absolute left-5 right-5 bottom-1.5 h-[2px] rounded-full bg-[#1266F1] origin-center transition-transform duration-300 motion-reduce:transition-none ${
+                      isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
                 </a>
@@ -180,10 +182,10 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={connect}
-            className={`hidden sm:inline-flex group items-center gap-2 rounded-full bg-[#0866FF] px-5 py-3 text-[15px] font-semibold text-white shadow-[0_12px_26px_-10px_rgba(8,102,255,0.75)] transition duration-200 hover:brightness-110 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRing}`}
+            className={`hidden sm:inline-flex group items-center gap-2 rounded-full bg-[#1266F1] px-5 xl:px-6 py-3 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] transition duration-200 hover:bg-[#0F58D6] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-8px_rgba(18,102,241,0.7)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRing}`}
           >
-            Let&apos;s Connect
-            <Send
+            Contact
+            <ArrowUpRight
               className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
               aria-hidden="true"
             />
@@ -191,7 +193,7 @@ export default function Navbar() {
           <button
             ref={toggleRef}
             type="button"
-            className={`xl:hidden w-11 h-11 rounded-full bg-blue-50/70 border border-blue-100 text-[#101828] flex items-center justify-center hover:bg-blue-100/70 transition-colors motion-reduce:transition-none ${focusRing}`}
+            className={`xl:hidden w-11 h-11 rounded-full bg-white/60 border border-blue-100 text-[#172033] flex items-center justify-center hover:bg-blue-50 transition-colors motion-reduce:transition-none ${focusRing}`}
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
@@ -207,12 +209,12 @@ export default function Navbar() {
         id="mobile-menu"
         aria-hidden={!menuOpen}
         {...(!menuOpen ? { inert: true } : {})}
-        className={`xl:hidden pointer-events-auto mx-auto max-w-[1240px] mt-2 rounded-[28px] border border-white/85 bg-white/92 backdrop-blur-[20px] shadow-[0_28px_60px_-22px_rgba(8,102,255,0.4)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
+        className={`xl:hidden pointer-events-auto mx-auto w-full max-w-[1400px] mt-2 rounded-[20px] border border-white/85 bg-white/[0.86] backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_18px_48px_rgba(30,100,200,0.20)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
           menuOpen ? "opacity-100 translate-y-0 scale-100 visible" : "opacity-0 -translate-y-2 scale-[0.98] invisible pointer-events-none"
         }`}
       >
-        <ul className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-1 max-h-[calc(100dvh-7.5rem)] overflow-y-auto">
-          {navLinks.map((link) => {
+        <ul className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-1 max-h-[calc(100dvh-8.5rem)] overflow-y-auto">
+          {menuLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
               <li key={link.name}>
@@ -223,29 +225,26 @@ export default function Navbar() {
                     scrollTo(link.href);
                   }}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-semibold transition-colors motion-reduce:transition-none ${focusRing} ${
-                    isActive ? "bg-primary/10 text-primary" : "text-[#101828] hover:bg-blue-50"
+                  className={`flex items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] transition-colors motion-reduce:transition-none ${focusRing} ${
+                    isActive ? "bg-blue-50 text-[#1266F1]" : "text-[#172033] hover:bg-blue-50/70 hover:text-[#1266F1]"
                   }`}
                 >
                   {link.name}
-                  {isActive && <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary" />}
+                  {isActive && <span aria-hidden="true" className="w-2 h-2 rounded-full bg-[#1266F1]" />}
                 </a>
               </li>
             );
           })}
         </ul>
-        <div className="px-3 pb-3 flex flex-col sm:flex-row gap-3 sm:items-center">
+        <div className="px-3 pb-3 sm:hidden">
           <a
             href="#contact"
             onClick={connect}
-            className={`sm:hidden inline-flex items-center justify-center gap-2 rounded-full bg-[#0866FF] px-5 py-3.5 text-base font-semibold text-white shadow-[0_12px_26px_-10px_rgba(8,102,255,0.75)] ${focusRing}`}
+            className={`group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#1266F1] px-5 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] ${focusRing}`}
           >
-            Let&apos;s Connect
-            <Send className="w-4 h-4" aria-hidden="true" />
+            Contact
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </a>
-          <div className="flex-1">
-            <MusicToggleButton variant="desktop" size="large" />
-          </div>
         </div>
       </div>
     </header>
