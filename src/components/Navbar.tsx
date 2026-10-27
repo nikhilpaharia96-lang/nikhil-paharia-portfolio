@@ -250,26 +250,4 @@ export default function Navbar() {
       </div>
     </header>
   );
-          }an aria-hidden="true" className="w-2 h-2 rounded-full bg-primary" />}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="px-3 pb-3 flex flex-col sm:flex-row gap-3 sm:items-center">
-          <a
-            href="#contact"
-            onClick={connect}
-            className={`sm:hidden inline-flex items-center justify-center gap-2 rounded-full bg-[#0866FF] px-5 py-3.5 text-base font-semibold text-white shadow-[0_12px_26px_-10px_rgba(8,102,255,0.75)] ${focusRing}`}
-          >
-            Let&apos;s Connect
-            <Send className="w-4 h-4" aria-hidden="true" />
-          </a>
-          <div className="flex-1">
-            <MusicToggleButton variant="desktop" size="large" />
-          </div>
-        </div>
-      </div>
-    </header>
-  );
 }
