@@ -14,28 +14,39 @@ export default function WorkedWithMeCTA({ onOpen, variant }: WorkedWithMeCTAProp
       <button
         type="button"
         onClick={onOpen}
-        className="group relative w-full text-left rounded-[clamp(1rem,5vw,1.5rem)] p-[clamp(0.5rem,2.7vw,1.25rem)] lg:p-5
-                   bg-white/80 backdrop-blur-2xl border border-white/90
-                   shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_24px_50px_-18px_rgba(15,45,90,0.3)]
-                   transition hover:border-primary/30 hover:shadow-[0_30px_60px_-16px_rgba(15,45,90,0.38)] motion-reduce:transition-none
+        aria-label="Worked with me? Share your experience"
+        className="group w-full text-left flex items-start gap-[clamp(0.3rem,1.6vw,0.9rem)] lg:gap-3.5
+                   rounded-[clamp(1.1rem,5.5vw,2rem)] lg:rounded-[1.75rem]
+                   p-[clamp(0.5rem,2.4vw,1.25rem)] lg:p-5
+                   bg-gradient-to-br from-white/95 to-white/70 backdrop-blur-xl border border-white
+                   shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,0_22px_44px_-18px_rgba(37,99,235,0.35)]
+                   transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_28px_52px_-16px_rgba(37,99,235,0.45)]
+                   motion-reduce:transition-none motion-reduce:hover:translate-y-0
                    focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
       >
-        <div className="flex items-start gap-[clamp(0.3rem,1.6vw,0.75rem)]">
-          <div className="w-[clamp(1.4rem,7vw,2.5rem)] h-[clamp(1.4rem,7vw,2.5rem)] rounded-[clamp(0.5rem,2.4vw,0.9rem)] bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-            <MessageSquareHeart className="w-1/2 h-1/2 text-primary" aria-hidden="true" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-sans font-bold text-[#101828] leading-tight text-[clamp(0.64rem,3vw,1rem)]">Worked with me?</p>
-            <p className="font-semibold text-primary leading-tight mt-1 text-[clamp(0.62rem,2.9vw,0.9rem)]">
-              Share your experience
-              <ArrowRight className="inline-block w-3 h-3 ml-1 align-[-1px]" aria-hidden="true" />
-            </p>
-          </div>
-        </div>
-        <div className="h-px bg-slate-200/90 mt-[clamp(0.45rem,2.4vw,0.75rem)]" aria-hidden="true" />
-        <p className="text-slate-500 leading-snug mt-[clamp(0.4rem,2.2vw,0.75rem)] text-[clamp(0.6rem,2.7vw,0.8rem)]">
-          If we&apos;ve worked together, I&apos;d love to hear about your experience.
-        </p>
+        <span className="shrink-0 rounded-full bg-[#cfe3fd] flex items-center justify-center w-[clamp(1.5rem,7vw,3.5rem)] h-[clamp(1.5rem,7vw,3.5rem)] lg:w-14 lg:h-14">
+          <MessageSquareHeart className="w-[48%] h-[48%] text-[#1a6bff]" strokeWidth={2} aria-hidden="true" />
+        </span>
+
+        <span className="min-w-0 flex-1 flex flex-col gap-[clamp(0.3rem,1.8vw,0.9rem)] lg:gap-3">
+          <span className="font-sans font-extrabold tracking-tight leading-[1.15] text-[#0b1530] text-[clamp(0.62rem,2.8vw,1.2rem)] lg:text-lg">
+            Worked with me?
+          </span>
+          <span className="flex items-end justify-between gap-2 font-sans font-bold leading-[1.15] text-[#1a6bff] text-[clamp(0.58rem,2.55vw,1.15rem)] lg:text-lg">
+            <span>
+              Share your{" "}
+              <span className="whitespace-nowrap">
+                experience
+                <ArrowRight className="sm:hidden inline-block w-2.5 h-2.5 ml-px align-[-1px]" strokeWidth={2.75} aria-hidden="true" />
+              </span>
+            </span>
+            <ArrowRight
+              className="hidden sm:block shrink-0 w-5 h-5 mb-0.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
+              strokeWidth={2.5}
+              aria-hidden="true"
+            />
+          </span>
+        </span>
       </button>
     </div>
   );
