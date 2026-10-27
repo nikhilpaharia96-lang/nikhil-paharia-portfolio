@@ -7,13 +7,15 @@ type Props = {
   /** Video to play (file URL, YouTube or Instagram link), or null when closed. */
   url: string | null;
   title: string;
+  /** Small line shown under the video, e.g. "Priya Deka · Co-Founder, FitBite". */
+  caption?: string;
   poster?: string;
   onClose: () => void;
 };
 
 const FILE_RE = /\.(mp4|webm|mov|m4v|ogv)(\?.*)?$/i;
 
-export default function TestimonialVideoModal({ url, title, poster, onClose }: Props) {
+export default function TestimonialVideoModal({ url, title, caption, poster, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -92,6 +94,9 @@ export default function TestimonialVideoModal({ url, title, poster, onClose }: P
               Open video <ExternalLink className="w-4 h-4" aria-hidden="true" />
             </a>
           </div>
+        )}
+        {caption && (
+          <p className="px-4 py-3 text-sm font-medium text-white/85 bg-black">{caption}</p>
         )}
       </div>
     </div>

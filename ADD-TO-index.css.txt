@@ -1,13 +1,28 @@
-/* Testimonials — "Trusted by People & Brands" endless marquee.
-   The track holds the brand list repeated; translating -50% loops seamlessly. */
-@keyframes brand-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+/* Testimonials — interactive play button: blue glow + gentle pulse ring on hover / keyboard focus */
+.play-btn { transition: transform 0.2s ease, box-shadow 0.25s ease; }
+.play-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(8, 102, 255, 0.6);
+  opacity: 0;
+  pointer-events: none;
 }
-.brand-marquee-track { animation: brand-marquee 32s linear infinite; will-change: transform; }
-.brand-marquee:hover .brand-marquee-track,
-.brand-marquee:focus-within .brand-marquee-track { animation-play-state: paused; }
+.play-btn:hover,
+.play-btn:focus-visible {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 6px rgba(8, 102, 255, 0.22), 0 0 38px 12px rgba(8, 102, 255, 0.62), 0 18px 40px -10px rgba(15, 45, 90, 0.5);
+}
+.play-btn:hover::before,
+.play-btn:focus-visible::before { animation: play-pulse 1.6s ease-out infinite; }
+.play-btn:active { transform: scale(0.96); }
+@keyframes play-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .brand-marquee-track { animation: none; }
-  .brand-marquee { overflow-x: auto; }
+  .play-btn { transition: box-shadow 0.25s ease; }
+  .play-btn:hover, .play-btn:focus-visible, .play-btn:active { transform: none; }
+  .play-btn:hover::before, .play-btn:focus-visible::before { animation: none; }
 }

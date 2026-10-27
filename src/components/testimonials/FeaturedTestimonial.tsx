@@ -31,6 +31,7 @@ export default function FeaturedTestimonial() {
   const [playing, setPlaying] = useState<string | null>(null);
   const [notice, setNotice] = useState(false);
   const touchX = useRef<number | null>(null);
+  const playRef = useRef<HTMLButtonElement>(null);
   const count = allTestimonials.length;
   const t = allTestimonials[index];
   const go = (dir: 1 | -1) => setIndex((i) => (i + dir + count) % count);
@@ -104,10 +105,11 @@ export default function FeaturedTestimonial() {
             className="testi-photo absolute inset-0 w-full h-full object-cover object-[18%_30%] pointer-events-none"
           />
           <button
+            ref={playRef}
             type="button"
             onClick={onPlay}
             aria-label={t.videoUrl ? `Play video message from ${t.name}` : `Video message from ${t.name} (coming soon)`}
-            className="absolute left-1/2 top-[64%] -translate-x-1/2 -translate-y-1/2 w-[clamp(2.9rem,14vw,5rem)] h-[clamp(2.9rem,14vw,5rem)] rounded-full bg-white flex items-center justify-center text-primary shadow-[0_18px_40px_-10px_rgba(15,45,90,0.55)] ring-[6px] ring-white/30 transition hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 focus-visible:outline-none focus-visible:ring-primary/50"
+            className="absolute left-1/2 top-[64%] -translate-x-1/2 -translate-y-1/2 w-[clamp(2.9rem,14vw,5rem)] h-[clamp(2.9rem,14vw,5rem)] play-btn rounded-full bg-white flex items-center justify-center text-primary shadow-[0_18px_40px_-10px_rgba(15,45,90,0.55)] ring-[6px] ring-white/30 focus-visible:outline-none"
           >
             <Play className="w-[44%] h-[44%] ml-[6%]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
           </button>
@@ -156,7 +158,16 @@ export default function FeaturedTestimonial() {
         </div>
       </div>
 
-      <TestimonialVideoModal url={playing} title={t.name} poster={t.videoPoster} onClose={() => setPlaying(null)} />
+      <TestimonialVideoModal
+        url={playing}
+        title={t.name}
+        caption={`${t.name} · ${t.role}, ${t.company}`}
+        poster={t.videoPoster}
+        onClose={() => {
+          setPlaying(null);
+          playRef.current?.focus();
+        }}
+      />
     </div>
   );
 }
