@@ -326,7 +326,7 @@ export default function Hero() {
 
       {/* ── MAIN CONTENT ── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-6">
-        <div className="lg:hidden pt-[4.75rem] pb-4 relative">
+        <div className="lg:hidden pt-[6.25rem] sm:pt-[6.75rem] pb-4 relative">
 
           {/* Bottom-left brush decoration — sits behind all content, tucked
               into the bottom-left corner of the mobile Hero section. */}
@@ -562,11 +562,11 @@ export default function Hero() {
 
               animate={{ opacity: 1, x: 0 }}
 
-              className="flex gap-2 mb-2"
+              className="flex gap-2 mb-2 rounded-xl bg-white/70 backdrop-blur-[3px] px-2 py-1.5 shadow-[0_2px_12px_-6px_rgba(18,102,241,0.25)]"
               style={{ maxWidth: 'min(64vw, 250px)' }}
             >
               <div className="w-[3px] rounded-full bg-primary flex-shrink-0 self-stretch" />
-              <p style={{ fontSize: 'clamp(0.72rem, 2.8vw, 0.85rem)', lineHeight: 1.35 }} className="text-slate-600">
+              <p style={{ fontSize: 'clamp(0.72rem, 2.8vw, 0.85rem)', lineHeight: 1.35 }} className="text-slate-800">
                 𝗜 𝗯𝘂𝗶𝗹𝗱 𝗳𝗮𝘀𝘁, 𝗺𝗼𝗱𝗲𝗿𝗻 𝗮𝗻𝗱 𝘀𝗰𝗮𝗹𝗮𝗯𝗹𝗲 𝘄𝗲𝗯 𝗲𝘅𝗽𝗲𝗿𝗶𝗲𝗻𝗰𝗲𝘀 𝘁𝗵𝗮𝘁 𝗵𝗲𝗹𝗽 𝗯𝘂𝘀𝗶𝗻𝗲𝘀𝘀𝗲𝘀 𝗴𝗿𝗼𝘄 𝗮𝗻𝗱 𝘀𝘁𝗮𝗻𝗱 𝗼𝘂𝘁.
               </p>
             </motion.div>
@@ -579,13 +579,13 @@ export default function Hero() {
 
               className="flex flex-col items-start gap-1 mb-3"
             >
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              <span className="inline-flex items-center gap-1.5 text-slate-800 font-medium whitespace-nowrap bg-white/70 backdrop-blur-[3px] rounded-full pl-1.5 pr-2.5 py-0.5" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiCodeSSlashLine className="text-primary flex-shrink-0" /> 𝐅𝐮𝐥𝐥-𝐒𝐭𝐚𝐜𝐤 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫
               </span>
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              <span className="inline-flex items-center gap-1.5 text-slate-800 font-medium whitespace-nowrap bg-white/70 backdrop-blur-[3px] rounded-full pl-1.5 pr-2.5 py-0.5" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiVideoLine className="text-primary flex-shrink-0" /> 𝐕𝐢𝐝𝐞𝐨 𝐄𝐝𝐢𝐭𝐨𝐫
               </span>
-              <span className="inline-flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
+              <span className="inline-flex items-center gap-1.5 text-slate-800 font-medium whitespace-nowrap bg-white/70 backdrop-blur-[3px] rounded-full pl-1.5 pr-2.5 py-0.5" style={{ fontSize: 'clamp(0.66rem, 2.4vw, 0.78rem)' }}>
                 <RiPencilLine className="text-primary flex-shrink-0" /> 𝐃𝐢𝐠𝐢𝐭𝐚𝐥 𝐂𝐫𝐞𝐚𝐭𝐨𝐫
               </span>
             </motion.div>
