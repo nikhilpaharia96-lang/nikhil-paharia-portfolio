@@ -107,14 +107,14 @@ export default function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="fixed inset-x-0 top-0 z-[200] pointer-events-none px-4 sm:px-6 lg:px-10 transition-[padding] duration-300 motion-reduce:transition-none"
+      className="fixed inset-x-0 top-0 z-[200] pointer-events-none"
       style={{
-        paddingTop: `max(env(safe-area-inset-top, 0px), ${isScrolled ? "12px" : "20px"})`,
+        paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
       <nav
         aria-label="Primary"
-        className={`nav-enter pointer-events-auto mx-auto w-full max-w-[1400px] flex items-center justify-between gap-3 xl:gap-6 rounded-none border border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-3 sm:px-4 xl:px-5 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
+        className={`nav-enter pointer-events-auto w-full flex items-center justify-between gap-3 xl:gap-6 rounded-none border-0 border-b border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-4 sm:px-6 lg:px-10 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
           isScrolled
             ? "bg-white/[0.86] shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
             : "bg-white/[0.72] shadow-[0_8px_32px_rgba(30,100,200,0.10)]"
@@ -215,7 +215,7 @@ export default function Navbar() {
         id="mobile-menu"
         aria-hidden={!menuOpen}
         {...(!menuOpen ? { inert: true } : {})}
-        className={`xl:hidden pointer-events-auto mx-auto w-full max-w-[1400px] mt-2 rounded-none border border-white/85 bg-white/[0.86] backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_18px_48px_rgba(30,100,200,0.20)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
+        className={`xl:hidden pointer-events-auto w-full mt-0 rounded-none border-0 border-b border-white/85 bg-white/[0.86] backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_18px_48px_rgba(30,100,200,0.20)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
           menuOpen ? "opacity-100 translate-y-0 scale-100 visible" : "opacity-0 -translate-y-2 scale-[0.98] invisible pointer-events-none"
         }`}
       >
