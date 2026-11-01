@@ -2,6 +2,9 @@ import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVi
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
 import TechIcons from "@/components/TechIcons";
 import FloatingParticles from "@/components/FloatingParticles";
+import ParallaxLandscape from "@/components/ParallaxLandscape";
+import { desktopMasks, mobileMasks } from "@/components/parallaxMasks";
+import "@/components/brush-reveal.css";
 import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView, useReducedMotion } from "@/lib/static-motion";
@@ -185,7 +188,7 @@ export default function Hero() {
 
       {/* Background with scroll parallax — MOBILE/TABLET ONLY, untouched */}
       <motion.div style={{ y: smoothBgY }} className="absolute inset-0 z-0 lg:hidden">
-        <img src={teaBgMobile} alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center', filter: 'brightness(0.97) saturate(0.95)' }} />
+        <ParallaxLandscape src={teaBgMobile} position="center" filter="brightness(0.97) saturate(0.95)" masks={mobileMasks} />
         <div className="absolute inset-0 bg-gradient-to-r from-white/45 via-white/20 to-blue-50/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-white/15" />
       </motion.div>
@@ -194,12 +197,7 @@ export default function Hero() {
           composition (white-left / tea-garden-right) once that asset is
           re-uploaded; see the desktopBg note near the imports above. */}
       <motion.div style={{ y: smoothBgY }} className="absolute inset-0 z-0 hidden lg:block">
-        <img
-          src={desktopBg}
-          alt=""
-          className="w-full h-full object-cover"
-          style={{ objectPosition: '68% 50%', filter: 'brightness(0.97) saturate(0.92)' }}
-        />
+        <ParallaxLandscape src={desktopBg} position="68% 50%" filter="brightness(0.97) saturate(0.92)" masks={desktopMasks} />
         {/* Minimal left-side readability scrim only — the real background
             already bakes its own white-left area in, so this stays light
             and will likely shrink further (or be removed) once swapped in. */}
@@ -216,6 +214,9 @@ export default function Hero() {
 
       {/* Particles — small blue dots drifting slowly */}
       <FloatingParticles />
+
+      {/* Sunlit dust — tiny blue + white specks floating on the landscape side */}
+      <FloatingParticles variant="dust" count={30} />
 
       {/* Cloud photo — sits at the bottom of Hero itself (not a separate
           section below it), so it's visible within the opening scene, near
@@ -449,7 +450,7 @@ export default function Hero() {
                     src={threeStrokes}
                     alt=""
                     aria-hidden="true"
-                    className="absolute pointer-events-none select-none w-6"
+                    className="brush-reveal brush-reveal--accent absolute pointer-events-none select-none w-6"
                     style={{ top: '-14px', right: '-14px', opacity: 0.85, zIndex: 10 }}
                   />
                 </span>
@@ -665,7 +666,7 @@ export default function Hero() {
 
               animate={{ opacity: 0.8, scale: 1 }}
 
-              className="absolute pointer-events-none select-none z-0"
+              className="brush-reveal absolute pointer-events-none select-none z-0"
               style={{
                 width: '150%',
                 top: '29%',
@@ -868,7 +869,7 @@ export default function Hero() {
                 src={threeStrokes}
                 alt=""
                 aria-hidden="true"
-                className="absolute pointer-events-none select-none w-9 xl:w-11"
+                className="brush-reveal brush-reveal--accent absolute pointer-events-none select-none w-9 xl:w-11"
                 style={{ top: '-16px', right: '-24px', opacity: 0.85 }}
               />
               <h1
@@ -1137,7 +1138,7 @@ export default function Hero() {
 
                 animate={{ opacity: 0.85, scale: 1 }}
 
-                className="absolute pointer-events-none select-none w-[420px] xl:w-[540px] 2xl:w-[640px] z-0"
+                className="brush-reveal absolute pointer-events-none select-none w-[420px] xl:w-[540px] 2xl:w-[640px] z-0"
                 style={{ top: '36%', left: '2%', transform: 'rotate(-7deg)' }}
               />
 

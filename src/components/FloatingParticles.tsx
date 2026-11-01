@@ -24,8 +24,11 @@ interface Particle {
   delay: number; // s (negative → already mid-motion on load)
   twinkle: number; // s
   glow: boolean;
+  tone: "blue" | "sky" | "white";
   desktopOnly: boolean;
 }
+
+type Variant = "ambient" | "dust";
 
 function mulberry32(seed: number) {
   let a = seed;
@@ -38,10 +41,30 @@ function mulberry32(seed: number) {
   };
 }
 
-function buildParticles(count: number): Particle[] {
-  const rand = mulberry32(20261101);
+function buildParticles(count: number, variant: Variant): Particle[] {
+  const dust = variant === "dust";
+  const rand = mulberry32(dust ? 20261102 : 20261101);
   const range = (min: number, max: number) => min + rand() * (max - min);
   return Array.from({ length: count }, (_, i) => {
+    if (dust) {
+      // Sunlit dust: tiny, brighter, confined to the landscape (right) side, white + blue tones.
+      const t = rand();
+      return {
+        id: i,
+        x: range(42, 99),
+        y: range(6, 88),
+        size: range(1.5, 3.4),
+        opacity: range(0.55, 0.95),
+        dx: range(10, 34) * (rand() > 0.5 ? 1 : -1),
+        dy: range(14, 42) * (rand() > 0.5 ? 1 : -1),
+        dur: range(28, 56),
+        delay: -range(0, 50),
+        twinkle: range(3, 6.5),
+        glow: true,
+        tone: t < 0.45 ? "white" : t < 0.75 ? "sky" : "blue",
+        desktopOnly: i >= 18,
+      } as Particle;
+    }
     const big = rand() > 0.78;
     return {
       id: i,
@@ -55,14 +78,24 @@ function buildParticles(count: number): Particle[] {
       delay: -range(0, 40),
       twinkle: range(4, 9),
       glow: big || rand() > 0.6,
+      tone: "blue",
       desktopOnly: i >= 16,
-    };
+    } as Particle;
   });
 }
 
-export default function FloatingParticles({ count = 30, className = "" }: { count?: number; className?: string }) {
+export default function FloatingParticles({
+  count = 30,
+  className = "",
+  variant = "ambient",
+}: {
+  count?: number;
+  className?: string;
+  /** "ambient": blue dots anywhere · "dust": tiny blue + white specks on the sunlit landscape side. */
+  variant?: Variant;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const particles = useMemo(() => buildParticles(count), [count]);
+  const particles = useMemo(() => buildParticles(count, variant), [count, variant]);
 
   // Pause the animations while the hero is off-screen.
   useEffect(() => {
@@ -96,7 +129,7 @@ export default function FloatingParticles({ count = 30, className = "" }: { coun
           }
         >
           <i
-            className={`fp__dot${p.glow ? " fp__dot--glow" : ""}`}
+            className={`fp__dot${p.glow ? " fp__dot--glow" : ""}${p.tone !== "blue" ? ` fp__dot--${p.tone}` : ""}`}
             style={
               {
                 width: p.size,
