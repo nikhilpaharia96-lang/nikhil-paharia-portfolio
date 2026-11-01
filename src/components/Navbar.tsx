@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ArrowUpRight } from "lucide-react";
 import npLogo from "../assets/logos/np-logo.webp";
-import MusicToggleButton from "@/components/MusicToggleButton";
 import { lockBodyScroll } from "@/lib/scrollLock";
 
 const navLinks = [
@@ -178,7 +177,6 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <MusicToggleButton variant="mobile" />
           <a
             href="#contact"
             onClick={connect}
