@@ -1,17 +1,13 @@
 import { useState } from "react";
 import type { Project } from "@/types/video";
 import { featuredVideo, projects } from "@/constants/videoShowcase";
-import type { VideoFilter } from "@/types/video";
 import BackgroundGlow from "./BackgroundGlow";
 import ShowcaseIntro from "./ShowcaseIntro";
-import FilterChips from "./FilterChips";
 import FeaturedVideoCard from "./FeaturedVideoCard";
 import ProjectCarousel from "./ProjectCarousel";
 import VideoLightbox from "./VideoLightbox";
 
 export default function VideoShowcase() {
-  const [filter, setFilter] = useState<VideoFilter>("All");
-  const visibleProjects = filter === "All" ? projects : projects.filter((p) => p.category === filter);
   const [activeVideo, setActiveVideo] = useState<{ url: string; title: string } | null>(null);
 
   const handlePlayProject = (project: Project) => {
@@ -41,14 +37,8 @@ export default function VideoShowcase() {
         </div>
 
         <div className="mt-10 sm:mt-12">
-          <FilterChips active={filter} onChange={setFilter} />
+          <ProjectCarousel items={projects} onPlay={handlePlayProject} paused={!!activeVideo} />
         </div>
-
-        {visibleProjects.length > 0 ? (
-          <ProjectCarousel key={filter} items={visibleProjects} onPlay={handlePlayProject} paused={!!activeVideo} />
-        ) : (
-          <p className="mt-8 text-center text-sm text-slate-500">No videos in this category yet.</p>
-        )}
       </div>
 
       <VideoLightbox
