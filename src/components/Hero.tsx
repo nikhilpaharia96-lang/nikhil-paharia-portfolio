@@ -8,6 +8,7 @@ import teaBg from "../assets/images/file_0000000066b08207b18b1ec1e8269869.png";
 import teaBgMobile from "../assets/images/tea-brush-mobile.webp";
 import SplitText from "@/components/ui/SplitText";
 import Magnetic from "@/components/ui/Magnetic";
+import FloatingLeaves from "@/components/FloatingLeaves";
 
 // ── Desktop-only Hero assets ──────────────────────────────────────────────
 import desktopPortrait from "../assets/images/Desktop Nikhil Paharia profile photo.png";
@@ -244,6 +245,9 @@ export default function Hero() {
         {cloudLeft}
         {cloudRight}
       </div>
+
+      {/* Cinematic falling leaves — behind all hero content (z-5 vs content z-10), never blocks clicks */}
+      <FloatingLeaves />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
