@@ -6,15 +6,12 @@
   overflow: hidden;
   pointer-events: none;
   contain: layout paint;
-  --sy: 0;
 }
 
-/* One depth layer: shifted by scrollY × k (k>0 lags the page, k<0 outruns it). */
+/* One stacked layer of the photo / fog / light. */
 .px-layer {
   position: absolute;
   inset: 0;
-  transform: translate3d(0, calc(var(--sy, 0) * var(--k, 0) * 1px), 0);
-  will-change: transform;
 }
 
 /* Photo layers share the same background image, size and position. */
@@ -85,10 +82,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .px-layer {
-    transform: none;
-    will-change: auto;
-  }
   .px-fog__drift,
   .px-light {
     animation: none;
