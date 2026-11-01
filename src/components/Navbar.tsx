@@ -115,7 +115,7 @@ export default function Navbar() {
     >
       <nav
         aria-label="Primary"
-        className={`nav-enter pointer-events-auto mx-auto w-full max-w-[1400px] flex items-center justify-between gap-3 xl:gap-6 rounded-[20px] border border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-3 sm:px-4 xl:px-5 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
+        className={`nav-enter pointer-events-auto mx-auto w-full max-w-[1400px] flex items-center justify-between gap-3 xl:gap-6 rounded-none border border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-3 sm:px-4 xl:px-5 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
           isScrolled
             ? "bg-white/[0.86] shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
             : "bg-white/[0.72] shadow-[0_8px_32px_rgba(30,100,200,0.10)]"
@@ -129,7 +129,7 @@ export default function Navbar() {
             scrollTo("#home");
           }}
           aria-label="Nikhil Paharia — back to top"
-          className={`group flex items-center gap-2.5 sm:gap-3.5 min-w-0 rounded-xl pr-2 ${focusRing}`}
+          className={`group flex items-center gap-2.5 sm:gap-3.5 min-w-0 rounded-none pr-2 ${focusRing}`}
         >
           <img
             src={npLogo}
@@ -157,7 +157,7 @@ export default function Navbar() {
                     scrollTo(link.href);
                   }}
                   aria-current={isActive ? "page" : undefined}
-                  className={`group relative block rounded-full px-4 2xl:px-5 py-2.5 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] transition-[color,background-color,box-shadow] duration-200 motion-reduce:transition-none hover:text-[#1266F1] ${focusRing} ${
+                  className={`group relative block rounded-none px-4 2xl:px-5 py-2.5 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] transition-[color,background-color,box-shadow] duration-200 motion-reduce:transition-none hover:text-[#1266F1] ${focusRing} ${
                     isActive
                       ? "text-[#1266F1] bg-blue-50/80 shadow-[0_6px_16px_-8px_rgba(18,102,241,0.45)]"
                       : "text-[#172033]"
@@ -166,7 +166,7 @@ export default function Navbar() {
                   {link.name}
                   <span
                     aria-hidden="true"
-                    className={`absolute left-5 right-5 bottom-1.5 h-[2px] rounded-full bg-[#1266F1] origin-center transition-transform duration-300 motion-reduce:transition-none ${
+                    className={`absolute left-5 right-5 bottom-1.5 h-[2px] rounded-none bg-[#1266F1] origin-center transition-transform duration-300 motion-reduce:transition-none ${
                       isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
@@ -182,7 +182,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={connect}
-            className={`hidden sm:inline-flex group items-center gap-2 rounded-full bg-[#1266F1] px-5 xl:px-6 py-3 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] transition duration-200 hover:bg-[#0F58D6] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-8px_rgba(18,102,241,0.7)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRing}`}
+            className={`hidden sm:inline-flex group items-center gap-2 rounded-none bg-[#1266F1] px-5 xl:px-6 py-3 text-[13px] 2xl:text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] transition duration-200 hover:bg-[#0F58D6] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-8px_rgba(18,102,241,0.7)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${focusRing}`}
           >
             Contact
             <ArrowUpRight
@@ -193,7 +193,7 @@ export default function Navbar() {
           <button
             ref={toggleRef}
             type="button"
-            className={`xl:hidden w-11 h-11 rounded-full bg-white/60 border border-blue-100 text-[#172033] flex items-center justify-center hover:bg-blue-50 transition-colors motion-reduce:transition-none ${focusRing}`}
+            className={`xl:hidden w-11 h-11 rounded-none bg-white/60 border border-blue-100 text-[#172033] flex items-center justify-center hover:bg-blue-50 transition-colors motion-reduce:transition-none ${focusRing}`}
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
@@ -209,7 +209,7 @@ export default function Navbar() {
         id="mobile-menu"
         aria-hidden={!menuOpen}
         {...(!menuOpen ? { inert: true } : {})}
-        className={`xl:hidden pointer-events-auto mx-auto w-full max-w-[1400px] mt-2 rounded-[20px] border border-white/85 bg-white/[0.86] backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_18px_48px_rgba(30,100,200,0.20)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
+        className={`xl:hidden pointer-events-auto mx-auto w-full max-w-[1400px] mt-2 rounded-none border border-white/85 bg-white/[0.86] backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_18px_48px_rgba(30,100,200,0.20)] overflow-hidden origin-top transition duration-300 motion-reduce:transition-none ${
           menuOpen ? "opacity-100 translate-y-0 scale-100 visible" : "opacity-0 -translate-y-2 scale-[0.98] invisible pointer-events-none"
         }`}
       >
@@ -225,7 +225,7 @@ export default function Navbar() {
                     scrollTo(link.href);
                   }}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] transition-colors motion-reduce:transition-none ${focusRing} ${
+                  className={`flex items-center justify-between rounded-none px-4 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] transition-colors motion-reduce:transition-none ${focusRing} ${
                     isActive ? "bg-blue-50 text-[#1266F1]" : "text-[#172033] hover:bg-blue-50/70 hover:text-[#1266F1]"
                   }`}
                 >
@@ -240,7 +240,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={connect}
-            className={`group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#1266F1] px-5 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] ${focusRing}`}
+            className={`group inline-flex w-full items-center justify-center gap-2 rounded-none bg-[#1266F1] px-5 py-3.5 text-[15px] font-semibold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_-8px_rgba(18,102,241,0.6)] ${focusRing}`}
           >
             Contact
             <ArrowUpRight className="w-4 h-4" aria-hidden="true" />

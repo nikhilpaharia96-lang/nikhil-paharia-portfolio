@@ -65,7 +65,7 @@ export default function MusicToggleButton({
 
   const popup = showSlider && (
     <div
-      className="absolute top-full right-0 mt-2 glass-premium rounded-full px-4 py-2.5 flex items-center gap-2.5 shadow-lg z-[220]"
+      className="absolute top-full right-0 mt-2 glass-premium rounded-none px-4 py-2.5 flex items-center gap-2.5 shadow-lg z-[220]"
       onClick={(e) => e.stopPropagation()}
     >
       <SoundOffIcon size={14} className="text-slate-400 flex-shrink-0" />
@@ -80,7 +80,7 @@ export default function MusicToggleButton({
         <button
           type="button"
           onClick={() => setShowSlider((v) => !v)}
-          className="text-primary hover:text-white hover:bg-primary   w-10 h-10 flex items-center justify-center bg-blue-50/70 rounded-full border border-primary/40 hover:border-primary hover:shadow-[0_0_16px_rgba(29,111,235,0.35)] relative flex-shrink-0"
+          className="text-primary hover:text-white hover:bg-primary   w-10 h-10 flex items-center justify-center bg-blue-50/70 rounded-none border border-primary/40 hover:border-primary hover:shadow-[0_0_16px_rgba(29,111,235,0.35)] relative flex-shrink-0"
           aria-label={isEffectivelyOff ? "Unmute background music" : "Mute background music"}
           aria-pressed={isEffectivelyOff}
           aria-expanded={showSlider}
