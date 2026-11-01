@@ -3,7 +3,7 @@
 .floating-leaves {
   position: absolute;
   inset: 0;
-  z-index: 5; /* above hero backgrounds/clouds, below content (z-10) */
+  z-index: 210; /* above the fixed navbar (z-200) so leaves fall over it, not from behind it */
   overflow: hidden;
   pointer-events: none;
   contain: layout paint;
