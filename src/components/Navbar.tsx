@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { X, ArrowUpRight } from "lucide-react";
 import npLogo from "../assets/logos/np-logo.webp";
 import MusicToggleButton from "@/components/MusicToggleButton";
 import { lockBodyScroll } from "@/lib/scrollLock";
@@ -139,7 +139,7 @@ export default function Navbar() {
             className="h-10 sm:h-12 xl:h-[60px] w-auto shrink-0 -my-1 transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_4px_10px_rgba(18,102,241,0.35)] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
           <span aria-hidden="true" className="hidden sm:block w-px h-7 bg-slate-300/80 shrink-0" />
-          <span className="font-sans font-extrabold text-[17px] sm:text-xl xl:text-[22px] leading-none tracking-tight text-[#172033] whitespace-nowrap truncate">
+          <span className="flex items-baseline gap-[0.45em] font-serif font-bold text-[17px] sm:text-xl xl:text-[22px] leading-none tracking-normal text-[#172033] whitespace-nowrap truncate">
             Nikhil <span className="text-[#1266F1]">Paharia</span>
           </span>
         </a>
@@ -193,13 +193,21 @@ export default function Navbar() {
           <button
             ref={toggleRef}
             type="button"
-            className={`xl:hidden w-11 h-11 rounded-none bg-white/60 border border-blue-100 text-[#172033] flex items-center justify-center hover:bg-blue-50 transition-colors motion-reduce:transition-none ${focusRing}`}
+            className={`xl:hidden w-11 h-11 rounded-full bg-white/60 border border-blue-100 text-[#172033] flex items-center justify-center hover:bg-blue-50 transition-colors motion-reduce:transition-none ${focusRing}`}
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
           >
-            {menuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
+            {menuOpen ? (
+              <X className="w-5 h-5" aria-hidden="true" />
+            ) : (
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden="true">
+                <path d="M8 7h8.5" />
+                <path d="M4 12h16" />
+                <path d="M6.5 17H15" />
+              </svg>
+            )}
           </button>
         </div>
       </nav>
