@@ -9,6 +9,7 @@ import teaBgMobile from "../assets/images/tea-brush-mobile.webp";
 import SplitText from "@/components/ui/SplitText";
 import Magnetic from "@/components/ui/Magnetic";
 import FloatingLeaves from "@/components/FloatingLeaves";
+import PortraitFX from "@/components/PortraitFX";
 
 // ── Desktop-only Hero assets ──────────────────────────────────────────────
 import desktopPortrait from "../assets/images/Desktop Nikhil Paharia profile photo.png";
@@ -716,18 +717,7 @@ export default function Hero() {
 
             {/* Portrait — same untouched desktop asset, full width of this block */}
             <div className="relative z-10 w-full">
-              <motion.div
-
-                animate={{ opacity: 1, y: 0 }}
-
-              >
-                <img
-                  src={desktopPortrait}
-                  alt="Nikhil Paharia"
-                  className="w-full h-auto object-contain"
-                  style={{ filter: 'drop-shadow(0 20px 28px rgba(15,23,42,0.25))' }}
-                />
-              </motion.div>
+              <PortraitFX src={desktopPortrait} alt="Nikhil Paharia" shadow="0 20px 28px rgba(15,23,42,0.25)" />
 
               {/* Assam location card — pinned to the portrait's own bottom
                   edge, kept within the viewport (right: 0, not negative)
@@ -1220,18 +1210,7 @@ export default function Hero() {
                   landscape. Head stays clear of the navbar and orbit
                   icons; nothing is cropped. */}
               <div className="relative z-0 w-[320px] xl:w-[400px] 2xl:w-[480px]" style={{ transform: 'translate(5%, 5%)' }}>
-                <motion.div
-
-                  animate={{ opacity: 1, y: 0 }}
-
-                >
-                  <img
-                    src={desktopPortrait}
-                    alt="Nikhil Paharia"
-                    className="w-full h-auto object-contain"
-                    style={{ filter: 'drop-shadow(0 30px 40px rgba(15,23,42,0.28))' }}
-                  />
-                </motion.div>
+                <PortraitFX src={desktopPortrait} alt="Nikhil Paharia" shadow="0 30px 40px rgba(15,23,42,0.28)" />
               </div>
 
               {/* Assam location card — moved off the detached bottom-left
