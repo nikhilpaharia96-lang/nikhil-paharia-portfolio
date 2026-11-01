@@ -1,5 +1,6 @@
 import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVideoLine, RiPencilLine, RiSendPlaneLine, RiFolderOpenLine, RiFolderChartLine, RiGroupLine, RiTimeLine, RiStarLine } from "react-icons/ri";
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
+import TechIcons from "@/components/TechIcons";
 import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView, useReducedMotion } from "@/lib/static-motion";
@@ -692,27 +693,8 @@ export default function Hero() {
                 head, briefcase/Node/Code stack down the right edge outside
                 the portrait, all confined so nothing overflows the viewport
                 or drifts over the face. */}
-            <div className="absolute inset-0 pointer-events-none z-20" aria-hidden="true">
-              <div className="orbit-bob-a absolute" style={{ top: '3%', left: '27%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                  <SiReact className="text-primary" style={{ fontSize: '15px' }} />
-                </motion.div>
-              </div>
-              <div className="orbit-bob-b absolute" style={{ top: '20%', right: '19%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                  <SiNodedotjs className="text-green-500" style={{ fontSize: '14px' }} />
-                </motion.div>
-              </div>
-              <div className="orbit-bob-c absolute" style={{ top: '49%', right: '19%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                  <RiCodeSSlashLine className="text-slate-700" style={{ fontSize: '14px' }} />
-                </motion.div>
-              </div>
-              <div className="orbit-bob-d absolute" style={{ top: '64%', right: '65%' }}>
-                <motion.div animate={{ opacity: 1, scale: 1 }} className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-yellow-400 shadow-md flex items-center justify-center">
-                  <SiJavascript className="text-white" style={{ fontSize: '13px' }} />
-                </motion.div>
-              </div>
+            <div className="absolute inset-0 pointer-events-none z-20">
+              <TechIcons layout="mobile" />
             </div>
 
             {/* Portrait — same untouched desktop asset, full width of this block */}
@@ -1181,27 +1163,8 @@ export default function Hero() {
                   small idle bob (a few px) is applied, and it's applied to
                   a wrapping div so it never fights the icon's own entrance
                   animation. */}
-              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-                <div className="orbit-bob-a absolute" style={{ top: '20%', left: '6%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                    <SiReact className="text-primary" style={{ fontSize: '18px' }} />
-                  </motion.div>
-                </div>
-                <div className="orbit-bob-b absolute" style={{ top: '30%', right: '7%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                    <SiNodedotjs className="text-green-500" style={{ fontSize: '18px' }} />
-                  </motion.div>
-                </div>
-                <div className="orbit-bob-c absolute" style={{ bottom: '7%', left: '2%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                    <SiJavascript className="text-yellow-400" style={{ fontSize: '16px' }} />
-                  </motion.div>
-                </div>
-                <div className="orbit-bob-d absolute" style={{ bottom: '12%', right: '2%' }}>
-                  <motion.div animate={{ opacity: 1, scale: 1 }} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-blue-100 shadow-md flex items-center justify-center">
-                    <RiCodeSSlashLine className="text-slate-700" style={{ fontSize: '16px' }} />
-                  </motion.div>
-                </div>
+              <div className="absolute inset-0 pointer-events-none">
+                <TechIcons layout="desktop" />
               </div>
 
               {/* Portrait — untouched supplied asset. Sized up further
