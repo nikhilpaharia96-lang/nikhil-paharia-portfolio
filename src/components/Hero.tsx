@@ -1,6 +1,7 @@
 import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVideoLine, RiPencilLine, RiSendPlaneLine, RiFolderOpenLine, RiFolderChartLine, RiGroupLine, RiTimeLine, RiStarLine } from "react-icons/ri";
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
 import TechIcons from "@/components/TechIcons";
+import FloatingParticles from "@/components/FloatingParticles";
 import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView, useReducedMotion } from "@/lib/static-motion";
@@ -213,14 +214,8 @@ export default function Hero() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-200/20 rounded-full blur-[100px]" style={{ }} />
       </div>
 
-      {/* Particles */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] left-[10%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute top-[40%] right-[20%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute bottom-[30%] left-[30%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute top-[60%] left-[80%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-        <div className="absolute bottom-[10%] right-[10%] w-1.5 h-1.5 rounded-full bg-primary/40" style={{ }} />
-      </div>
+      {/* Particles — small blue dots drifting slowly */}
+      <FloatingParticles />
 
       {/* Cloud photo — sits at the bottom of Hero itself (not a separate
           section below it), so it's visible within the opening scene, near
