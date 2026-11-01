@@ -114,10 +114,10 @@ export default function Navbar() {
     >
       <nav
         aria-label="Primary"
-        className={`nav-enter pointer-events-auto w-full flex items-center justify-between gap-3 xl:gap-6 rounded-none border-0 border-b border-white/85 backdrop-blur-[18px] backdrop-saturate-150 px-4 sm:px-6 lg:px-10 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow] duration-300 motion-reduce:transition-none ${
+        className={`nav-enter pointer-events-auto w-full flex items-center justify-between gap-3 xl:gap-6 rounded-none border-0 border-b px-4 sm:px-6 lg:px-10 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow,border-color] duration-300 motion-reduce:transition-none ${
           isScrolled
-            ? "bg-white/[0.86] shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
-            : "bg-white/[0.72] shadow-[0_8px_32px_rgba(30,100,200,0.10)]"
+            ? "bg-white/[0.86] border-white/85 backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
+            : "bg-transparent border-transparent shadow-none"
         }`}
       >
         {/* Brand */}
