@@ -116,8 +116,8 @@ export default function Navbar() {
         aria-label="Primary"
         className={`nav-enter pointer-events-auto w-full flex items-center justify-between gap-3 xl:gap-6 rounded-none border-0 border-b px-4 sm:px-6 lg:px-10 h-[64px] sm:h-[70px] xl:h-[74px] transition-[background-color,box-shadow,border-color] duration-300 motion-reduce:transition-none ${
           isScrolled
-            ? "bg-white/[0.86] border-white/85 backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
-            : "bg-transparent border-transparent shadow-none"
+            ? "bg-white/[0.92] border-white/85 backdrop-blur-[18px] backdrop-saturate-150 shadow-[0_10px_36px_rgba(30,100,200,0.18)]"
+            : "bg-white/80 border-white/60 backdrop-blur-[12px] backdrop-saturate-150 shadow-[0_6px_24px_rgba(30,100,200,0.08)]"
         }`}
       >
         {/* Brand */}
