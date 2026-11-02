@@ -25,7 +25,7 @@ import ecommerceImage from "../assets/images/service-ecommerce.webp";
 import cinematographyImage from "../assets/images/service-cinematography.webp";
 
 // `imageFrame: true` = opaque picture (shown as a rounded photo);
-// without it the image is a transparent cut-out that floats on the card.
+// `imagePanel: true` = transparent cut-out, placed inside the same rounded dark panel.
 export const services = [
   {
     title: "Website Development",
@@ -36,6 +36,7 @@ export const services = [
     ],
     price: "₹2,999",
     image: websiteImage,
+    imagePanel: true,
   },
   {
     title: "Video Editing",
@@ -101,6 +102,7 @@ export const services = [
     ],
     price: "₹4,999",
     image: ecommerceImage,
+    imagePanel: true,
   },
   {
     title: "Cinematography & Video Production",
