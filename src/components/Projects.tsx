@@ -560,7 +560,7 @@ function FolderPeek({
     <button
       onClick={onSelect}
       aria-label={`Expand ${project.title}`}
-      className="group/peek block w-full rounded-lg cursor-pointer text-left overflow-hidden
+      className="group/peek block w-full rounded-none cursor-pointer text-left overflow-hidden
                  border-2 shadow-[0_10px_28px_-8px_rgba(0,0,0,0.5)]
                  transition-transform duration-200 hover:-translate-y-0.5
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
@@ -588,7 +588,7 @@ function FolderExpanded({
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.12}
       onDragEnd={handleDragEnd}
-      className={`relative rounded-lg sm:rounded-xl overflow-hidden border-2 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.55)] ${total > 1 ? "cursor-grab active:cursor-grabbing" : ""}`}
+      className={`relative rounded-none overflow-hidden border-2 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.55)] ${total > 1 ? "cursor-grab active:cursor-grabbing" : ""}`}
       style={{ background: tone.bg, borderColor: tone.border }}
     >
       <FolderHeader project={project} showHint={false} />
@@ -744,22 +744,15 @@ function FolderRow({
   project: Project; isActive: boolean; idx: number;
   onSelect: () => void; onNext: () => void; onPrev: () => void; total: number; position: number;
 }) {
-  // A small repeating pattern of horizontal drift, tilt and width so the stack reads like
-  // real papers thrown down slightly off-true — not a perfectly symmetric block.
-  const ASYMMETRY = [
-    { x: 0, rotate: 0, inset: 0 },
-    { x: -10, rotate: -0.7, inset: 10 },
-    { x: 14, rotate: 0.6, inset: 22 },
-    { x: -6, rotate: -0.5, inset: 6 },
-  ];
-  const a = isActive ? { x: 0, rotate: 0, inset: 0 } : ASYMMETRY[idx % ASYMMETRY.length];
+  // Cards sit perfectly straight and aligned — no tilt, no sideways offset, no width inset.
+  const a = { x: 0, rotate: 0, inset: 0 };
 
   return (
     <motion.div
       layout
       transition={{ type: "spring", stiffness: 280, damping: 32 }}
       className="relative"
-      style={{ zIndex: idx, marginTop: idx === 0 ? 0 : -18 }}
+      style={{ zIndex: idx, marginTop: idx === 0 ? 0 : 8 }}
     >
       <motion.div
         layoutId={`folder-${project.id}`}
@@ -812,7 +805,7 @@ function FolderStack({ projects }: { projects: Project[] }) {
   return (
     <motion.div layout className="flex flex-col">
       {projects.map((p, idx) => (
-        <Reveal key={p.id} fromX={idx % 2 === 0 ? -90 : 90} fromY={48} rotate={idx % 2 === 0 ? -2 : 2} delay={Math.min(idx, 3) * 0.06}>
+        <Reveal key={p.id} fromY={48} delay={Math.min(idx, 3) * 0.06}>
           <FolderRow
             project={p}
             idx={idx}
