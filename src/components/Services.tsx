@@ -11,6 +11,7 @@ import { SiReact, SiCss, SiNextdotjs, SiMongodb, SiFigma, SiInstagram } from "re
 import ServicesMobileStack from "@/components/ServicesMobileStack";
 import premiereProLogo from "../assets/logos/premiere-pro.svg";
 import afterEffectsLogo from "../assets/logos/after-effects.svg";
+import fullStackImage from "../assets/images/fullstack-service.webp";
 
 export const services = [
   {
@@ -18,6 +19,7 @@ export const services = [
     desc: "End-to-end web applications with React, Node.js, and databases.",
     icon: SiReact,
     color: "#61DAFB",
+    image: fullStackImage,
     price: "From $500",
   },
   {

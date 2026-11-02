@@ -7,6 +7,8 @@ export type ServiceItem = {
   desc: string;
   icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   logo?: string;
+  /** Optional illustration shown as a banner at the top of the card (replaces the small icon badge). */
+  image?: string;
   color?: string;
   price: string;
 };
@@ -77,15 +79,28 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
         </span>
 
         <div className="relative p-6 sm:p-7">
-          <div className="flex items-start justify-between mb-5">
-            <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm overflow-hidden">
-              {service.logo ? (
-                <img src={service.logo} alt="" className="w-7 h-7 sm:w-8 sm:h-8 rounded-md" />
-              ) : Icon ? (
-                <Icon className="text-2xl sm:text-3xl" style={{ color: service.color }} />
-              ) : null}
-            </span>
-          </div>
+          {service.image ? (
+            <img
+              src={service.image}
+              alt={`${service.title} illustration`}
+              width={1200}
+              height={716}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="block w-full h-auto -mt-2 mb-4 select-none pointer-events-none drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
+            />
+          ) : (
+            <div className="flex items-start justify-between mb-5">
+              <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm overflow-hidden">
+                {service.logo ? (
+                  <img src={service.logo} alt="" className="w-7 h-7 sm:w-8 sm:h-8 rounded-md" />
+                ) : Icon ? (
+                  <Icon className="text-2xl sm:text-3xl" style={{ color: service.color }} />
+                ) : null}
+              </span>
+            </div>
+          )}
 
           <h3 className={`font-serif font-black text-xl sm:text-2xl uppercase tracking-tight leading-snug mb-3 ${p.text}`}>
             {service.title}
