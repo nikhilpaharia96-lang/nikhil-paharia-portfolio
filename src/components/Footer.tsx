@@ -6,6 +6,8 @@ import SplitText from "@/components/ui/SplitText";
 import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+const FONT_CONDENSED = "'Anton', 'Impact', sans-serif";
+const bigText = "text-6xl sm:text-7xl leading-[0.95] uppercase text-foreground";
 
 const socials = [
   { Icon: RiGithubFill,    href: "#", label: "GitHub",    hoverBg: "hover:bg-slate-900"   },
@@ -85,6 +87,7 @@ export default function Footer() {
             className="flex flex-col items-center gap-6"
           >
             {/* Nav links */}
+            <h3 className={bigText} style={{ fontFamily: FONT_CONDENSED }}>Explore</h3>
             <div className="flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-600">
               {navLinks.map((link) => (
                 <motion.a
@@ -100,6 +103,7 @@ export default function Footer() {
             </div>
 
             {/* Social icons wrapped in Magnetic */}
+            <h3 className={`${bigText} mt-4`} style={{ fontFamily: FONT_CONDENSED }}>Social</h3>
             <div className="flex gap-4">
               {socials.map(({ Icon, href, label, hoverBg }) => (
                 <Magnetic key={label} range={45} strength={0.4} scaleHover={1.15}>
