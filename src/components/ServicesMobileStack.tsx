@@ -9,6 +9,8 @@ export type ServiceItem = {
   logo?: string;
   /** Optional illustration shown as a banner at the top of the card (replaces the small icon badge). */
   image?: string;
+  /** Opaque picture (not a cut-out): shown as a rounded framed photo instead of a floating illustration. */
+  imageFrame?: boolean;
   color?: string;
   price: string;
 };
@@ -103,11 +105,15 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
               src={service.image}
               alt={`${service.title} illustration`}
               width={1200}
-              height={716}
+              height={service.imageFrame ? 800 : 716}
               loading="lazy"
               decoding="async"
               draggable={false}
-              className="block w-full h-auto mb-5 mt-1 select-none pointer-events-none drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
+              className={`block w-full h-auto mb-5 mt-1 select-none pointer-events-none ${
+                service.imageFrame
+                  ? "rounded-2xl shadow-[0_16px_34px_-14px_rgba(15,23,42,0.55)]"
+                  : "drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
+              }`}
             />
           )}
 

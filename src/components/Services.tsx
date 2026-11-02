@@ -12,6 +12,7 @@ import ServicesMobileStack from "@/components/ServicesMobileStack";
 import premiereProLogo from "../assets/logos/premiere-pro.svg";
 import afterEffectsLogo from "../assets/logos/after-effects.svg";
 import fullStackImage from "../assets/images/fullstack-service.webp";
+import service02Image from "../assets/images/service-02.webp";
 
 export const services = [
   {
@@ -27,6 +28,8 @@ export const services = [
     desc: "Websites that look perfect on every device and screen size.",
     icon: SiCss,
     color: "#1572B6",
+    image: service02Image,
+    imageFrame: true,
     price: "From $300",
   },
   {
