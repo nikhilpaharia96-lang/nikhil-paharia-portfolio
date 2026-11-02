@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "@/lib/static-motion";
 import { toast } from "sonner";
 import {
@@ -252,12 +252,14 @@ function FloatSelect({ id, name, label, options, required, error, value, onValue
 }
 
 const SUBJECT_OPTIONS = [
-  "Full-Stack Web Development",
-  "Landing Page",
-  "Web Design",
-  "Admin Dashboard",
+  "Website Development",
   "Video Editing",
-  "Social Media Content",
+  "Digital Marketing",
+  "Graphic Designing",
+  "UI/UX Design",
+  "Automation & AI Solutions",
+  "E-Commerce Solutions",
+  "Cinematography & Video Production",
   "Other",
 ];
 
@@ -306,6 +308,19 @@ export default function Contact() {
   const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", subject: "", budget: "", message: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
+
+  // "Book Now" on a service card pre-selects that service here.
+  useEffect(() => {
+    const onBook = (e: Event) => {
+      const title = (e as CustomEvent<string>).detail;
+      if (SUBJECT_OPTIONS.includes(title)) {
+        setForm((f) => ({ ...f, subject: title }));
+        setErrors((er) => ({ ...er, subject: undefined }));
+      }
+    };
+    window.addEventListener("book-service", onBook);
+    return () => window.removeEventListener("book-service", onBook);
+  }, []);
 
   const setField = (key: keyof FormState) => (v: string) => {
     setForm((f) => ({ ...f, [key]: v }));

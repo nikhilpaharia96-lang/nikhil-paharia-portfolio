@@ -1,6 +1,19 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { playCardPop } from "@/lib/sound";
+import "./services-cta.css";
+
+/** Event name Contact listens for, to pre-select the service in its "What do you need?" field. */
+export const BOOK_SERVICE_EVENT = "book-service";
+
+function bookService(title: string) {
+  window.dispatchEvent(new CustomEvent(BOOK_SERVICE_EVENT, { detail: title }));
+  const el = document.getElementById("contact");
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 24;
+  window.scrollTo({ top, behavior: "auto" });
+}
 
 export type ServiceItem = {
   title: string;
@@ -118,10 +131,23 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
           )}
 
           {service.price && (
-            <div className={`flex items-center justify-between pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
-              <span className={`px-4 py-1.5 rounded-full font-mono text-sm font-bold ${p.priceBg} ${p.priceText}`}>
-                {service.price}
+            <div className={`svc-foot pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
+              <span className="svc-price" data-tone={color === "cream" ? "dark" : "light"}>
+                <span className="svc-price__label">Starting From</span>
+                <span className="svc-price__amount">{service.price}</span>
               </span>
+              <button
+                type="button"
+                className="svc-book"
+                data-tone={color === "navy" ? "on-navy" : undefined}
+                onClick={() => bookService(service.title)}
+                aria-label={`Book ${service.title}`}
+              >
+                Book Now
+                <span className="svc-book__arrow" aria-hidden="true">
+                  <ArrowRight size={16} strokeWidth={2.6} />
+                </span>
+              </button>
             </div>
           )}
         </div>
