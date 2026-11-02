@@ -1,17 +1,15 @@
-import { motion } from "@/lib/static-motion";
+import type { MouseEvent } from "react";
 import { RiArrowUpLine, RiGithubFill, RiLinkedinFill, RiInstagramLine, RiYoutubeFill } from "react-icons/ri";
-import footerBg from "../assets/images/footer-bg.webp";
-import Magnetic from "@/components/ui/Magnetic";
-import SplitText from "@/components/ui/SplitText";
-import { staggerContainer, cinChildSmall } from "@/lib/revealVariants";
 
-const ease = [0.16, 1, 0.3, 1] as const;
+const FONT_CONDENSED = "'Anton', 'Impact', sans-serif";
+const FONT_BODY = "'DM Sans', 'Inter', sans-serif";
 
+// Entries left as "#" stay visible but inert — replace with your real profile links.
 const socials = [
-  { Icon: RiGithubFill,    href: "#", label: "GitHub",    hoverBg: "hover:bg-slate-900"   },
-  { Icon: RiLinkedinFill,  href: "#", label: "LinkedIn",  hoverBg: "hover:bg-[#0A66C2]"   },
-  { Icon: RiInstagramLine, href: "#", label: "Instagram", hoverBg: "hover:bg-[#E1306C]"   },
-  { Icon: RiYoutubeFill,   href: "#", label: "YouTube",   hoverBg: "hover:bg-[#FF0000]"   },
+  { Icon: RiGithubFill,    href: "https://github.com/nikhilpaharia96-lang", label: "GitHub"    },
+  { Icon: RiLinkedinFill,  href: "#", label: "LinkedIn"  },
+  { Icon: RiInstagramLine, href: "#", label: "Instagram" },
+  { Icon: RiYoutubeFill,   href: "#", label: "YouTube"   },
 ];
 
 const navLinks = [
@@ -19,137 +17,110 @@ const navLinks = [
   { label: "About",    href: "#about"    },
   { label: "Projects", href: "#projects" },
   { label: "Videos",   href: "#videos"   },
+  { label: "Contact",  href: "#contact"  },
 ];
 
+const outlined =
+  "inline-flex items-center justify-center border border-white/80 text-white transition-colors " +
+  "hover:bg-white hover:text-[#0b35e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white";
+
 export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "auto" });
+  const scrollToTop = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  };
 
   return (
-    <footer className="relative bg-blue-50 pt-32 pb-12 border-t border-blue-100 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <img
-          src={footerBg}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover object-[center_64%]"
-        />
-        <div className="absolute inset-0 bg-white/30" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/80 to-transparent" />
-      </div>
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-
-      <div className="container-tight relative z-10">
-
-        {/* Hero text */}
-        <motion.div
-
-          whileInView={{ opacity: 1, y: 0 }}
-
-
-          className="text-center mb-24 max-w-2xl mx-auto"
-        >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6">
-            <SplitText type="words">Let's build the future.</SplitText>
-          </h2>
-          <p className="text-lg text-slate-600 font-light">
-            Available for freelance opportunities globally. Bring your boldest ideas.
-          </p>
-        </motion.div>
-
-        <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-
-          {/* Brand — from LEFT */}
-          <motion.div
-
-            whileInView={{ opacity: 1, x: 0 }}
-
-
-            className="text-center md:text-left"
+    <footer
+      className="relative overflow-hidden text-white"
+      style={{ background: "#2f5bff", fontFamily: FONT_BODY }}
+    >
+      <div className="container-tight relative z-10 pt-10 sm:pt-14 pb-12">
+        {/* Back to top */}
+        <div className="flex justify-end">
+          <a
+            href="#home"
+            onClick={scrollToTop}
+            className="inline-flex items-center gap-1 text-xl sm:text-2xl underline underline-offset-4 hover:opacity-80"
           >
-            <Magnetic range={50} strength={0.2}>
-              <a href="#home" className="font-mono text-3xl font-bold tracking-wider block mb-3 flex items-center justify-center md:justify-start gap-2 text-foreground hover:opacity-80 ">
-                Nikhil <span className="text-primary">Paharia</span>
-              </a>
-            </Magnetic>
-            <p className="text-slate-600 text-base">Crafting cinematic digital experiences.</p>
-          </motion.div>
-
-          {/* Nav + Socials — from RIGHT */}
-          <motion.div
-            variants={staggerContainer}
-
-            whileInView="show"
-
-
-            className="flex flex-col items-center gap-6"
-          >
-            {/* Nav links */}
-            <div className="flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-600">
-              {navLinks.map((link) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-
-                  variants={cinChildSmall}
-                  className="hover:text-primary  interactive"
-                >
-                  {link.label}
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Social icons wrapped in Magnetic */}
-            <div className="flex gap-4">
-              {socials.map(({ Icon, href, label, hoverBg }) => (
-                <Magnetic key={label} range={45} strength={0.4} scaleHover={1.15}>
-                  <motion.a
-                    href={href}
-                    aria-label={label}
-
-                    variants={cinChildSmall}
-                    className={`interactive w-10 h-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center ${hoverBg} hover:text-white  `}
-                  >
-                    <Icon className="text-lg" />
-                  </motion.a>
-                </Magnetic>
-              ))}
-            </div>
-          </motion.div>
+            Back to top <RiArrowUpLine aria-hidden="true" />
+          </a>
         </div>
 
-        {/* Bottom bar */}
-        <motion.div
-
-          whileInView={{ opacity: 1, y: 0 }}
-
-
-          className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-blue-100"
+        {/* Social */}
+        <h2
+          className="mt-14 sm:mt-20 text-[84px] sm:text-[140px] leading-[0.95] uppercase"
+          style={{ fontFamily: FONT_CONDENSED }}
         >
-          <p className="text-slate-700 text-sm font-medium">
-            © {new Date().getFullYear()} Nikhil Paharia. <span className="hidden sm:inline">All rights reserved.</span>
-          </p>
-          <p className="text-slate-700 text-sm italic">Crafted in Assam, for the world.</p>
-
-          {/* Back-to-top — elastic morph button with Magnetic */}
-          <Magnetic range={60} strength={0.45} scaleHover={1.1}>
-            <motion.button
-              onClick={scrollToTop}
-
-
-
-              className="interactive w-12 h-12 rounded-full bg-white/90 border border-blue-200 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary   text-slate-600"
-              aria-label="Scroll to top"
-            >
-              <motion.div
-
-
+          Social
+        </h2>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {socials.map(({ Icon, href, label }) => {
+            const external = /^https?:\/\//.test(href);
+            return (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className={`${outlined} h-[62px] w-[62px] rounded-[4px] text-3xl`}
+                {...(external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : { onClick: (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault() })}
               >
-                <RiArrowUpLine className="text-2xl" />
-              </motion.div>
-            </motion.button>
-          </Magnetic>
-        </motion.div>
+                <Icon aria-hidden="true" />
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Explore */}
+        <h2
+          className="mt-16 sm:mt-24 text-[84px] sm:text-[140px] leading-[0.95] uppercase"
+          style={{ fontFamily: FONT_CONDENSED }}
+        >
+          Explore
+        </h2>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {navLinks.map((l) => (
+            <a
+              key={l.label}
+              href={l.href}
+              className={`${outlined} h-[46px] px-5 rounded-[4px] text-lg sm:text-xl`}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Note */}
+        <p className="mt-14 max-w-xl text-base sm:text-lg leading-snug text-white/90">
+          Available for freelance web development and video editing projects worldwide.
+          Bring your boldest ideas — let's build something that matters.
+        </p>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/25">
+        <div className="container-tight flex flex-col gap-8 py-10 sm:flex-row sm:items-end sm:justify-between">
+          <div
+            className="inline-block self-start bg-black px-4 py-3 text-white"
+            style={{ clipPath: "polygon(0 0, 100% 0, 100% 82%, 92% 100%, 0 100%)" }}
+          >
+            <span
+              className="block text-4xl sm:text-5xl leading-[0.95] uppercase"
+              style={{ fontFamily: FONT_CONDENSED }}
+            >
+              Crafted in
+              <br />
+              Assam, for
+              <br />
+              the world.
+            </span>
+          </div>
+          <p className="text-sm text-white/85">
+            © {new Date().getFullYear()} Nikhil Paharia. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );
