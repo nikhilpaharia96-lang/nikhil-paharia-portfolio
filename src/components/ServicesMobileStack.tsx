@@ -12,7 +12,7 @@ export type ServiceItem = {
   /** Opaque picture (not a cut-out): shown as a rounded framed photo instead of a floating illustration. */
   imageFrame?: boolean;
   color?: string;
-  price: string;
+  price?: string;
 };
 
 type CardColor = "blue" | "cream" | "navy" | "sky";
@@ -117,11 +117,13 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
             />
           )}
 
-          <div className={`flex items-center justify-between pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
-            <span className={`px-4 py-1.5 rounded-full font-mono text-sm font-bold ${p.priceBg} ${p.priceText}`}>
-              {service.price}
-            </span>
-          </div>
+          {service.price && (
+            <div className={`flex items-center justify-between pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
+              <span className={`px-4 py-1.5 rounded-full font-mono text-sm font-bold ${p.priceBg} ${p.priceText}`}>
+                {service.price}
+              </span>
+            </div>
+          )}
         </div>
       </motion.article>
     </div>

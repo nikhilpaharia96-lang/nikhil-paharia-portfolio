@@ -7,87 +7,64 @@ import {
   useSpring,
   useMotionValueEvent,
 } from "framer-motion";
-import { SiReact, SiCss, SiNextdotjs, SiMongodb, SiFigma, SiInstagram } from "react-icons/si";
 import ServicesMobileStack from "@/components/ServicesMobileStack";
-import premiereProLogo from "../assets/logos/premiere-pro.svg";
-import afterEffectsLogo from "../assets/logos/after-effects.svg";
-import fullStackImage from "../assets/images/fullstack-service.webp";
-import service02Image from "../assets/images/service-02.webp";
+import websiteImage from "../assets/images/fullstack-service.webp";
+import videoEditingImage from "../assets/images/service-02.webp";
 import digitalMarketingImage from "../assets/images/service-digital-marketing.webp";
-import uiuxImage from "../assets/images/service-uiux.webp";
-import cinematographyImage from "../assets/images/service-cinematography.webp";
-import ecommerceImage from "../assets/images/service-ecommerce.webp";
-import automationImage from "../assets/images/service-automation-ai.webp";
 import graphicDesignImage from "../assets/images/service-graphic-design.webp";
+import uiuxImage from "../assets/images/service-uiux.webp";
+import automationImage from "../assets/images/service-automation-ai.webp";
+import ecommerceImage from "../assets/images/service-ecommerce.webp";
+import cinematographyImage from "../assets/images/service-cinematography.webp";
 
+// `imageFrame: true` = opaque picture (shown as a rounded photo);
+// without it the image is a transparent cut-out that floats on the card.
 export const services = [
   {
-    title: "Full Stack Web Dev",
-    desc: "End-to-end web applications with React, Node.js, and databases.",
-    icon: SiReact,
-    color: "#61DAFB",
-    image: fullStackImage,
-    price: "From $500",
+    title: "Website Development",
+    desc: "Modern, fast and responsive websites for businesses and brands.",
+    image: websiteImage,
   },
   {
-    title: "Responsive Design",
-    desc: "Websites that look perfect on every device and screen size.",
-    icon: SiCss,
-    color: "#1572B6",
-    image: service02Image,
+    title: "Video Editing",
+    desc: "Professional video editing for YouTube, Instagram Reels and commercials.",
+    image: videoEditingImage,
     imageFrame: true,
-    price: "From $300",
   },
   {
-    title: "Landing Pages",
-    desc: "High-converting, beautiful landing pages that drive sales.",
-    icon: SiNextdotjs,
-    color: "#111827",
-    image: ecommerceImage,
-    price: "From $200",
-  },
-  {
-    title: "Admin Dashboards",
-    desc: "Complex data visualization and management panels.",
-    icon: SiMongodb,
-    color: "#47A248",
-    image: automationImage,
+    title: "Digital Marketing",
+    desc: "Social Media, Google Ads, SEO, Lead Generation and Brand Growth.",
+    image: digitalMarketingImage,
     imageFrame: true,
-    price: "From $600",
+  },
+  {
+    title: "Graphic Designing",
+    desc: "Logos, Banners, Social Media Posts, Branding and Print Design.",
+    image: graphicDesignImage,
+    imageFrame: true,
   },
   {
     title: "UI/UX Design",
-    desc: "Wireframes, prototypes, and stunning user interfaces in Figma.",
-    icon: SiFigma,
-    color: "#F24E1E",
+    desc: "Modern, user-friendly interfaces for web and mobile applications.",
     image: uiuxImage,
     imageFrame: true,
-    price: "From $250",
   },
   {
-    title: "Cinematic Editing",
-    desc: "Premium video editing for YouTube, commercials, and events.",
-    logo: premiereProLogo,
+    title: "Automation & AI Solutions",
+    desc: "WhatsApp Chatbots, Workflow Automation, CRM and API Integration.",
+    image: automationImage,
+    imageFrame: true,
+  },
+  {
+    title: "E-Commerce Solutions",
+    desc: "Online Stores, Product Setup, Payment Integration and Store Management.",
+    image: ecommerceImage,
+  },
+  {
+    title: "Cinematography & Video Production",
+    desc: "Professional Video Shooting, Cinematography, Promotional Videos and Content Creation.",
     image: cinematographyImage,
     imageFrame: true,
-    price: "From $150",
-  },
-  {
-    title: "Social Media Marketing",
-    desc: "High ROAS 4.5x to 9.5x, Low CAC, data optimization, engagement ",
-    icon: SiInstagram,
-    color: "#E1306C",
-    image: digitalMarketingImage,
-    imageFrame: true,
-    price: "From $50",
-  },
-  {
-    title: "Motion Graphics",
-    desc: "Custom animations, intros, and visual effects for videos.",
-    logo: afterEffectsLogo,
-    image: graphicDesignImage,
-    imageFrame: true,
-    price: "From $100",
   },
 ];
 
