@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ArrowUpRight } from "lucide-react";
-import npLogo from "../assets/logos/np-logo.webp";
+import brandLogo from "../assets/logos/nikhil-paharia-logo.webp";
 import { lockBodyScroll } from "@/lib/scrollLock";
 
 const navLinks = [
@@ -128,19 +128,17 @@ export default function Navbar() {
             scrollTo("#home");
           }}
           aria-label="Nikhil Paharia — back to top"
-          className={`group flex items-center gap-2.5 sm:gap-3.5 min-w-0 rounded-none pr-2 ${focusRing}`}
+          className={`group flex items-center min-w-0 rounded-none pr-2 ${focusRing}`}
         >
+          {/* Full logo lockup: NP mark + divider + "Nikhil Paharia" (transparent PNG → webp) */}
           <img
-            src={npLogo}
+            src={brandLogo}
             alt=""
-            width={60}
-            height={60}
-            className="h-10 sm:h-12 xl:h-[60px] w-auto shrink-0 -my-1 transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_4px_10px_rgba(18,102,241,0.35)] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            width={1993}
+            height={331}
+            decoding="async"
+            className="h-[min(34px,calc((100vw-168px)/6.02))] sm:h-11 xl:h-[46px] 2xl:h-[54px] w-auto max-w-full shrink-0 transition duration-300 group-hover:scale-[1.03] group-hover:drop-shadow-[0_4px_10px_rgba(18,102,241,0.3)] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
-          <span aria-hidden="true" className="hidden sm:block w-px h-7 bg-slate-300/80 shrink-0" />
-          <span className="flex items-baseline gap-[0.45em] font-serif font-bold text-[17px] sm:text-xl xl:text-[22px] leading-none tracking-normal text-[#172033] whitespace-nowrap truncate">
-            Nikhil <span className="text-[#1266F1]">Paharia</span>
-          </span>
         </a>
 
         {/* Desktop links */}
