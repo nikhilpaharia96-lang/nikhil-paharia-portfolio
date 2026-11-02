@@ -31,12 +31,8 @@ export type ServiceItem = {
   desc: string;
   /** 1–2 small icon/logo badges shown at the top of the card */
   badges?: ServiceBadge[];
-  /** Optional illustration shown below the description. */
+  /** Optional transparent cut-out illustration, floating below the description (no frame). */
   image?: string;
-  /** Opaque picture (not a cut-out): shown as a rounded framed photo instead of a floating illustration. */
-  imageFrame?: boolean;
-  /** Transparent cut-out: place it inside the same rounded dark panel the photo cards use, so every card matches. */
-  imagePanel?: boolean;
   price?: string;
 };
 
@@ -137,42 +133,16 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
             {service.desc}
           </p>
 
-          {service.image && service.imagePanel && (
-            <div
-              className="relative mb-5 mt-1 aspect-[3/2] w-full overflow-hidden rounded-2xl shadow-[0_16px_34px_-14px_rgba(15,23,42,0.55)] flex items-center justify-center"
-              style={{
-                background:
-                  "radial-gradient(120% 90% at 50% 0%, #2b2f86 0%, #151a52 45%, #0a0d2e 100%)",
-              }}
-            >
-              <img
-                src={service.image}
-                alt={`${service.title} illustration`}
-                width={1200}
-                height={716}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                className="block h-full w-full object-contain p-[4%] select-none pointer-events-none drop-shadow-[0_12px_22px_rgba(0,0,0,0.45)]"
-              />
-            </div>
-          )}
-
-          {service.image && !service.imagePanel && (
-
+          {service.image && (
             <img
               src={service.image}
               alt={`${service.title} illustration`}
               width={1200}
-              height={service.imageFrame ? 800 : 716}
+              height={800}
               loading="lazy"
               decoding="async"
               draggable={false}
-              className={`block w-full h-auto mb-5 mt-1 select-none pointer-events-none ${
-                service.imageFrame
-                  ? "rounded-2xl shadow-[0_16px_34px_-14px_rgba(15,23,42,0.55)]"
-                  : "drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
-              }`}
+              className="block w-full h-auto mb-5 mt-1 select-none pointer-events-none drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
             />
           )}
 

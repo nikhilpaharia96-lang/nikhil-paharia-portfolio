@@ -24,8 +24,7 @@ import automationImage from "../assets/images/service-automation-ai.webp";
 import ecommerceImage from "../assets/images/service-ecommerce.webp";
 import cinematographyImage from "../assets/images/service-cinematography.webp";
 
-// `imageFrame: true` = opaque picture (shown as a rounded photo);
-// `imagePanel: true` = transparent cut-out, placed inside the same rounded dark panel.
+// Every card image is a transparent cut-out that floats on the card (no frame).
 export const services = [
   {
     title: "Website Development",
@@ -36,7 +35,6 @@ export const services = [
     ],
     price: "₹2,999",
     image: websiteImage,
-    imagePanel: true,
   },
   {
     title: "Video Editing",
@@ -47,7 +45,6 @@ export const services = [
     ],
     price: "₹499",
     image: videoEditingImage,
-    imageFrame: true,
   },
   {
     title: "Digital Marketing",
@@ -58,7 +55,6 @@ export const services = [
     ],
     price: "₹1,999/month",
     image: digitalMarketingImage,
-    imageFrame: true,
   },
   {
     title: "Graphic Designing",
@@ -69,7 +65,6 @@ export const services = [
     ],
     price: "₹499",
     image: graphicDesignImage,
-    imageFrame: true,
   },
   {
     title: "UI/UX Design",
@@ -80,7 +75,6 @@ export const services = [
     ],
     price: "₹1,499",
     image: uiuxImage,
-    imageFrame: true,
   },
   {
     title: "Automation & AI Solutions",
@@ -91,7 +85,6 @@ export const services = [
     ],
     price: "₹4,999",
     image: automationImage,
-    imageFrame: true,
   },
   {
     title: "E-Commerce Solutions",
@@ -102,7 +95,6 @@ export const services = [
     ],
     price: "₹4,999",
     image: ecommerceImage,
-    imagePanel: true,
   },
   {
     title: "Cinematography & Video Production",
@@ -113,7 +105,6 @@ export const services = [
     ],
     price: "₹2,999",
     image: cinematographyImage,
-    imageFrame: true,
   },
 ];
 
