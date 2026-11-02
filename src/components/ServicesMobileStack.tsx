@@ -79,18 +79,7 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
         </span>
 
         <div className="relative p-6 sm:p-7">
-          {service.image ? (
-            <img
-              src={service.image}
-              alt={`${service.title} illustration`}
-              width={1200}
-              height={716}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              className="block w-full h-auto -mt-2 mb-4 select-none pointer-events-none drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
-            />
-          ) : (
+          {!service.image && (
             <div className="flex items-start justify-between mb-5">
               <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm overflow-hidden">
                 {service.logo ? (
@@ -108,6 +97,19 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
           <p className={`text-sm sm:text-base leading-relaxed mb-6 ${p.sub}`}>
             {service.desc}
           </p>
+
+          {service.image && (
+            <img
+              src={service.image}
+              alt={`${service.title} illustration`}
+              width={1200}
+              height={716}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="block w-full h-auto mb-5 mt-1 select-none pointer-events-none drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
+            />
+          )}
 
           <div className={`flex items-center justify-between pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
             <span className={`px-4 py-1.5 rounded-full font-mono text-sm font-bold ${p.priceBg} ${p.priceText}`}>
