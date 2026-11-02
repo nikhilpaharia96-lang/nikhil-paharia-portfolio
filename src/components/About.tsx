@@ -1,3 +1,4 @@
+import SectionHeader from "@/components/ui/SectionHeader";
 import { useRef, useMemo, useState, useEffect, useCallback, forwardRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import {
@@ -1646,27 +1647,15 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative overflow-hidden section-wrap max-w-full py-3 sm:py-16 md:py-16 lg:py-16 bg-white"
+      className="relative overflow-hidden section-wrap max-w-full pt-20 sm:pt-24 pb-3 sm:pb-16 md:pb-16 lg:pb-16"
       aria-label="About — My Story"
     >
-      {/* subtle blueprint grid backdrop — keeps the notebook as the focal point */}
-      <div
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.35]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(29,111,235,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(29,111,235,0.06) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-          maskImage: "radial-gradient(ellipse 60% 60% at 50% 45%, transparent 40%, black 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse 60% 60% at 50% 45%, transparent 40%, black 100%)",
-        }}
-      />
-
       {/* ambient paper dust */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {dust.map((_, i) => (
           <motion.span
             key={i}
-            className="absolute rounded-full bg-primary/20"
+            className="absolute rounded-full bg-white/30"
             style={{
               left: `${(i * 47) % 100}%`,
               top: `${(i * 31) % 100}%`,
@@ -1680,6 +1669,9 @@ export default function About() {
       </div>
 
       <div className="container-tight !px-0 sm:!px-6 relative z-10 max-w-full">
+        <div className="px-4 sm:px-0 mb-14 sm:mb-16">
+          <SectionHeader label="02 — About Me" title="My Story" subtitle="A few pages about who I am, what I build and what drives me." />
+        </div>
         {/* ═══════════════ THE NOTEBOOK (all breakpoints) ═══════════════
             Same notebook, same content, same styling at every size. The
             cursor-tilt/spotlight effects are mouse-only and simply no-op

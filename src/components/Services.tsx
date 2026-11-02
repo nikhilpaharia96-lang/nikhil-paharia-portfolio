@@ -13,6 +13,7 @@ import {
 } from "react-icons/si";
 import { RiCameraLensLine, RiRobot2Line } from "react-icons/ri";
 import ServicesMobileStack from "@/components/ServicesMobileStack";
+import SectionHeader from "@/components/ui/SectionHeader";
 import premiereProLogo from "../assets/logos/premiere-pro.svg";
 import afterEffectsLogo from "../assets/logos/after-effects.svg";
 import websiteImage from "../assets/images/fullstack-service.webp";
@@ -136,23 +137,24 @@ export default function Services() {
 
   return (
     <section id="services" className="section-padding relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-white -z-10" />
-
       <div className="container-tight relative z-10">
 
-        {/* Header — enters from the RIGHT; grows on scroll-down, shrinks on scroll-up */}
         <motion.div
           ref={headerRef}
           initial={{ opacity: 0, x: rm ? 0 : 140 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, margin: "-80px" }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-20"
+          className="mb-20"
         >
-          <motion.h2 style={{ scale }} className="section-title mb-4 inline-block">
-            What I <span className="text-gradient">Offer</span>
-          </motion.h2>
-          <div className="section-divider mx-auto" />
+          <div>
+            <SectionHeader
+              label="04 — Services"
+              title="What I Offer"
+              subtitle="Websites, video, design and automation — everything a brand needs to launch and grow."
+              align="center"
+            />
+          </div>
         </motion.div>
 
         {/* Fanned overlapping card stack — same on mobile and desktop

@@ -25,7 +25,7 @@ function Portfolio() {
   return (
     <>
       <Navbar />
-      <main className="max-w-full overflow-x-hidden">
+      <main className="bp-main max-w-full overflow-x-hidden">
         <Hero />
         <Marquee />
         <About />
