@@ -128,29 +128,34 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
             </div>
           )}
 
-          <h3 className={`font-serif font-black text-xl sm:text-2xl uppercase tracking-tight leading-snug mb-3 ${p.text}`}>
-            {service.title}
-          </h3>
-          <p className={`text-sm sm:text-base leading-relaxed mb-6 ${p.sub}`}>
-            {service.desc}
-          </p>
+          {/* Text on the left, smaller picture on the right */}
+          <div className="flex items-center gap-3 sm:gap-6 mb-5">
+            <div className="min-w-0 flex-1">
+              <h3 className={`font-serif font-black text-[clamp(0.78rem,4.3vw,1.25rem)] sm:text-2xl uppercase tracking-tight leading-snug mb-2 sm:mb-3 ${p.text}`}>
+                {service.title}
+              </h3>
+              <p className={`text-[13px] sm:text-base leading-relaxed ${p.sub}`}>
+                {service.desc}
+              </p>
+            </div>
 
-          {service.image && (
-            <img
-              src={service.image}
-              alt={`${service.title} illustration`}
-              width={1200}
-              height={service.imageFrame ? 800 : 716}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              className={`block w-full h-auto mb-5 mt-1 select-none pointer-events-none ${
-                service.imageFrame
-                  ? "rounded-2xl shadow-[0_16px_34px_-14px_rgba(15,23,42,0.55)]"
-                  : "drop-shadow-[0_14px_26px_rgba(2,6,23,0.35)]"
-              }`}
-            />
-          )}
+            {service.image && (
+              <img
+                src={service.image}
+                alt={`${service.title} illustration`}
+                width={1200}
+                height={service.imageFrame ? 800 : 716}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                className={`block w-[42%] sm:w-[42%] max-w-[270px] h-auto flex-shrink-0 select-none pointer-events-none ${
+                  service.imageFrame
+                    ? "rounded-xl sm:rounded-2xl shadow-[0_12px_26px_-12px_rgba(15,23,42,0.55)]"
+                    : "drop-shadow-[0_10px_20px_rgba(2,6,23,0.35)]"
+                }`}
+              />
+            )}
+          </div>
 
           {service.price && (
             <div className={`svc-foot pt-5 border-t ${color === "cream" ? "border-slate-900/10" : "border-white/20"}`}>
