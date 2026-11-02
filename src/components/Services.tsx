@@ -13,6 +13,9 @@ import premiereProLogo from "../assets/logos/premiere-pro.svg";
 import afterEffectsLogo from "../assets/logos/after-effects.svg";
 import fullStackImage from "../assets/images/fullstack-service.webp";
 import service02Image from "../assets/images/service-02.webp";
+import digitalMarketingImage from "../assets/images/service-digital-marketing.webp";
+import uiuxImage from "../assets/images/service-uiux.webp";
+import cinematographyImage from "../assets/images/service-cinematography.webp";
 
 export const services = [
   {
@@ -51,12 +54,16 @@ export const services = [
     desc: "Wireframes, prototypes, and stunning user interfaces in Figma.",
     icon: SiFigma,
     color: "#F24E1E",
+    image: uiuxImage,
+    imageFrame: true,
     price: "From $250",
   },
   {
     title: "Cinematic Editing",
     desc: "Premium video editing for YouTube, commercials, and events.",
     logo: premiereProLogo,
+    image: cinematographyImage,
+    imageFrame: true,
     price: "From $150",
   },
   {
@@ -64,6 +71,8 @@ export const services = [
     desc: "High ROAS 4.5x to 9.5x, Low CAC, data optimization, engagement ",
     icon: SiInstagram,
     color: "#E1306C",
+    image: digitalMarketingImage,
+    imageFrame: true,
     price: "From $50",
   },
   {
