@@ -3,6 +3,7 @@ import {
   motion,
   AnimatePresence,
   useInView,
+  useReducedMotion,
   type PanInfo,
 } from "framer-motion";
 import {
@@ -32,6 +33,65 @@ import img5 from "../assets/images/project-5.webp"; // CreatorHub
 import img6 from "../assets/images/project-6.webp"; // Portfolio Website
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+/* ── scroll-direction-aware reveal ────────────────────────────────
+ * Every piece re-animates each time it enters the viewport — scrolling down OR up.
+ * It leaves toward the side it exits from, so it comes back in from that same side:
+ * scroll down → things rise in from below; scroll back up → they drop in from above. */
+const scrollDir: { current: "down" | "up" } = { current: "down" };
+let scrollDirBound = false;
+function bindScrollDir() {
+  if (scrollDirBound || typeof window === "undefined") return;
+  scrollDirBound = true;
+  let lastY = window.scrollY;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const y = window.scrollY;
+      if (Math.abs(y - lastY) < 3) return;
+      scrollDir.current = y > lastY ? "down" : "up";
+      lastY = y;
+    },
+    { passive: true },
+  );
+}
+
+function Reveal({
+  children, className, style, fromX = 0, fromY = 56, rotate = 0, delay = 0, amount = 0.08,
+}: {
+  children: React.ReactNode; className?: string; style?: React.CSSProperties;
+  fromX?: number; fromY?: number; rotate?: number; delay?: number; amount?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const inView = useInView(ref, { margin: "-60px 0px -60px 0px", amount });
+  const [exitY, setExitY] = useState(fromY);
+
+  useEffect(() => {
+    bindScrollDir();
+  }, []);
+  useEffect(() => {
+    if (!inView) setExitY(scrollDir.current === "down" ? -fromY * 0.8 : fromY);
+  }, [inView, fromY]);
+
+  if (reduce) {
+    return <div ref={ref} className={className} style={style}>{children}</div>;
+  }
+  const hidden = { opacity: 0, x: fromX, y: exitY, rotate, scale: 0.97 };
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={style}
+      initial={{ opacity: 0, x: fromX, y: fromY, rotate, scale: 0.97 }}
+      animate={inView ? { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1 } : hidden}
+      transition={{ duration: 0.65, ease, delay: inView ? delay : 0 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 const FONT_TITLE = "'Caveat', cursive";
 const FONT_NOTE = "'Kalam', cursive";
 
@@ -752,13 +812,7 @@ function FolderStack({ projects }: { projects: Project[] }) {
   return (
     <motion.div layout className="flex flex-col">
       {projects.map((p, idx) => (
-        <motion.div
-          key={p.id}
-          initial={{ opacity: 0, x: idx % 2 === 0 ? -90 : 90 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.65, ease, delay: Math.min(idx, 3) * 0.06 }}
-        >
+        <Reveal key={p.id} fromX={idx % 2 === 0 ? -90 : 90} fromY={48} rotate={idx % 2 === 0 ? -2 : 2} delay={Math.min(idx, 3) * 0.06}>
           <FolderRow
             project={p}
             idx={idx}
@@ -769,7 +823,7 @@ function FolderStack({ projects }: { projects: Project[] }) {
             total={projects.length}
             position={activeIndex}
           />
-        </motion.div>
+        </Reveal>
       ))}
     </motion.div>
   );
@@ -777,8 +831,6 @@ function FolderStack({ projects }: { projects: Project[] }) {
 /* ── main section ─────────────────────────────────────────────── */
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState("All");
-  const headerRef = useRef(null);
-  const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
   const filtered = activeFilter === "All"
     ? PROJECTS
@@ -819,24 +871,19 @@ export default function Projects() {
 
       <div className="relative max-w-5xl mx-auto px-6 sm:px-8">
         {/* ── Header ── */}
-        <div ref={headerRef} className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-10 items-start mb-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-10 items-start mb-14">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, ease }}
-              className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest border-2"
-              style={{ borderColor: "#1d6feb", color: "#1d6feb", background: "#fff" }}
-            >
-              03 — Selected Work
-            </motion.div>
+            <Reveal fromY={26} className="mb-5">
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest border-2"
+                style={{ borderColor: "#1d6feb", color: "#1d6feb", background: "#fff" }}
+              >
+                03 — Selected Work
+              </div>
+            </Reveal>
 
-            <motion.h2
-              initial={{ opacity: 0, x: 100 }}
-              animate={headerInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.1, ease }}
-              className="relative inline-block mb-4"
-            >
+            <Reveal fromX={100} fromY={30} delay={0.1} className="mb-4">
+            <h2 className="relative inline-block">
               <span
                 className="absolute inset-0 -m-4 sm:-m-5 rounded-2xl"
                 style={{ background: "#0b0d12", transform: "rotate(-2deg)", boxShadow: "0 18px 38px -12px rgba(11,13,18,0.45)" }}
@@ -851,29 +898,28 @@ export default function Projects() {
                   <path d="M2 8c40-8 140-8 216 2" stroke="#7fb2ff" strokeWidth="4" strokeLinecap="round" fill="none" />
                 </svg>
               </span>
-            </motion.h2>
+            </h2>
+            </Reveal>
 
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2, ease }}
-              className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-md mt-3"
-              style={{ fontFamily: FONT_NOTE }}
-            >
-              Every project represents a problem solved, late nights, continuous
-              learning, and real <Highlight>impact</Highlight>.
-            </motion.p>
+            <Reveal fromY={26} delay={0.2} className="mt-3">
+              <p
+                className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-md"
+                style={{ fontFamily: FONT_NOTE }}
+              >
+                Every project represents a problem solved, late nights, continuous
+                learning, and real <Highlight>impact</Highlight>.
+              </p>
+            </Reveal>
           </div>
 
           {/* sticky note */}
-          <motion.div
-            initial={{ opacity: 0, y: 14, rotate: 6 }}
-            animate={headerInView ? { opacity: 1, y: 0, rotate: 3 } : {}}
-            transition={{ duration: 0.55, delay: 0.25, ease }}
-            className="relative justify-self-start lg:justify-self-end w-full max-w-[280px] rounded-sm p-5"
+          <Reveal fromY={30} rotate={6} delay={0.25} className="justify-self-start lg:justify-self-end w-full max-w-[280px]">
+          <div
+            className="relative rounded-sm p-5"
             style={{
               background: "#FFF6D6",
               boxShadow: "0 16px 34px -12px rgba(15,23,42,0.25)",
+              transform: "rotate(3deg)",
             }}
           >
             <TapeStrip className="-top-3 left-8" rotate={-6} />
@@ -884,11 +930,13 @@ export default function Projects() {
               Worth a look. Every project below solved a real problem.
             </p>
             <SquigglyArrow className="absolute -bottom-8 -right-6 opacity-70" />
-          </motion.div>
+          </div>
+          </Reveal>
         </div>
 
         {/* ── Filter tabs ── */}
-        <div className="flex flex-wrap gap-1 mb-10 border-b border-slate-300/70">
+        <Reveal fromY={22} className="mb-10">
+        <div className="flex flex-wrap gap-1 border-b border-slate-300/70">
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.key;
             return (
@@ -914,22 +962,21 @@ export default function Projects() {
             );
           })}
         </div>
+        </Reveal>
 
         {/* ── The stack ── */}
         <FolderStack projects={filtered} />
 
         {/* ── closing note ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="mt-10 flex items-center justify-center gap-2 text-slate-400 text-sm"
-          style={{ fontFamily: FONT_NOTE }}
-        >
-          <Star size={14} className="text-blue-400" />
-          More projects coming soon…
-        </motion.div>
+        <Reveal fromY={30} delay={0.1} className="mt-10">
+          <div
+            className="flex items-center justify-center gap-2 text-slate-400 text-sm"
+            style={{ fontFamily: FONT_NOTE }}
+          >
+            <Star size={14} className="text-blue-400" />
+            More projects coming soon…
+          </div>
+        </Reveal>
       </div>
     </section>
   );
