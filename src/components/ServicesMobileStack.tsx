@@ -15,16 +15,26 @@ function bookService(title: string) {
   window.scrollTo({ top, behavior: "auto" });
 }
 
+export type ServiceBadge = {
+  label: string;
+  /** brand colour for the icon / text */
+  color: string;
+  icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  /** image logo (svg/png) */
+  logo?: string;
+  /** short text mark, e.g. "Ps" — for brands without an icon in react-icons */
+  text?: string;
+};
+
 export type ServiceItem = {
   title: string;
   desc: string;
-  icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  logo?: string;
-  /** Optional illustration shown as a banner at the top of the card (replaces the small icon badge). */
+  /** 1–2 small icon/logo badges shown at the top of the card */
+  badges?: ServiceBadge[];
+  /** Optional illustration shown below the description. */
   image?: string;
   /** Opaque picture (not a cut-out): shown as a rounded framed photo instead of a floating illustration. */
   imageFrame?: boolean;
-  color?: string;
   price?: string;
 };
 
@@ -51,7 +61,6 @@ const tiltPattern = [-3, 2.5, -2, 3, -2.5, 2, -3, 2.5];
 function FanDeckCard({ service, index, total }: { service: ServiceItem; index: number; total: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const rm = useReducedMotion();
-  const Icon = service.icon;
   const num = (index + 1).toString().padStart(2, "0");
   const color = colorCycle[index % colorCycle.length];
   const p = palette[color];
@@ -94,15 +103,28 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
         </span>
 
         <div className="relative p-6 sm:p-7">
-          {!service.image && (
-            <div className="flex items-start justify-between mb-5">
-              <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm overflow-hidden">
-                {service.logo ? (
-                  <img src={service.logo} alt="" className="w-7 h-7 sm:w-8 sm:h-8 rounded-md" />
-                ) : Icon ? (
-                  <Icon className="text-2xl sm:text-3xl" style={{ color: service.color }} />
-                ) : null}
-              </span>
+          {service.badges && service.badges.length > 0 && (
+            <div className="flex items-center gap-2.5 mb-5">
+              {service.badges.map((b) => {
+                const Icon = b.icon;
+                return (
+                  <span
+                    key={b.label}
+                    title={b.label}
+                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm overflow-hidden"
+                  >
+                    {b.logo ? (
+                      <img src={b.logo} alt={b.label} className="w-7 h-7 sm:w-8 sm:h-8 rounded-md" />
+                    ) : Icon ? (
+                      <Icon className="text-2xl sm:text-3xl" style={{ color: b.color }} />
+                    ) : (
+                      <span className="font-extrabold text-lg sm:text-xl tracking-tight leading-none" style={{ color: b.color }}>
+                        {b.text}
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
             </div>
           )}
 

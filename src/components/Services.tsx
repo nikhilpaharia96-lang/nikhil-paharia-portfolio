@@ -7,7 +7,14 @@ import {
   useSpring,
   useMotionValueEvent,
 } from "framer-motion";
+import {
+  SiReact, SiNodedotjs, SiGoogleads, SiInstagram, SiFigma,
+  SiWhatsapp, SiShopify, SiWordpress, SiDavinciresolve,
+} from "react-icons/si";
+import { RiCameraLensLine, RiRobot2Line } from "react-icons/ri";
 import ServicesMobileStack from "@/components/ServicesMobileStack";
+import premiereProLogo from "../assets/logos/premiere-pro.svg";
+import afterEffectsLogo from "../assets/logos/after-effects.svg";
 import websiteImage from "../assets/images/fullstack-service.webp";
 import videoEditingImage from "../assets/images/service-02.webp";
 import digitalMarketingImage from "../assets/images/service-digital-marketing.webp";
@@ -23,12 +30,20 @@ export const services = [
   {
     title: "Website Development",
     desc: "Modern, fast and responsive websites for businesses and brands.",
+    badges: [
+      { label: "React", icon: SiReact, color: "#61DAFB" },
+      { label: "Node.js", icon: SiNodedotjs, color: "#339933" },
+    ],
     price: "₹2,999",
     image: websiteImage,
   },
   {
     title: "Video Editing",
     desc: "Professional video editing for YouTube, Instagram Reels and commercials.",
+    badges: [
+      { label: "Premiere Pro", logo: premiereProLogo, color: "#9999FF" },
+      { label: "After Effects", logo: afterEffectsLogo, color: "#9999FF" },
+    ],
     price: "₹499",
     image: videoEditingImage,
     imageFrame: true,
@@ -36,6 +51,10 @@ export const services = [
   {
     title: "Digital Marketing",
     desc: "Social Media, Google Ads, SEO, Lead Generation and Brand Growth.",
+    badges: [
+      { label: "Google Ads", icon: SiGoogleads, color: "#4285F4" },
+      { label: "Instagram", icon: SiInstagram, color: "#E1306C" },
+    ],
     price: "₹1,999/month",
     image: digitalMarketingImage,
     imageFrame: true,
@@ -43,6 +62,10 @@ export const services = [
   {
     title: "Graphic Designing",
     desc: "Logos, Banners, Social Media Posts, Branding and Print Design.",
+    badges: [
+      { label: "Photoshop", text: "Ps", color: "#31A8FF" },
+      { label: "Illustrator", text: "Ai", color: "#FF9A00" },
+    ],
     price: "₹499",
     image: graphicDesignImage,
     imageFrame: true,
@@ -50,6 +73,10 @@ export const services = [
   {
     title: "UI/UX Design",
     desc: "Modern, user-friendly interfaces for web and mobile applications.",
+    badges: [
+      { label: "Figma", icon: SiFigma, color: "#F24E1E" },
+      { label: "Adobe XD", text: "Xd", color: "#FF2BC2" },
+    ],
     price: "₹1,499",
     image: uiuxImage,
     imageFrame: true,
@@ -57,6 +84,10 @@ export const services = [
   {
     title: "Automation & AI Solutions",
     desc: "WhatsApp Chatbots, Workflow Automation, CRM and API Integration.",
+    badges: [
+      { label: "AI Automation", icon: RiRobot2Line, color: "#7C3AED" },
+      { label: "WhatsApp", icon: SiWhatsapp, color: "#25D366" },
+    ],
     price: "₹4,999",
     image: automationImage,
     imageFrame: true,
@@ -64,12 +95,20 @@ export const services = [
   {
     title: "E-Commerce Solutions",
     desc: "Online Stores, Product Setup, Payment Integration and Store Management.",
+    badges: [
+      { label: "Shopify", icon: SiShopify, color: "#7AB55C" },
+      { label: "WordPress", icon: SiWordpress, color: "#21759B" },
+    ],
     price: "₹4,999",
     image: ecommerceImage,
   },
   {
     title: "Cinematography & Video Production",
     desc: "Professional Video Shooting, Cinematography, Promotional Videos and Content Creation.",
+    badges: [
+      { label: "Camera", icon: RiCameraLensLine, color: "#0F172A" },
+      { label: "DaVinci Resolve", icon: SiDavinciresolve, color: "#233A51" },
+    ],
     price: "₹2,999",
     image: cinematographyImage,
     imageFrame: true,
