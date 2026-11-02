@@ -1,18 +1,18 @@
-import { RiArrowRightLine, RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVideoLine, RiPencilLine, RiSendPlaneLine, RiFolderOpenLine, RiFolderChartLine, RiGroupLine, RiTimeLine, RiStarLine } from "react-icons/ri";
+import { RiArrowDownLine, RiMapPinLine, RiCodeSSlashLine, RiVideoLine, RiPencilLine, RiFolderChartLine, RiGroupLine, RiTimeLine, RiStarLine } from "react-icons/ri";
 import { SiReact, SiNodedotjs, SiJavascript } from "react-icons/si";
 import TechIcons from "@/components/TechIcons";
 import FloatingParticles from "@/components/FloatingParticles";
 import ParallaxLandscape from "@/components/ParallaxLandscape";
 import { desktopMasks, mobileMasks } from "@/components/parallaxMasks";
 import "@/components/brush-reveal.css";
-import { FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView, useReducedMotion } from "@/lib/static-motion";
 import { useRef, useState, useEffect } from "react";
 import teaBg from "../assets/images/file_0000000066b08207b18b1ec1e8269869.png";
 import teaBgMobile from "../assets/images/tea-brush-mobile.webp";
 import SplitText from "@/components/ui/SplitText";
-import Magnetic from "@/components/ui/Magnetic";
+import HeroCTAs from "@/components/HeroCTA";
+import { DesktopStats, MobileStats } from "@/components/HeroStats";
+import SocialLinks from "@/components/SocialLinks";
 import FloatingLeaves from "@/components/FloatingLeaves";
 import PortraitFX from "@/components/PortraitFX";
 
@@ -63,12 +63,6 @@ function TaglineTyping({ text }: { text: string }) {
   );
 }
 
-function StatCounter({ value }: { value: string; duration?: number }) {
-  // Static: the final figure is rendered immediately (no count-up).
-  return <span>{value}</span>;
-}
-
-
 // Shared between mobile (2x2 grid) and desktop (stacked column) Hero layouts
 // so both surfaces show the exact same four stats.
 const desktopStats = [
@@ -76,15 +70,6 @@ const desktopStats = [
   { value: "30+",   label: "Happy Clients",          Icon: RiGroupLine,       color: "#7c3aed", bg: "from-violet-50 to-violet-100/60" },
   { value: "1096+", label: "Days of Experience",     Icon: RiTimeLine,        color: "#0891b2", bg: "from-cyan-50 to-cyan-100/60" },
   { value: "100%",  label: "Commitment to Quality",  Icon: RiStarLine,        color: "#d97706", bg: "from-amber-50 to-amber-100/60" },
-];
-
-const socials = [
-  { icon: <FaGithub />,     href: "#", label: "GitHub",    color: "text-slate-800" },
-  { icon: <FaLinkedinIn />, href: "#", label: "LinkedIn",  color: "text-blue-600"  },
-  { icon: <FaInstagram />,  href: "#", label: "Instagram", color: "text-pink-500"  },
-  { icon: <FaYoutube />,    href: "#", label: "YouTube",   color: "text-red-500"   },
-  { icon: <FaXTwitter />,   href: "#", label: "X",         color: "text-slate-900" },
-  { icon: <FaWhatsapp />,   href: "#", label: "WhatsApp",  color: "text-green-500" },
 ];
 
 export default function Hero() {
@@ -596,35 +581,7 @@ export default function Hero() {
                 Both comfortably tappable (≥46px). Sits on z-10 with a solid/
                 blurred background so it stays fully legible even where the
                 portrait passes behind it. */}
-            <motion.div
-
-              animate={{ opacity: 1, y: 0 }}
-
-              className="relative z-10 flex items-center gap-2.5 mb-1"
-            >
-              <Magnetic range={60} strength={0.35} scaleHover={1.03}>
-                <a
-                  href="#contact"
-                  className="relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-5 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)]  "
-                  style={{ fontSize: 'clamp(0.78rem, 2.8vw, 0.88rem)', height: '46px' }}
-                >
-                  <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" style={{ background: 'linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
-                  <RiSendPlaneLine className="flex-shrink-0 plane-wiggle" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
-                </a>
-              </Magnetic>
-
-              <Magnetic range={60} strength={0.35} scaleHover={1.03}>
-                <a
-                  href="#projects"
-                  aria-label="View Projects"
-                  className="relative overflow-hidden inline-flex flex-col items-center justify-center gap-0.5 bg-white/90 backdrop-blur border border-blue-200 text-primary font-semibold rounded-full hover:bg-blue-50   flex-shrink-0"
-                  style={{ width: '54px', height: '54px' }}
-                >
-                  <RiFolderOpenLine className="flex-shrink-0 folder-bounce" style={{ fontSize: '16px' }} />
-                  <span style={{ fontSize: '8.5px' }}>Work</span>
-                </a>
-              </Magnetic>
-            </motion.div>
+            <HeroCTAs variant="mobile" />
 
           </motion.div>
 
@@ -729,25 +686,7 @@ export default function Hero() {
           {/* Stats — 4 cards, same as desktop, wrapped in a single white
               rounded card (matches the reference's stat panel) instead of
               floating individually over the landscape background */}
-          <div className="relative z-20 grid grid-cols-4 gap-0 bg-white rounded-2xl shadow-lg mt-3 overflow-hidden divide-x divide-slate-100">
-            {desktopStats.map(({ value, label, Icon, color }) => (
-              <motion.div
-                key={label}
-
-                animate={{ opacity: 1, y: 0 }}
-
-                className="flex flex-col items-center text-center py-2 px-1"
-              >
-                <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center mb-1 flex-shrink-0" style={{ backgroundColor: color + '18' }}>
-                  <Icon style={{ color, fontSize: '10px' }} />
-                </div>
-                <div className="font-bold leading-tight text-foreground whitespace-nowrap" style={{ fontSize: 'clamp(0.68rem, 3vw, 1rem)' }}>
-                  <StatCounter value={value} />
-                </div>
-                <div className="text-slate-500 font-medium leading-tight mt-0.5" style={{ fontSize: 'clamp(0.44rem, 1.7vw, 0.6rem)' }}>{label}</div>
-              </motion.div>
-            ))}
-          </div>
+          <MobileStats stats={desktopStats} />
 
           {/* Let's Connect + socials — centered below the stats card, no box,
               matching the reference */}
@@ -763,25 +702,7 @@ export default function Hero() {
                 <path d="M2 3 Q60 -1 118 3" stroke="#1d6feb" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
             </p>
-            <div className="flex items-center gap-2 flex-nowrap justify-center">
-              {socials.map((s, i) => (
-                <motion.a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-
-
-
-                  animate={{ opacity: 1, y: 0 }}
-
-                  className={`w-8 h-8 rounded-full bg-white border border-blue-100 flex items-center justify-center hover:border-primary   text-sm shadow-sm flex-shrink-0 ${s.color}`}
-                >
-                  {s.icon}
-                </motion.a>
-              ))}
-            </div>
+            <SocialLinks variant="mobile" />
           </motion.div>
 
           {/* Scroll indicator — compact, sits inside the normal flow right
@@ -1048,32 +969,7 @@ export default function Hero() {
             </motion.div>
 
             {/* CTAs */}
-            <motion.div
-
-              animate={{ opacity: 1, y: 0 }}
-
-              className="flex items-center gap-4 mb-6"
-            >
-              <Magnetic range={60} strength={0.35} scaleHover={1.03}>
-                <a
-                  href="#contact"
-                  className="relative overflow-hidden cta-pulse inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(29,111,235,0.45)]   "
-                  style={{ fontSize: '0.95rem', height: '54px' }}
-                >
-                  <span className="cta-shimmer absolute inset-0 pointer-events-none" aria-hidden="true" />
-                  <RiSendPlaneLine className="flex-shrink-0" /> Hire Me <RiArrowRightLine className="flex-shrink-0 arrow-nudge" />
-                </a>
-              </Magnetic>
-              <Magnetic range={60} strength={0.35} scaleHover={1.03}>
-                <a
-                  href="#projects"
-                  className="relative overflow-hidden inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur border border-blue-200 text-primary font-bold px-8 rounded-full hover:bg-blue-50   "
-                  style={{ fontSize: '0.95rem', height: '54px' }}
-                >
-                  <RiFolderOpenLine className="flex-shrink-0" /> View My Work
-                </a>
-              </Magnetic>
-            </motion.div>
+            <HeroCTAs variant="desktop" />
 
             {/* Social */}
             <motion.div
@@ -1086,25 +982,7 @@ export default function Hero() {
                 <p style={{ fontFamily: "'Caveat',cursive", fontSize: '15px', color: '#1d6feb', lineHeight: 1.1, fontWeight: 700 }}>Let's</p>
                 <p style={{ fontFamily: "'Caveat',cursive", fontSize: '15px', color: '#1d6feb', lineHeight: 1.1, fontWeight: 700 }}>Connect</p>
               </div>
-              <div className="flex items-center gap-2.5">
-                {socials.map((s, i) => (
-                  <motion.a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-
-
-
-                    animate={{ opacity: 1, y: 0 }}
-
-                    className={`w-9 h-9 rounded-full bg-white/85 backdrop-blur border border-blue-100 flex items-center justify-center hover:border-primary   text-base shadow-sm flex-shrink-0 ${s.color}`}
-                  >
-                    {s.icon}
-                  </motion.a>
-                ))}
-              </div>
+              <SocialLinks variant="desktop" />
             </motion.div>
           </motion.div>
 
@@ -1193,33 +1071,7 @@ export default function Hero() {
             </div>
 
             {/* Stat cards — 4 per spec, stacked, far right */}
-            <motion.div
-
-              animate={{ opacity: 1, x: 0 }}
-
-              className="flex flex-col gap-3 xl:gap-4 justify-center flex-shrink-0 w-[148px] xl:w-[168px]"
-            >
-              {desktopStats.map(({ value, label, Icon, color, bg }, i) => (
-                <motion.div
-                  key={label}
-
-                  animate={{ opacity: 1, x: 0 }}
-
-
-                  className={`bg-gradient-to-br ${bg} border border-white/80 backdrop-blur rounded-2xl px-3.5 py-3 xl:px-4 xl:py-3.5 shadow-md flex items-center gap-2.5`}
-                >
-                  <div className="w-8 h-8 xl:w-9 xl:h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: color + '18' }}>
-                    <Icon style={{ color, fontSize: '16px' }} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-base xl:text-lg font-bold leading-none mb-0.5" style={{ color }}>
-                      <StatCounter value={value} />
-                    </div>
-                    <div className="text-[10px] xl:text-[11px] font-semibold text-slate-700 leading-tight">{label}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+            <DesktopStats stats={desktopStats} />
           </div>
 
         </div>
