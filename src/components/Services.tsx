@@ -16,6 +16,9 @@ import service02Image from "../assets/images/service-02.webp";
 import digitalMarketingImage from "../assets/images/service-digital-marketing.webp";
 import uiuxImage from "../assets/images/service-uiux.webp";
 import cinematographyImage from "../assets/images/service-cinematography.webp";
+import ecommerceImage from "../assets/images/service-ecommerce.webp";
+import automationImage from "../assets/images/service-automation-ai.webp";
+import graphicDesignImage from "../assets/images/service-graphic-design.webp";
 
 export const services = [
   {
@@ -40,6 +43,7 @@ export const services = [
     desc: "High-converting, beautiful landing pages that drive sales.",
     icon: SiNextdotjs,
     color: "#111827",
+    image: ecommerceImage,
     price: "From $200",
   },
   {
@@ -47,6 +51,8 @@ export const services = [
     desc: "Complex data visualization and management panels.",
     icon: SiMongodb,
     color: "#47A248",
+    image: automationImage,
+    imageFrame: true,
     price: "From $600",
   },
   {
@@ -79,6 +85,8 @@ export const services = [
     title: "Motion Graphics",
     desc: "Custom animations, intros, and visual effects for videos.",
     logo: afterEffectsLogo,
+    image: graphicDesignImage,
+    imageFrame: true,
     price: "From $100",
   },
 ];
