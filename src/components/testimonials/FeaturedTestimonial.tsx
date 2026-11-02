@@ -66,7 +66,7 @@ export default function FeaturedTestimonial() {
       }}
       className="focus-visible:outline-none"
     >
-      <figure className="bp-card relative overflow-hidden rounded-[clamp(1.5rem,6vw,2.25rem)] bg-gradient-to-br from-white/95 via-blue-50/80 to-sky-100/70 backdrop-blur-2xl border border-white shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,0_40px_80px_-36px_rgba(37,99,235,0.45)] min-[360px]:min-h-[clamp(16rem,64vw,20rem)] lg:min-h-[24rem]">
+      <figure className="relative overflow-hidden rounded-[clamp(1.5rem,6vw,2.25rem)] bg-gradient-to-br from-white/95 via-blue-50/80 to-sky-100/70 backdrop-blur-2xl border border-white shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,0_40px_80px_-36px_rgba(37,99,235,0.45)] min-[360px]:min-h-[clamp(16rem,64vw,20rem)] lg:min-h-[24rem]">
         <div key={index} className="testi-swap relative z-10 p-[clamp(1rem,5vw,2.75rem)] min-[360px]:w-[58%] lg:w-[60%] flex flex-col min-[360px]:min-h-[inherit]">
           <QuoteMark className="w-[clamp(2.4rem,12vw,5rem)] h-auto mb-[clamp(0.4rem,2vw,1.25rem)]" />
           <blockquote className="flex-1 font-medium text-[#0b1530] leading-[1.42] text-[clamp(0.82rem,3.6vw,1.2rem)] lg:text-[1.55rem]">

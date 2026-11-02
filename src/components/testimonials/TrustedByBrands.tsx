@@ -24,7 +24,7 @@ export default function TrustedByBrands() {
   const half = [...trustedBrands, ...trustedBrands];
 
   return (
-    <div className="bp-card mt-[clamp(0.75rem,3.2vw,1.25rem)] lg:mt-10 rounded-[clamp(1rem,4.5vw,1.5rem)] py-[clamp(0.8rem,3.6vw,1.4rem)] bg-white/75 backdrop-blur-xl border border-white/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_20px_44px_-28px_rgba(15,45,90,0.4)]">
+    <div className="mt-[clamp(0.75rem,3.2vw,1.25rem)] lg:mt-10 rounded-[clamp(1rem,4.5vw,1.5rem)] py-[clamp(0.8rem,3.6vw,1.4rem)] bg-white/75 backdrop-blur-xl border border-white/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_20px_44px_-28px_rgba(15,45,90,0.4)]">
       <div className="text-center mb-[clamp(0.7rem,3.2vw,1.1rem)] px-4">
         <h3 className="inline-block relative font-sans font-bold text-[clamp(0.85rem,3.6vw,1.05rem)] text-[#101828]">
           Trusted by People &amp; Brands

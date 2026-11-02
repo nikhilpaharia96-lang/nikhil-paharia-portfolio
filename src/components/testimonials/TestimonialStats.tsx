@@ -7,7 +7,7 @@ const icons = [Users, Clapperboard, Star, Heart];
 
 export default function TestimonialStats() {
   return (
-    <dl className="bp-card grid grid-cols-4 lg:grid-cols-2 gap-x-0 sm:gap-x-4 gap-y-3.5 rounded-[clamp(1rem,4.5vw,1.25rem)] bg-white/55 backdrop-blur-md border border-white/70 px-[clamp(0.3rem,2.2vw,1.25rem)] py-[clamp(0.65rem,3vw,1rem)]">
+    <dl className="grid grid-cols-4 lg:grid-cols-2 gap-x-0 sm:gap-x-4 gap-y-3.5 rounded-[clamp(1rem,4.5vw,1.25rem)] bg-white/55 backdrop-blur-md border border-white/70 px-[clamp(0.3rem,2.2vw,1.25rem)] py-[clamp(0.65rem,3vw,1rem)]">
       {trustStats.slice(0, 4).map(({ value, suffix, label, staticText }, i) => {
         const Icon = icons[i] ?? Star;
         return (

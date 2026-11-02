@@ -1,4 +1,3 @@
-import SectionHeader from "@/components/ui/SectionHeader";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "@/lib/static-motion";
 import { toast } from "sonner";
@@ -394,7 +393,22 @@ export default function Contact() {
 
   return (
     <section id="contact" className="section-padding relative overflow-hidden bg-transparent section-wrap max-w-full">
+      <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-blue-50/50 to-transparent -z-10" />
+      <div className="absolute -left-20 top-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none z-0" />
 
+      {/* Floating blurred background elements — soft blue glow, premium depth */}
+      <motion.div
+        aria-hidden="true"
+        animate={{ y: [0, -22, 0], x: [0, 14, 0] }}
+
+        className="absolute top-10 right-[8%] w-56 h-56 rounded-full bg-sky-300/20 blur-3xl pointer-events-none z-0"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ y: [0, 20, 0], x: [0, -16, 0] }}
+
+        className="absolute bottom-0 right-1/3 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none z-0"
+      />
 
       <div className="container-tight relative z-10 max-w-full">
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24 items-center">
@@ -407,9 +421,50 @@ export default function Contact() {
 
 
             >
-              <SectionHeader label="07 — Let's Connect" title="Let's Build Something Amazing Together" className="mb-8" />
+              {/* Mountain sky backdrop — fades softly into the page */}
+              <div aria-hidden="true" className="pointer-events-none absolute -inset-x-6 -top-10 h-[34rem] sm:h-[36rem] -z-10 overflow-hidden rounded-[2rem] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)]">
+                <img src={connectBg} alt="" className="w-full h-full object-cover object-left opacity-90" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/55 via-white/65 to-white/85" />
+                {/* tiny birds */}
+                <svg viewBox="0 0 60 30" className="absolute right-6 top-24 w-14 text-[#0f2a5c]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                  <path d="M4 12c4-5 8-5 11 0 3-5 7-5 11 0" />
+                  <path d="M34 22c3-4 6-4 8.5 0 2.5-4 5.5-4 8.5 0" />
+                </svg>
+              </div>
 
-              <p className="text-base sm:text-[1.05rem] text-white/90 mb-10 max-w-md leading-relaxed">
+              {/* Eyebrow — red dot pill */}
+              <div className="inline-flex items-center gap-2 mb-7 px-4 py-1.5 rounded-full bg-white/85 backdrop-blur-xl border border-white/80 shadow-[0_8px_24px_-12px_rgba(15,45,90,0.25)]">
+                <span className="w-2 h-2 rounded-full bg-red-500" aria-hidden="true" />
+                <span className="text-[11px] sm:text-xs font-bold tracking-[0.12em] uppercase text-slate-800">Let's Connect</span>
+              </div>
+
+              <div className="relative">
+                {/* Handwritten note + curved arrow */}
+                <div aria-hidden="true" className="hidden sm:block absolute -left-4 lg:-left-20 top-6 font-script font-bold text-xl leading-[1.15] text-[#14284f] -rotate-[10deg] select-none">
+                  Creative<br />Ideas<br />Collaboration
+                  <svg viewBox="0 0 70 60" className="mt-1 ml-6 w-14 h-12 text-primary" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 4C10 30 28 46 58 50" />
+                    <path d="M48 42l11 8-12 6" />
+                  </svg>
+                </div>
+
+                <h2 className="font-sans font-extrabold tracking-tight text-[2.9rem] sm:text-6xl lg:text-[4.2rem] leading-[0.98] text-[#0a0f1e] mb-7 sm:pl-14 lg:pl-0">
+                  Let's Build
+                  <br />
+                  Something
+                  <br />
+                  <span className="relative inline-block font-script font-bold italic text-primary text-[1.18em] leading-none -rotate-3 align-baseline my-1">
+                    Amazing
+                    <svg aria-hidden="true" className="absolute left-0 -bottom-2 w-full h-3 text-primary" viewBox="0 0 200 12" preserveAspectRatio="none" fill="none">
+                      <path d="M3 8 C 40 2, 110 2, 197 6" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <br />
+                  Together.
+                </h2>
+              </div>
+
+              <p className="text-base sm:text-[1.05rem] text-slate-700 mb-10 max-w-md leading-relaxed">
                 Have a project in mind or just want to say hi? Tell me what you're building and I'll get back to you as soon as possible.
               </p>
 
@@ -503,7 +558,7 @@ export default function Contact() {
               onSubmit={handleSubmit}
               noValidate
               aria-label="Contact form"
-              className="bp-card glass-premium p-5 sm:p-8 md:p-12 flex flex-col gap-5 sm:gap-6 relative"
+              className="glass-premium p-5 sm:p-8 md:p-12 flex flex-col gap-5 sm:gap-6 relative"
             >
               {/* Form header — paper-plane icon + title + subtitle */}
               <div className="mb-1">

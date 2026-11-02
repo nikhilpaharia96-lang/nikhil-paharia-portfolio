@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
   motion,
   AnimatePresence,
@@ -332,19 +331,11 @@ const STATUS_STYLES: Record<Status, { dot: string; bg: string; text: string }> =
   "In Progress": { dot: "bg-amber-500",   bg: "bg-amber-50 border-amber-200",     text: "text-amber-700" },
 };
 
-const FONT_CONDENSED = "'Anton', 'Impact', sans-serif";
-const FONT_BODY = "'DM Sans', 'Inter', sans-serif";
-const INK = "#050d2b";
-const HARD_SHADOW = `10px 10px 0 ${INK}`;
-
-const TONE_STYLES: Record<Tone, { bg: string; text: string; sub: string; border: string; line: string; tape: string; frame: string }> = {
-  cream: { bg: "#F0ECE3", text: "#1a1a1a", sub: "#5c5648", border: "rgba(255,255,255,0.5)", line: "rgba(37,70,230,0.45)", tape: "rgba(15,23,42,0.85)", frame: INK },
-  blue:  { bg: "#0b35e8", text: "#F4EFE4", sub: "rgba(255,255,255,0.75)", border: "rgba(255,255,255,0.3)", line: "rgba(255,255,255,0.25)", tape: "rgba(255,255,255,0.72)", frame: INK },
-  ink:   { bg: "#050f24", text: "#ffffff", sub: "rgba(255,255,255,0.65)", border: "rgba(255,255,255,0.22)", line: "rgba(255,255,255,0.18)", tape: "rgba(255,255,255,0.7)", frame: "#0b35e8" },
+const TONE_STYLES: Record<Tone, { bg: string; text: string; sub: string; border: string }> = {
+  cream: { bg: "#F7F2E7", text: "#1a1a1a", sub: "#6b6456", border: "rgba(255,255,255,0.5)" },
+  blue:  { bg: "#2563eb", text: "#ffffff", sub: "rgba(255,255,255,0.75)", border: "rgba(255,255,255,0.3)" },
+  ink:   { bg: "#14161c", text: "#ffffff", sub: "rgba(255,255,255,0.6)", border: "rgba(255,255,255,0.22)" },
 };
-
-/** Small tilt per row so the stack looks hand-dropped, like loose paper. */
-const TILTS = [-1.3, 0.9, -0.7, 1.1, -1, 0.8];
 
 /* ── tiny hand-drawn decorations (kept subtle, used sparingly) ── */
 function TapeStrip({ className = "", rotate = -4 }: { className?: string; rotate?: number }) {
@@ -391,7 +382,7 @@ function CornerBracket({ className = "", flip = false }: { className?: string; f
 function BlueprintTitleBlock() {
   return (
     <div className="pointer-events-none absolute top-6 left-6 select-none" aria-hidden="true">
-      <div className="font-mono text-[11px] tracking-widest text-white opacity-30 leading-tight border-b border-[#C9DCFF]/60 pb-1 mb-1">
+      <div className="font-mono text-[11px] tracking-widest text-[#7fa6e8] opacity-40 leading-tight border-b border-[#C9DCFF]/60 pb-1 mb-1">
         NIKHIL PAHARIA
         <br />
         PORTFOLIO
@@ -408,7 +399,7 @@ function BlueprintTitleBlock() {
 function BlueprintFocusNote() {
   return (
     <div className="pointer-events-none absolute top-6 right-6 text-right select-none" aria-hidden="true">
-      <div className="font-mono text-[10px] tracking-widest text-white opacity-30 leading-relaxed">
+      <div className="font-mono text-[10px] tracking-widest text-[#7fa6e8] opacity-40 leading-relaxed">
         FOCUS
         <br />PROBLEM
         <br />SOLUTION
@@ -450,12 +441,12 @@ function BlueprintPageMark() {
         03
       </span>
       <span
-        className="absolute bottom-10 left-6 text-2xl text-white opacity-40 -rotate-3"
+        className="absolute bottom-10 left-6 text-2xl text-[#5b86d6] opacity-50 -rotate-3"
         style={{ fontFamily: FONT_TITLE }}
       >
         Projects
         <svg viewBox="0 0 100 10" className="w-full -mt-1" preserveAspectRatio="none">
-          <path d="M2 5c30-4 60-4 96 1" stroke="#ffffff" strokeWidth="1.5" fill="none" />
+          <path d="M2 5c30-4 60-4 96 1" stroke="#8fb3ec" strokeWidth="1.5" fill="none" />
         </svg>
       </span>
     </div>
@@ -466,7 +457,7 @@ function BlueprintPageMark() {
 function BlueprintClosingNote() {
   return (
     <div className="pointer-events-none absolute bottom-16 right-10 text-right hidden lg:block select-none" aria-hidden="true">
-      <p className="font-mono text-[11px] tracking-widest text-white opacity-30 leading-relaxed">
+      <p className="font-mono text-[11px] tracking-widest text-[#7fa6e8] opacity-40 leading-relaxed">
         BUILDING
         <br />DIGITAL
         <br />EXPERIENCES
@@ -506,9 +497,10 @@ function TechChip({ tag }: { tag: string }) {
   );
 }
 
+/* ── compact "peeking" folder tab (shown behind the active one) ── */
 /** Shared header block — identical markup in both collapsed and expanded states,
  *  so growing from one to the other reads as continuous rather than a swap. */
-function FolderHeader({ project, collapsed }: { project: Project; collapsed: boolean }) {
+function FolderHeader({ project, showHint }: { project: Project; showHint: boolean }) {
   const tone = TONE_STYLES[project.tone];
   const statusStyle = STATUS_STYLES[project.status];
 
@@ -516,69 +508,46 @@ function FolderHeader({ project, collapsed }: { project: Project; collapsed: boo
     <div>
       <div className="flex items-center gap-3 sm:gap-4 px-5 sm:px-7 pt-4 sm:pt-5">
         <span
-          className="text-lg sm:text-xl uppercase tracking-wide truncate shrink-0 max-w-[60%]"
-          style={{ color: tone.text, fontFamily: FONT_CONDENSED }}
+          className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-[11px] font-black shrink-0"
+          style={{ background: "rgba(0,0,0,0.08)", color: tone.text }}
         >
+          {project.number}
+        </span>
+        <span className="font-black text-sm sm:text-base tracking-tight truncate" style={{ color: tone.text }}>
           {project.title}
         </span>
-        <span
-          className="hidden md:block text-xs font-medium truncate flex-1"
-          style={{ color: tone.sub, fontFamily: FONT_BODY }}
-        >
+        <span className="hidden md:block text-xs truncate flex-1" style={{ color: tone.sub }}>
           {project.tagline}
         </span>
-        {collapsed ? (
-          <span
-            className="ml-auto shrink-0 block h-4 w-12 sm:w-[50px] -rotate-2"
-            style={{ background: tone.tape }}
-            aria-hidden="true"
-          />
-        ) : (
-          <span className={`ml-auto shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${statusStyle.bg} ${statusStyle.text}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${statusStyle.dot}`} />
-            {project.status}
-          </span>
-        )}
+        <span className={`ml-auto shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${statusStyle.bg} ${statusStyle.text}`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${statusStyle.dot}`} />
+          {project.status}
+        </span>
       </div>
-      <div className="h-px mx-5 sm:mx-7 mt-3" style={{ background: tone.line }} />
-      <div className="relative flex items-end justify-between gap-3 px-5 sm:px-7 pt-3 pb-5 sm:pb-6">
+      <div className="h-px mx-5 sm:mx-7 mt-3" style={{ background: tone.border }} />
+      <div className="relative flex items-end justify-between gap-3 px-5 sm:px-7 pt-2 pb-4 sm:pb-5">
         <h3
-          className="text-4xl sm:text-6xl md:text-7xl leading-none font-bold truncate"
+          className="text-3xl sm:text-5xl leading-none truncate"
           style={{ color: tone.text, fontFamily: FONT_TITLE }}
         >
           {project.headline}
         </h3>
-        <span
-          className="hidden sm:block shrink-0 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap"
-          style={{ color: tone.sub, fontFamily: FONT_BODY }}
-        >
+        <span className="hidden sm:block shrink-0 text-[11px] font-bold whitespace-nowrap" style={{ color: tone.sub, fontFamily: FONT_NOTE }}>
           // {project.timeline}
         </span>
+
+        {showHint && (
+          <span
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                       hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wide
+                       bg-slate-900 text-white opacity-0 scale-90 transition-all duration-200 group-hover/peek:opacity-100 group-hover/peek:scale-100"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            Click to expand
+          </span>
+        )}
       </div>
     </div>
-  );
-}
-
-/** Custom cursor shown over a collapsed card: ring + dot + "CLICK TO EXPAND" label. */
-function ExpandCursor({ x, y }: { x: number; y: number }) {
-  if (typeof document === "undefined") return null;
-  return createPortal(
-    <div
-      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden sm:flex items-center gap-1.5"
-      style={{ transform: `translate(${x - 22}px, ${y - 22}px)` }}
-      aria-hidden="true"
-    >
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-slate-900 bg-white">
-        <span className="h-3.5 w-3.5 rounded-full bg-slate-900" />
-      </span>
-      <span
-        className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white whitespace-nowrap"
-        style={{ background: "#050505", fontFamily: FONT_BODY }}
-      >
-        Click to expand
-      </span>
-    </div>,
-    document.body,
   );
 }
 
@@ -586,23 +555,19 @@ function FolderPeek({
   project, onSelect,
 }: { project: Project; onSelect: () => void }) {
   const tone = TONE_STYLES[project.tone];
-  const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
 
   return (
-    <>
-      <button
-        onClick={onSelect}
-        onMouseMove={(e) => setPointer({ x: e.clientX, y: e.clientY })}
-        onMouseLeave={() => setPointer(null)}
-        aria-label={`Expand ${project.title}`}
-        className="block w-full rounded-none text-left overflow-hidden border-2 sm:cursor-none
-                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-        style={{ background: tone.bg, borderColor: tone.frame, boxShadow: HARD_SHADOW }}
-      >
-        <FolderHeader project={project} collapsed />
-      </button>
-      {pointer && <ExpandCursor x={pointer.x} y={pointer.y} />}
-    </>
+    <button
+      onClick={onSelect}
+      aria-label={`Expand ${project.title}`}
+      className="group/peek block w-full rounded-none cursor-pointer text-left overflow-hidden
+                 border-2 shadow-[0_10px_28px_-8px_rgba(0,0,0,0.5)]
+                 transition-transform duration-200 hover:-translate-y-0.5
+                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+      style={{ background: tone.bg, borderColor: tone.border }}
+    >
+      <FolderHeader project={project} showHint />
+    </button>
   );
 }
 
@@ -623,10 +588,10 @@ function FolderExpanded({
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0.12}
       onDragEnd={handleDragEnd}
-      className={`relative rounded-none overflow-hidden border-2 ${total > 1 ? "cursor-grab active:cursor-grabbing" : ""}`}
-      style={{ background: tone.bg, borderColor: tone.frame, boxShadow: HARD_SHADOW }}
+      className={`relative rounded-none overflow-hidden border-2 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.55)] ${total > 1 ? "cursor-grab active:cursor-grabbing" : ""}`}
+      style={{ background: tone.bg, borderColor: tone.border }}
     >
-      <FolderHeader project={project} collapsed={false} />
+      <FolderHeader project={project} showHint={false} />
 
       {/* browser mockup — real chrome, not just a bare screenshot */}
       <div className="group/shot relative mx-4 sm:mx-6 rounded-xl overflow-hidden bg-slate-900 select-none shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]">
@@ -779,21 +744,21 @@ function FolderRow({
   project: Project; isActive: boolean; idx: number;
   onSelect: () => void; onNext: () => void; onPrev: () => void; total: number; position: number;
 }) {
-  // Collapsed cards sit at a slight tilt; the expanded one straightens up.
-  const tilt = isActive ? 0 : TILTS[idx % TILTS.length];
+  // Cards sit perfectly straight and aligned — no tilt, no sideways offset, no width inset.
+  const a = { x: 0, rotate: 0, inset: 0 };
 
   return (
     <motion.div
       layout
       transition={{ type: "spring", stiffness: 280, damping: 32 }}
       className="relative"
+      style={{ zIndex: idx, marginTop: idx === 0 ? 0 : 8 }}
     >
       <motion.div
         layoutId={`folder-${project.id}`}
         layout
         transition={{ type: "spring", stiffness: 280, damping: 32 }}
-        animate={{ rotate: tilt }}
-        whileHover={isActive ? undefined : { rotate: tilt * 0.4, y: -3 }}
+        animate={{ x: a.x, rotate: a.rotate, marginRight: a.inset }}
       >
         <AnimatePresence mode="wait" initial={false}>
           {isActive ? (
@@ -825,7 +790,7 @@ function FolderStack({ projects }: { projects: Project[] }) {
 
   if (!projects.length) {
     return (
-      <div className="py-20 text-center text-white/60 text-sm font-semibold">
+      <div className="py-20 text-center text-slate-400 text-sm font-semibold">
         No projects in this category yet.
       </div>
     );
@@ -838,15 +803,9 @@ function FolderStack({ projects }: { projects: Project[] }) {
   };
 
   return (
-    <motion.div layout className="flex flex-col pb-4">
-      {projects.map((p, idx) => {
-        // Overlap each card over the one above so only its title strip peeks out.
-        // No overlap right after the expanded card, so its controls stay visible.
-        const prevActive = idx > 0 && projects[idx - 1].id === activeId;
-        const overlap = idx === 0 ? 0 : prevActive || p.id === activeId ? 18 : -62;
-        return (
-        <Reveal key={p.id} fromY={48} delay={Math.min(idx, 3) * 0.06}
-          style={{ position: "relative", zIndex: idx + 1, marginTop: overlap }}>
+    <motion.div layout className="flex flex-col">
+      {projects.map((p, idx) => (
+        <Reveal key={p.id} fromY={48} delay={Math.min(idx, 3) * 0.06}>
           <FolderRow
             project={p}
             idx={idx}
@@ -858,8 +817,7 @@ function FolderStack({ projects }: { projects: Project[] }) {
             position={activeIndex}
           />
         </Reveal>
-        );
-      })}
+      ))}
     </motion.div>
   );
 }
@@ -877,19 +835,18 @@ export default function Projects() {
       className="relative pt-10 sm:pt-14 md:pt-16 pb-24 md:pb-32 overflow-hidden"
       style={{
         backgroundImage: `
-          linear-gradient(rgba(255,255,255,0.10) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.10) 1px, transparent 1px),
-          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
-          linear-gradient(135deg, #0a33e0 0%, #0b3bf0 100%)
+          linear-gradient(rgba(201,220,255,0.16) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(201,220,255,0.16) 1px, transparent 1px),
+          radial-gradient(circle at 1px 1px, rgba(15,23,42,0.035) 1px, transparent 0),
+          linear-gradient(135deg, #FCFCFB 0%, #F8FAFF 100%)
         `,
-        backgroundSize: "80px 80px, 80px 80px, 16px 16px, 16px 16px, 100% 100%",
+        backgroundSize: "40px 40px, 40px 40px, 6px 6px, 100% 100%",
       }}
     >
       {/* soft blue fade at the corners, per spec — no blur blobs, just a gentle vignette */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(circle at 100% 0%, rgba(5,13,43,0.35), transparent 45%), radial-gradient(circle at 0% 100%, rgba(5,13,43,0.3), transparent 45%)" }}
+        style={{ background: "radial-gradient(circle at 100% 0%, rgba(191,214,255,0.35), transparent 45%), radial-gradient(circle at 0% 100%, rgba(191,214,255,0.25), transparent 45%)" }}
       />
 
       {/* technical-drawing corner brackets */}
@@ -939,7 +896,7 @@ export default function Projects() {
 
             <Reveal fromY={26} delay={0.2} className="mt-3">
               <p
-                className="text-white/85 text-base sm:text-lg leading-relaxed max-w-md"
+                className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-md"
                 style={{ fontFamily: FONT_NOTE }}
               >
                 Every project represents a problem solved, late nights, continuous
@@ -972,7 +929,7 @@ export default function Projects() {
 
         {/* ── Filter tabs ── */}
         <Reveal fromY={22} className="mb-10">
-        <div className="flex flex-wrap gap-1 border-b border-white/30">
+        <div className="flex flex-wrap gap-1 border-b border-slate-300/70">
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.key;
             return (
@@ -981,7 +938,7 @@ export default function Projects() {
                 onClick={() => setActiveFilter(tab.key)}
                 className="relative px-4 py-3 text-sm font-bold transition-colors"
                 style={{
-                  color: isActive ? "#ffffff" : "rgba(255,255,255,0.6)",
+                  color: isActive ? "#1d6feb" : "#64748b",
                   fontFamily: FONT_NOTE,
                 }}
               >
@@ -991,7 +948,7 @@ export default function Projects() {
                     layoutId="projectsFilterUnderline"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     className="absolute left-2 right-2 -bottom-[1px] h-[3px] rounded-full"
-                    style={{ background: "#ffffff" }}
+                    style={{ background: "#1d6feb" }}
                   />
                 )}
               </button>
@@ -1004,12 +961,12 @@ export default function Projects() {
         <FolderStack projects={filtered} />
 
         {/* ── closing note ── */}
-        <Reveal fromY={30} delay={0.1} className="mt-14">
+        <Reveal fromY={30} delay={0.1} className="mt-10">
           <div
-            className="flex items-center justify-center gap-2 text-white/60 text-sm"
+            className="flex items-center justify-center gap-2 text-slate-400 text-sm"
             style={{ fontFamily: FONT_NOTE }}
           >
-            <Star size={14} className="text-white/70" />
+            <Star size={14} className="text-blue-400" />
             More projects coming soon…
           </div>
         </Reveal>
