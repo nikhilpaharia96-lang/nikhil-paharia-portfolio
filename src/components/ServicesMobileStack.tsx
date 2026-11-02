@@ -131,7 +131,7 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
           {/* Text on the left, smaller picture on the right */}
           <div className="flex items-center gap-3 sm:gap-6 mb-5">
             <div className="min-w-0 flex-1">
-              <h3 className={`font-serif font-black text-[clamp(0.7rem,3.8vw,1.25rem)] sm:text-2xl uppercase tracking-tight leading-snug [overflow-wrap:anywhere] mb-2 sm:mb-3 ${p.text}`}>
+              <h3 className={`font-serif font-black text-[clamp(0.78rem,4.3vw,1.25rem)] sm:text-2xl uppercase tracking-tight leading-snug mb-2 sm:mb-3 ${p.text}`}>
                 {service.title}
               </h3>
               <p className={`text-[13px] sm:text-base leading-relaxed ${p.sub}`}>
@@ -148,7 +148,7 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
                 loading="lazy"
                 decoding="async"
                 draggable={false}
-                className={`block w-[50%] sm:w-[47%] max-w-[320px] h-auto flex-shrink-0 select-none pointer-events-none ${
+                className={`block w-[42%] sm:w-[42%] max-w-[270px] h-auto flex-shrink-0 select-none pointer-events-none ${
                   service.imageFrame
                     ? "rounded-xl sm:rounded-2xl shadow-[0_12px_26px_-12px_rgba(15,23,42,0.55)]"
                     : "drop-shadow-[0_10px_20px_rgba(2,6,23,0.35)]"
