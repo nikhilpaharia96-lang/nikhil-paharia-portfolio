@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, ShieldCheck, AlertTriangle, ArrowLeft, Lock } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { payAdvance, PaymentError, type BookingReceipt } from "@/lib/booking";
+import { payBookingToken, PaymentError, type BookingReceipt } from "@/lib/booking";
 import { formatINR, type Quote, type ServiceSlug } from "../../../shared/servicePricing";
 
 type Step = "details" | "review" | "paying" | "success" | "failed";
@@ -61,7 +61,7 @@ export default function BookingDialog({ open, onOpenChange, slug, serviceTitle, 
     setStep("paying");
     setError("");
     try {
-      const r = await payAdvance({
+      const r = await payBookingToken({
         service: slug,
         total: quote.total,
         name: form.name.trim(),
@@ -87,7 +87,7 @@ export default function BookingDialog({ open, onOpenChange, slug, serviceTitle, 
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300">Book this service</p>
           <DialogTitle className="mt-1 font-serif text-xl font-black uppercase tracking-tight sm:text-2xl">{serviceTitle}</DialogTitle>
           <DialogDescription className="mt-1 text-sm text-slate-300">
-            {step === "success" ? "Your booking is confirmed." : "Share your details, review the quotation, then pay the advance securely."}
+            {step === "success" ? "Your booking is confirmed." : "Share your details, review the quotation, then pay the booking token securely."}
           </DialogDescription>
         </div>
 
@@ -123,19 +123,20 @@ export default function BookingDialog({ open, onOpenChange, slug, serviceTitle, 
               </div>
               <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm">
                 <Row k="Total project cost" v={formatINR(quote.total)} />
-                <Row k={`Advance now (${quote.advancePercent}%)`} v={formatINR(quote.advance)} strong />
-                <Row k="Remaining after completion" v={formatINR(quote.remaining)} />
+                <Row k={`Booking token — pay now (${quote.tokenPercent}%)`} v={formatINR(quote.token)} strong />
+                <Row k={`Additional advance at project start (${quote.startPercent}%)`} v={formatINR(quote.startAdvance)} />
+                <Row k={`Remaining after completion (${quote.remainingPercent}%)`} v={formatINR(quote.remaining)} />
               </div>
               <p className="flex items-start gap-2 text-xs leading-relaxed text-slate-500">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                You pay only the advance now through a secure payment gateway. The balance is due after the work is completed.
+                You pay only the booking token now through a secure payment gateway. The additional advance is due when the project starts, and the balance after the work is completed.
               </p>
               <div className="flex gap-3">
                 <button onClick={() => setStep("details")} className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50">
                   <ArrowLeft className="h-4 w-4" /> Edit
                 </button>
                 <button onClick={pay} className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-white shadow-lg shadow-primary/30 transition hover:brightness-110 active:scale-[0.99]">
-                  <Lock className="h-4 w-4" /> Pay {formatINR(quote.advance)} advance
+                  <Lock className="h-4 w-4" /> Pay {formatINR(quote.token)} booking token
                 </button>
               </div>
             </div>
@@ -154,13 +155,14 @@ export default function BookingDialog({ open, onOpenChange, slug, serviceTitle, 
               <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500" />
               <div>
                 <h3 className="font-serif text-2xl font-black text-slate-900">Booking confirmed</h3>
-                <p className="mt-1 text-sm text-slate-600">Thank you, {form.name.trim()}! I've received your advance and will contact you shortly on {form.email.trim()}.</p>
+                <p className="mt-1 text-sm text-slate-600">Thank you, {form.name.trim()}! I've received your booking token and will contact you shortly on {form.email.trim()}.</p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-left text-sm">
                 <Row k="Service" v={receipt.service} />
                 <Row k="Total project cost" v={formatINR(receipt.total)} />
-                <Row k="Advance paid" v={formatINR(receipt.advance)} strong />
-                <Row k="Remaining balance" v={formatINR(receipt.remaining)} />
+                <Row k="Booking token paid" v={formatINR(receipt.token)} strong />
+                <Row k="Due at project start" v={formatINR(receipt.startAdvance)} />
+                <Row k="Due after completion" v={formatINR(receipt.remaining)} />
                 <Row k="Payment ID" v={receipt.paymentId} />
               </div>
               <button onClick={() => onOpenChange(false)} className="w-full rounded-full bg-slate-900 py-3 text-sm font-bold text-white transition hover:bg-slate-800">Done</button>

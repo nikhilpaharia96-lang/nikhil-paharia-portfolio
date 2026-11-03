@@ -77,9 +77,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!ok) return res.status(400).json({ verified: false, error: "Payment could not be verified." });
 
     const paymentId = String(ok.cf_payment_id);
-    const advance = Number(order.order_amount ?? 0);
+    const token = Number(order.order_amount ?? 0);
     const total = Number(tags.total ?? 0);
-    const remaining = Math.max(0, total - advance);
+    const startPct = Number(tags.start_pct ?? 0);
+    const startAdvance = Math.round((total * startPct) / 100);
+    const remaining = Math.max(0, total - token - startAdvance);
     const service = SERVICE_PRICES[tags.service];
 
     if (markNotifiedIfNew(`cashfree:${paymentId}`)) {
@@ -87,7 +89,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const emailResult = await sendNotificationEmail({
         subject: `New booking — ${service.title} — ${tags.name ?? "Client"}`,
         text: [
-          "New service booking (advance paid)",
+          "New service booking (booking token paid)",
           "",
           `Service: ${service.title}`,
           `Client: ${tags.name ?? "-"}`,
@@ -95,9 +97,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           `Phone: ${tags.phone ?? "-"}`,
           "",
           `Total project cost: ₹${total}`,
-          `Advance paid (${tags.advance_pct ?? "?"}%): ₹${advance}`,
-          `Remaining balance: ₹${remaining}`,
-          "Payment status: Advance paid (verified)",
+          `Booking token paid (${tags.token_pct ?? "?"}%): ₹${token}`,
+          `Additional advance due at project start (${tags.start_pct ?? "?"}%): ₹${startAdvance}`,
+          `Remaining due after completion: ₹${remaining}`,
+          "Payment status: Booking token paid (verified)",
           `Payment ID: ${paymentId}`,
           `Order ID: ${orderId}`,
           `Gateway: Cashfree`,
@@ -116,7 +119,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       orderId,
       service: service.title,
       total,
-      advance,
+      token,
+      startAdvance,
       remaining,
     });
   } catch (err) {

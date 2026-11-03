@@ -1,5 +1,5 @@
 /**
- * Single source of truth for service pricing and the advance / balance split.
+ * Single source of truth for service pricing and the token / advance / balance split.
  *
  * Imported by BOTH the browser (src/pages/ServiceDetail.tsx, BookingDialog)
  * and the Vercel functions (api/cashfree/*-booking-*.ts), so the amount the
@@ -43,28 +43,58 @@ export function isServiceSlug(value: unknown): value is ServiceSlug {
   return typeof value === "string" && (SERVICE_SLUGS as readonly string[]).includes(value);
 }
 
-/** Default share of the total taken up-front. The server may override it via ADVANCE_PERCENT. */
-export const DEFAULT_ADVANCE_PERCENT = 30;
+/** Payment split: 5% booking token (paid on "Book Now") + 25% at project start + 70% on completion. */
+export const DEFAULT_TOKEN_PERCENT = 5;
+export const DEFAULT_START_PERCENT = 25;
 
 /** Sanity ceiling, same as the existing payment endpoints. */
 export const MAX_PROJECT_TOTAL_INR = 500000;
 
-export function normalizeAdvancePercent(value: unknown): number {
+function pct(value: unknown, fallback: number): number {
   const n = typeof value === "string" ? Number(value) : value;
-  return typeof n === "number" && Number.isFinite(n) && n >= 1 && n <= 100 ? Math.round(n) : DEFAULT_ADVANCE_PERCENT;
+  return typeof n === "number" && Number.isFinite(n) && n >= 1 && n <= 90 ? Math.round(n) : fallback;
+}
+
+export interface SplitPercents {
+  tokenPercent: number;
+  startPercent: number;
+}
+
+/** Reads the (optional) overrides; falls back to 5% / 25%. Token + start can never exceed 90%. */
+export function normalizeSplit(token?: unknown, start?: unknown): SplitPercents {
+  const tokenPercent = pct(token, DEFAULT_TOKEN_PERCENT);
+  const startPercent = pct(start, DEFAULT_START_PERCENT);
+  return tokenPercent + startPercent > 90
+    ? { tokenPercent: DEFAULT_TOKEN_PERCENT, startPercent: DEFAULT_START_PERCENT }
+    : { tokenPercent, startPercent };
 }
 
 export interface Quote {
   total: number;
-  advancePercent: number;
-  advance: number;
+  tokenPercent: number;
+  startPercent: number;
+  remainingPercent: number;
+  /** Paid online when the client books. */
+  token: number;
+  /** Additional advance, due when the project starts. */
+  startAdvance: number;
+  /** Balance, due after completion. */
   remaining: number;
 }
 
-/** e.g. total 10,000 @ 30% → advance 3,000 + remaining 7,000. Whole rupees only. */
-export function computeQuote(total: number, advancePercent: number = DEFAULT_ADVANCE_PERCENT): Quote {
-  const advance = Math.max(1, Math.round((total * advancePercent) / 100));
-  return { total, advancePercent, advance, remaining: total - advance };
+/** e.g. total 20,000 → token 1,000 (5%) + start 5,000 (25%) + remaining 14,000 (70%). Whole rupees only. */
+export function computeQuote(total: number, split: SplitPercents = normalizeSplit()): Quote {
+  const token = Math.max(1, Math.round((total * split.tokenPercent) / 100));
+  const startAdvance = Math.round((total * split.startPercent) / 100);
+  return {
+    total,
+    tokenPercent: split.tokenPercent,
+    startPercent: split.startPercent,
+    remainingPercent: 100 - split.tokenPercent - split.startPercent,
+    token,
+    startAdvance,
+    remaining: total - token - startAdvance,
+  };
 }
 
 /** Returns an error message, or null when `total` is an acceptable project total for this service. */

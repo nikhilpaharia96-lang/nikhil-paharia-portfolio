@@ -6,16 +6,16 @@ import {
   SERVICE_PRICES,
   validateTotal,
   computeQuote,
-  normalizeAdvancePercent,
+  normalizeSplit,
 } from "../../shared/servicePricing.js";
 
-// Creates a Cashfree order for the ADVANCE of a service booking. It reuses the
+// Creates a Cashfree order for the 5% BOOKING TOKEN of a service booking. It reuses the
 // portfolio's existing Cashfree integration (api/lib/cashfree.ts, same env vars,
 // same rate limiter) — nothing about the gateway is duplicated.
 //
 // The browser sends the service, the agreed project total and the client's
-// contact details. The advance is computed HERE from shared/servicePricing.ts
-// (and ADVANCE_PERCENT if set), never taken from the browser.
+// contact details. The token is computed HERE from shared/servicePricing.ts
+// (and BOOKING_TOKEN_PERCENT / START_ADVANCE_PERCENT if set), never taken from the browser.
 
 const RATE_LIMIT = { limit: 8, windowMs: 60_000 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -64,7 +64,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const totalError = validateTotal(b.service, b.total);
   if (totalError) return res.status(400).json({ error: totalError });
 
-  const quote = computeQuote(b.total as number, normalizeAdvancePercent(process.env.ADVANCE_PERCENT));
+  const quote = computeQuote(b.total as number, normalizeSplit(process.env.BOOKING_TOKEN_PERCENT, process.env.START_ADVANCE_PERCENT));
   const service = SERVICE_PRICES[b.service];
 
   const origin =
@@ -79,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: cashfreeHeaders(cashfree),
       body: JSON.stringify({
         order_id: orderId,
-        order_amount: quote.advance,
+        order_amount: quote.token,
         order_currency: "INR",
         customer_details: {
           customer_id: `client_${Date.now()}`,
@@ -94,12 +94,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           source: "service-booking",
           service: b.service,
           total: String(quote.total),
-          advance_pct: String(quote.advancePercent),
+          token_pct: String(quote.tokenPercent),
+          start_pct: String(quote.startPercent),
           name: name.slice(0, 100),
           email: email.slice(0, 120),
           phone,
         },
-        order_note: `Advance for ${service.title}`.slice(0, 200),
+        order_note: `Booking token for ${service.title}`.slice(0, 200),
       }),
     });
 
@@ -113,7 +114,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       orderId: order.order_id,
       paymentSessionId: order.payment_session_id,
       cashfreeEnv: cashfree.env,
-      advance: quote.advance,
+      token: quote.token,
+      startAdvance: quote.startAdvance,
       remaining: quote.remaining,
       total: quote.total,
     });

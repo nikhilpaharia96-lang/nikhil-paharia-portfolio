@@ -14,7 +14,8 @@ export interface BookingReceipt {
   orderId: string;
   service: string;
   total: number;
-  advance: number;
+  token: number;
+  startAdvance: number;
   remaining: number;
 }
 
@@ -38,16 +39,16 @@ async function postJson(url: string, body: unknown) {
 }
 
 /**
- * Pays the advance through the portfolio's existing Cashfree integration.
+ * Pays the 5% booking token through the portfolio's existing Cashfree integration.
  *
- *   1. POST /api/cashfree/create-booking-order  → server computes the advance, creates the order
+ *   1. POST /api/cashfree/create-booking-order  → server computes the token, creates the order
  *   2. Cashfree checkout (modal)
  *   3. POST /api/cashfree/verify-booking-payment → server asks Cashfree if the order is PAID,
  *      saves the booking details in the Cashfree order and emails the admin
  *
  * The success state can only come from step 3's `verified: true`.
  */
-export async function payAdvance(input: BookingInput): Promise<BookingReceipt> {
+export async function payBookingToken(input: BookingInput): Promise<BookingReceipt> {
   const loaded = await loadCashfreeScript();
   if (!loaded || !window.Cashfree) {
     throw new PaymentError("Could not load the payment window. Check your connection and try again.");

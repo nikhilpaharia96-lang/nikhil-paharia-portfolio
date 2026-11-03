@@ -10,12 +10,12 @@ import { services } from "@/components/Services";
 import { getServiceDetail, WHY_CHOOSE_ME, type Tool } from "@/constants/serviceDetails";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import {
-  SERVICE_PRICES, computeQuote, normalizeAdvancePercent, validateTotal, formatINR, MAX_PROJECT_TOTAL_INR,
+  SERVICE_PRICES, computeQuote, normalizeSplit, validateTotal, formatINR, MAX_PROJECT_TOTAL_INR,
   type ServiceSlug,
 } from "../../shared/servicePricing";
 
-// Keep in sync with the server's ADVANCE_PERCENT (default 30).
-const ADVANCE_PERCENT = normalizeAdvancePercent(import.meta.env.VITE_ADVANCE_PERCENT);
+// Keep in sync with the server's BOOKING_TOKEN_PERCENT / START_ADVANCE_PERCENT (default 5 / 25).
+const SPLIT = normalizeSplit(import.meta.env.VITE_BOOKING_TOKEN_PERCENT, import.meta.env.VITE_START_ADVANCE_PERCENT);
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const whyIcons = [Gem, Sparkles, Receipt, Rocket, Headphones, ShieldCheck];
@@ -98,7 +98,7 @@ export default function ServiceDetail() {
 
   const total = Number(totalText.replace(/[^\d]/g, ""));
   const totalError = detail ? validateTotal(detail.slug, total) : null;
-  const quote = useMemo(() => computeQuote(totalError ? price?.startingPrice ?? 0 : total, ADVANCE_PERCENT), [total, totalError, price]);
+  const quote = useMemo(() => computeQuote(totalError ? price?.startingPrice ?? 0 : total, SPLIT), [total, totalError, price]);
 
   const seo = useMemo(
     () =>
@@ -342,11 +342,15 @@ export default function ServiceDetail() {
                       <dd className="font-mono text-2xl font-extrabold">{formatINR(quote.total)}</dd>
                     </div>
                     <div className="rounded-2xl bg-white/15 p-4">
-                      <dt className="text-xs font-semibold uppercase tracking-wider text-blue-100">Advance to start ({quote.advancePercent}%)</dt>
-                      <dd className="font-mono text-3xl font-extrabold">{formatINR(quote.advance)}</dd>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-blue-100">{quote.tokenPercent}% Booking Token — pay now</dt>
+                      <dd className="font-mono text-3xl font-extrabold">{formatINR(quote.token)}</dd>
                     </div>
                     <div>
-                      <dt className="text-xs font-semibold uppercase tracking-wider text-blue-100">Remaining after completion ({100 - quote.advancePercent}%)</dt>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-blue-100">Additional advance at project start ({quote.startPercent}%)</dt>
+                      <dd className="font-mono text-xl font-bold">{formatINR(quote.startAdvance)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-blue-100">Remaining after completion ({quote.remainingPercent}%)</dt>
                       <dd className="font-mono text-xl font-bold">{formatINR(quote.remaining)}</dd>
                     </div>
                   </dl>
@@ -364,7 +368,7 @@ export default function ServiceDetail() {
                 Book Now
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-primary transition group-hover:translate-x-0.5"><ArrowRight className="h-5 w-5" /></span>
               </button>
-              <p className="flex items-center gap-1.5 text-xs text-slate-500"><ShieldCheck className="h-4 w-4 text-primary" /> Secure payment · Pay only the advance now</p>
+              <p className="flex items-center gap-1.5 text-xs text-slate-500"><ShieldCheck className="h-4 w-4 text-primary" /> Secure payment · Pay only the booking token now</p>
             </Reveal>
           </div>
         </section>
