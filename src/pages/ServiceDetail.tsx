@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, ShieldCheck, Sparkles, Wallet, BadgeCheck, Headphones, Rocket, Gem, Receipt } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ServiceRail, ServiceStrip } from "@/components/service-detail/ServiceRail";
 import BookingDialog from "@/components/service-detail/BookingDialog";
 import NotFound from "@/pages/not-found";
 import { services } from "@/components/Services";
@@ -133,15 +132,13 @@ export default function ServiceDetail() {
       transition={{ duration: rm ? 0.15 : 0.55, ease }}
     >
       <Navbar />
-      <ServiceRail current={slug} />
       <main className="max-w-full overflow-x-hidden bg-gradient-to-b from-blue-50/60 via-white to-white">
         {/* ── Hero ── */}
         <section className="relative px-4 pb-14 pt-28 sm:pt-32">
           <div className="mx-auto max-w-5xl">
-            <Link href="/#services" className="mb-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-primary">
-              <ArrowLeft className="h-4 w-4" /> Back to services
+            <Link href="/#services" className="mb-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-primary">
+              <ArrowLeft className="h-4 w-4" /> All services
             </Link>
-            <ServiceStrip current={slug} />
 
             <div className="grid items-center gap-10 md:grid-cols-2">
               <div>
