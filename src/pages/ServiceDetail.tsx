@@ -142,17 +142,6 @@ export default function ServiceDetail() {
 
             <div className="grid items-center gap-10 md:grid-cols-2">
               <div>
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="font-serif text-5xl font-black leading-none text-primary/20 sm:text-6xl">{number}</span>
-                  {card.badges?.map((b) => {
-                    const Icon = b.icon;
-                    return (
-                      <span key={b.label} title={b.label} className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-md">
-                        {b.logo ? <img src={b.logo} alt={b.label} className="h-7 w-7 rounded-md" /> : Icon ? <Icon className="text-2xl" style={{ color: b.color }} /> : <span className="text-lg font-extrabold" style={{ color: b.color }}>{b.text}</span>}
-                      </span>
-                    );
-                  })}
-                </div>
                 <h1 className="font-serif text-3xl font-black uppercase leading-[1.08] tracking-tight text-slate-900 sm:text-5xl">{price.title}</h1>
                 <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">{card.desc}</p>
                 <div className="mt-7 flex flex-wrap items-center gap-4">
@@ -166,6 +155,18 @@ export default function ServiceDetail() {
                   </a>
                 </div>
               </div>
+              <div>
+                <div className="mb-4 flex items-center justify-end gap-3">
+                  <span className="font-serif text-5xl font-black leading-none text-primary/20 sm:text-6xl">{number}</span>
+                  {card.badges?.map((b) => {
+                    const Icon = b.icon;
+                    return (
+                      <span key={b.label} title={b.label} className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-md">
+                        {b.logo ? <img src={b.logo} alt={b.label} className="h-7 w-7 rounded-md" /> : Icon ? <Icon className="text-2xl" style={{ color: b.color }} /> : <span className="text-lg font-extrabold" style={{ color: b.color }}>{b.text}</span>}
+                      </span>
+                    );
+                  })}
+                </div>
               <motion.img
                 src={card.image}
                 alt={`${price.title} illustration`}
@@ -177,6 +178,7 @@ export default function ServiceDetail() {
                 className="mx-auto w-full max-w-md select-none drop-shadow-[0_18px_30px_rgba(2,6,23,0.3)] md:max-w-none"
                 draggable={false}
               />
+              </div>
             </div>
           </div>
         </section>
