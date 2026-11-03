@@ -42,6 +42,7 @@
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-query": "^5.60.5",
     "@types/node": "^20.16.11",
+    "@types/nodemailer": "^6.4.24",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@vercel/node": "^5.10.2",
@@ -73,6 +74,7 @@
   "dependencies": {
     "framer-motion": "^11.18.2",
     "gsap": "^3.15.0",
+    "nodemailer": "^6.10.1",
     "razorpay": "^2.9.8",
     "react-pageflip": "^2.0.3"
   }
