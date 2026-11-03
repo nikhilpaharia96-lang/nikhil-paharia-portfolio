@@ -27,6 +27,7 @@ import cinematographyImage from "../assets/images/service-cinematography.webp";
 // Every card image is a transparent cut-out that floats on the card (no frame).
 export const services = [
   {
+    slug: "website-development",
     title: "Website Development",
     desc: "Modern, fast and responsive websites for businesses and brands.",
     badges: [
@@ -37,6 +38,7 @@ export const services = [
     image: websiteImage,
   },
   {
+    slug: "video-editing",
     title: "Video Editing",
     desc: "Professional video editing for YouTube, Instagram Reels and commercials.",
     badges: [
@@ -47,6 +49,7 @@ export const services = [
     image: videoEditingImage,
   },
   {
+    slug: "digital-marketing",
     title: "Digital Marketing",
     desc: "Social Media, Google Ads, SEO, Lead Generation and Brand Growth.",
     badges: [
@@ -57,6 +60,7 @@ export const services = [
     image: digitalMarketingImage,
   },
   {
+    slug: "graphic-designing",
     title: "Graphic Designing",
     desc: "Logos, Banners, Social Media Posts, Branding and Print Design.",
     badges: [
@@ -67,6 +71,7 @@ export const services = [
     image: graphicDesignImage,
   },
   {
+    slug: "ui-ux-design",
     title: "UI/UX Design",
     desc: "Modern, user-friendly interfaces for web and mobile applications.",
     badges: [
@@ -77,6 +82,7 @@ export const services = [
     image: uiuxImage,
   },
   {
+    slug: "automation-ai-solutions",
     title: "Automation & AI Solutions",
     desc: "WhatsApp Chatbots, Workflow Automation, CRM and API Integration.",
     badges: [
@@ -87,6 +93,7 @@ export const services = [
     image: automationImage,
   },
   {
+    slug: "e-commerce-solutions",
     title: "E-Commerce Solutions",
     desc: "Online Stores, Product Setup, Payment Integration and Store Management.",
     badges: [
@@ -97,6 +104,7 @@ export const services = [
     image: ecommerceImage,
   },
   {
+    slug: "cinematography-video-production",
     title: "Cinematography & Video Production",
     desc: "Professional Video Shooting, Cinematography, Promotional Videos and Content Creation.",
     badges: [

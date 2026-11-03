@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,12 +17,24 @@ import Testimonials from "@/components/testimonials/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import NotFound from "@/pages/not-found";
+import ServiceDetail from "@/pages/ServiceDetail";
 
 const queryClient = new QueryClient();
 
 // Section order matches the design reference. Everything renders statically:
 // no loading screen, no reveal wrappers, no smooth scrolling, no custom cursor.
 function Portfolio() {
+  // Arriving from a service page via "/#services" etc. — scroll to that section once it has rendered.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const t = window.setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(hash) ?? (hash === "#skills" ? document.querySelector<HTMLElement>("#about") : null);
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 24, behavior: "auto" });
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -49,6 +62,7 @@ function App() {
           <div className="relative overflow-x-hidden max-w-full">
             <Switch>
               <Route path="/" component={Portfolio} />
+              <Route path="/services/:slug" component={ServiceDetail} />
               <Route component={NotFound} />
             </Switch>
           </div>

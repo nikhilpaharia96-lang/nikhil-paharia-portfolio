@@ -1,19 +1,9 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { playCardPop } from "@/lib/sound";
 import "./services-cta.css";
-
-/** Event name Contact listens for, to pre-select the service in its "What do you need?" field. */
-export const BOOK_SERVICE_EVENT = "book-service";
-
-function bookService(title: string) {
-  window.dispatchEvent(new CustomEvent(BOOK_SERVICE_EVENT, { detail: title }));
-  const el = document.getElementById("contact");
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - 24;
-  window.scrollTo({ top, behavior: "auto" });
-}
 
 export type ServiceBadge = {
   label: string;
@@ -27,6 +17,8 @@ export type ServiceBadge = {
 };
 
 export type ServiceItem = {
+  /** URL slug of the service's detail page: /services/:slug */
+  slug: string;
   title: string;
   desc: string;
   /** 1–2 small icon/logo badges shown at the top of the card */
@@ -152,18 +144,17 @@ function FanDeckCard({ service, index, total }: { service: ServiceItem; index: n
                 <span className="svc-price__label">Starting From</span>
                 <span className="svc-price__amount">{service.price}</span>
               </span>
-              <button
-                type="button"
+              <Link
+                href={`/services/${service.slug}`}
                 className="svc-book"
                 data-tone={color === "navy" ? "on-navy" : undefined}
-                onClick={() => bookService(service.title)}
-                aria-label={`Book ${service.title}`}
+                aria-label={`Learn more about ${service.title}`}
               >
-                Book Now
+                Learn More
                 <span className="svc-book__arrow" aria-hidden="true">
                   <ArrowRight size={16} strokeWidth={2.6} />
                 </span>
-              </button>
+              </Link>
             </div>
           )}
         </div>
