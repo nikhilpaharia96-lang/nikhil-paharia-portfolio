@@ -73,6 +73,7 @@
   "dependencies": {
     "framer-motion": "^11.18.2",
     "gsap": "^3.15.0",
+    "razorpay": "^2.9.8",
     "react-pageflip": "^2.0.3"
   }
 }
