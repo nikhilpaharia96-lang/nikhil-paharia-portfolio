@@ -653,30 +653,6 @@ export default function Hero() {
             {/* Portrait — same untouched desktop asset, full width of this block */}
             <div className="relative z-10 w-full">
               <PortraitFX src={desktopPortrait} alt="Nikhil Paharia" shadow="0 20px 28px rgba(15,23,42,0.25)" />
-
-              {/* Assam location card — pinned to the portrait's own bottom
-                  edge, kept within the viewport (right: 0, not negative)
-                  and away from the text column. */}
-              <motion.div
-
-                animate={{ opacity: 1, y: 0 }}
-
-                className="absolute z-20 pointer-events-auto flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-blue-100/70 rounded-xl px-2 py-1.5"
-                style={{
-                  bottom: '7%',
-                  right: '24%',
-                  maxWidth: '140px',
-                  boxShadow: '0 10px 26px rgba(29,111,235,0.16), 0 0 0 1px rgba(29,111,235,0.06)',
-                }}
-              >
-                <img src={assamMapImg} alt="" aria-hidden="true" className="w-5 h-5 sm:w-7 sm:h-7 object-contain flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[8px] sm:text-[10px] font-bold text-foreground flex items-center gap-1 leading-tight whitespace-nowrap">
-                    From Assam <span className="w-1 h-1 rounded-full bg-primary inline-block flex-shrink-0" />
-                  </p>
-                  <p className="text-[6.5px] sm:text-[8px] text-slate-500 leading-snug whitespace-nowrap">Inspired by nature</p>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
 
@@ -686,7 +662,23 @@ export default function Hero() {
           {/* Stats — 4 cards, same as desktop, wrapped in a single white
               rounded card (matches the reference's stat panel) instead of
               floating individually over the landscape background */}
-          <MobileStats stats={desktopStats} />
+          <div className="relative">
+            {/* From Assam badge — sits just above the stats panel on the right (never hidden behind it,
+                clear of the CTA row; the map icon is dropped on very narrow screens to save room) */}
+            <div
+              className="absolute z-30 right-1 bottom-full mb-2 flex items-center gap-1.5 bg-white/90 backdrop-blur-md border border-blue-100/70 rounded-xl px-2.5 max-[349px]:px-2 py-1.5"
+              style={{ boxShadow: '0 10px 26px rgba(29,111,235,0.16), 0 0 0 1px rgba(29,111,235,0.06)' }}
+            >
+              <img src={assamMapImg} alt="" aria-hidden="true" className="hidden min-[350px]:block w-6 h-6 object-contain flex-shrink-0 mix-blend-multiply" />
+              <div className="min-w-0">
+                <p className="text-[10px] max-[349px]:text-[9px] sm:text-[11px] font-bold text-foreground flex items-center gap-1 leading-tight whitespace-nowrap">
+                  From Assam <span className="w-1 h-1 rounded-full bg-primary inline-block flex-shrink-0" />
+                </p>
+                <p className="text-[8.5px] max-[349px]:text-[7.5px] sm:text-[9.5px] text-slate-500 leading-snug whitespace-nowrap">Inspired by nature</p>
+              </div>
+            </div>
+            <MobileStats stats={desktopStats} />
+          </div>
 
           {/* Let's Connect + socials — centered below the stats card, no box,
               matching the reference */}
@@ -1053,21 +1045,18 @@ export default function Hero() {
               {/* Assam location card — moved off the detached bottom-left
                   spot onto the portrait's lower-right / torso-bottom area,
                   as a premium floating glass card with a subtle blue glow */}
-              <motion.div
-
-                animate={{ opacity: 1, y: 0 }}
-
-                className="absolute z-20 flex items-center gap-3 bg-white/75 backdrop-blur-md border border-blue-100/70 rounded-2xl px-4 py-3 max-w-[250px]"
-                style={{ right: '2%', bottom: '8%', boxShadow: '0 12px 32px rgba(29,111,235,0.16), 0 0 0 1px rgba(29,111,235,0.06)' }}
+              <div
+                className="absolute z-20 flex items-center gap-2.5 bg-white/80 backdrop-blur-md border border-blue-100/70 rounded-2xl px-3 py-2.5 max-w-[225px]"
+                style={{ right: '-22%', bottom: '-2%', boxShadow: '0 12px 32px rgba(29,111,235,0.16), 0 0 0 1px rgba(29,111,235,0.06)' }}
               >
-                <img src={assamMapImg} alt="" aria-hidden="true" className="w-12 h-12 object-contain flex-shrink-0" />
+                <img src={assamMapImg} alt="" aria-hidden="true" className="w-9 h-9 object-contain flex-shrink-0 mix-blend-multiply" />
                 <div>
-                  <p className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <p className="text-[13px] font-bold text-foreground flex items-center gap-1.5 leading-tight">
                     From Assam, India <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
                   </p>
-                  <p className="text-xs text-slate-500 leading-snug">Inspired by nature, driven by code.</p>
+                  <p className="text-[11px] text-slate-500 leading-snug">Inspired by nature, driven by code.</p>
                 </div>
-              </motion.div>
+              </div>
             </div>
 
             {/* Stat cards — 4 per spec, stacked, far right */}
