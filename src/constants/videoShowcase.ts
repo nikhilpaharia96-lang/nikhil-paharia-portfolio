@@ -12,7 +12,7 @@ import mistyValley from "@/assets/images/tea-garden-about.png";
 import cliffSunset from "@/assets/images/tea-sunset-person-wide.webp";
 import teaPortrait from "@/assets/images/tea-sunset-portrait.webp";
 import teaGarden from "@/assets/images/tea-garden-hero.png";
-import creatorPhoto from "@/assets/images/my-new-photo.jpg";
+import bkJewellers from "@/assets/images/bk-jewellers.webp";
 import vid1 from "@/assets/images/video-1.png";
 import vid2 from "@/assets/images/video-2.png";
 import vid3 from "@/assets/images/video-3.png";
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     title: "B.K. Jewellers — Special Invitation",
     category: "Commercial",
     duration: "1:08",
-    image: creatorPhoto,
+    image: bkJewellers,
     description: "A promo reel inviting customers to B.K. Jewellers' 3-day event — trusted since 1965 for gold, diamond & silver jewellery.",
     location: "Jagiroad, Assam",
     videoUrl: "https://www.instagram.com/reel/DeOg4CbOw6L/?psln=MXFhb3JhbGRocGM5cg==",
