@@ -79,12 +79,12 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    title: "Tamilnadu",
-    category: "Social Media",
+    title: "B.K. Jewellers — Special Invitation",
+    category: "Commercial",
     duration: "1:08",
     image: creatorPhoto,
-    description: "A cinematic reel edit celebrating Tamilnadu.",
-    location: "Tamilnadu, India",
+    description: "A promo reel inviting customers to B.K. Jewellers' 3-day event — trusted since 1965 for gold, diamond & silver jewellery.",
+    location: "Jagiroad, Assam",
     videoUrl: "https://www.instagram.com/reel/DeOg4CbOw6L/?psln=MXFhb3JhbGRocGM5cg==",
   },
   {
