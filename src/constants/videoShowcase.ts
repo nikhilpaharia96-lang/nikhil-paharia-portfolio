@@ -79,12 +79,13 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    title: "A Day in My Life",
+    title: "Tamilnadu",
     category: "Social Media",
     duration: "1:08",
     image: creatorPhoto,
-    description: "A cinematic vlog edit for social media.",
-    location: "Various Locations",
+    description: "A cinematic reel edit celebrating Tamilnadu.",
+    location: "Tamilnadu, India",
+    videoUrl: "https://www.instagram.com/reel/DeOg4CbOw6L/?psln=MXFhb3JhbGRocGM5cg==",
   },
   {
     id: 5,
