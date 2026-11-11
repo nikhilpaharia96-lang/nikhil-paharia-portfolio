@@ -551,7 +551,7 @@ export default function Contact() {
             {/* Soft blue glow behind the glass card */}
             <div aria-hidden="true" className="absolute -inset-4 bg-gradient-to-br from-primary/15 via-sky-300/10 to-transparent rounded-[32px] blur-2xl -z-10" />
 
-            <form = rahulkalita5095@gmail.com
+            <form
               ref={formRef}
               action={FORMSPREE_ENDPOINT}
               method="POST"
