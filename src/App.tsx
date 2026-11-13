@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +18,9 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import NotFound from "@/pages/not-found";
 import ServiceDetail from "@/pages/ServiceDetail";
+import StudyNovaCard from "@/components/StudyNovaCard";
+
+const StudyNovaPresentation = lazy(() => import("@/presentation/studynova/StudyNovaPresentation"));
 
 const queryClient = new QueryClient();
 
@@ -43,6 +46,7 @@ function Portfolio() {
         <Marquee />
         <About />
         <Projects />
+        <StudyNovaCard />
         <VideoShowcase />
         <Services />
         <Testimonials />
@@ -63,6 +67,9 @@ function App() {
             <Switch>
               <Route path="/" component={Portfolio} />
               <Route path="/services/:slug" component={ServiceDetail} />
+              <Route path="/studynova-presentation">
+                <Suspense fallback={<div className="fixed inset-0 z-[100] bg-[#03050d]" />}><StudyNovaPresentation /></Suspense>
+              </Route>
               <Route component={NotFound} />
             </Switch>
           </div>
